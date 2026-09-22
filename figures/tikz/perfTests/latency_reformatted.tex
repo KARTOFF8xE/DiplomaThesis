@@ -1,0 +1,52 @@
+\begin{tikzpicture}
+    \newcommand{\latency}[2]{
+        \addplot+[
+            mark=none,
+            mark options={color=#2},
+            color=#2,
+            solid,
+            thick
+        ] table [
+            x=frequency,
+            y expr=\thisrow{#1/diff/median},
+        ] {\datatable};
+    }
+
+    \begin{axis}[
+        anchor=south west,
+        xlabel={Frequency [Hz]},
+        ylabel={Latency [$\upmu$s]},
+        legend style={at={(.015,.98)}, anchor=north west, legend columns=2,},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=14.5cm,
+        height=9cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xmin=10,
+        xmax=100,
+        xtick pos=bottom,
+        xtick distance=10,
+        ytick pos=left,
+        grid=both,
+        tick align=center,
+        minor y tick num=1,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/latency_diffs_reformatted.csv}\datatable
+        \addlegendimage{color=tubaf-geo, semithick}
+        \addlegendentry{n=10}
+        \addlegendimage{color=tubaf-primary-dark, semithick}
+        \addlegendentry{n=20}
+        \addlegendimage{color=tubaf-material, semithick}
+        \addlegendentry{n=30}
+        \addlegendimage{color=tubaf-environment, semithick}
+        \addlegendentry{n=40}
+
+        \latency{10}{tubaf-geo}
+        \latency{20}{tubaf-primary-dark}
+        \latency{30}{tubaf-material}
+        \latency{40}{tubaf-environment}
+
+    \end{axis}
+\end{tikzpicture}

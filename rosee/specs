@@ -1,0 +1,10 @@
+rosee@rosee:~$ uname -a
+> Linux rosee 6.8.0-62-generic #65-Ubuntu SMP PREEMPT_DYNAMIC Mon May 19 17:15:03 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux
+
+CPU: 12th Gen Intel(R) Core(TM) i7-12700TE
+RAM: 32GB RAM
+GPU: nvidia RTX-A2000 (12GB graphical)
+
+HUSARION (Lynx)
+
+Sensors: 4xZED2i, FixPosition vision RTK2, 

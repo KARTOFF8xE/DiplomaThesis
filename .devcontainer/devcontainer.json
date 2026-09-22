@@ -1,0 +1,37 @@
+{
+	"name": "TeX-Live",
+
+  // build
+  "build": {
+		"context": "..", //"${localWorkspaceFolder}",
+		"dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "ubuntu"
+    },
+    "mounts": [
+      "type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix"
+    ]
+	},
+  "dockerFile": "Dockerfile",
+  // "postStartCommand": "nohup ./actions-runner/run.sh &",  
+
+  // config
+  "workspaceMount": "type=bind,src=${localWorkspaceFolder},dst=/home/ubuntu/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/home/ubuntu/${localWorkspaceFolderBasename}",
+	"containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}"
+	},
+	// "privileged": true,
+
+  // run
+	"updateRemoteUserUID": false,
+
+  // vsc bs
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"James-Yu.latex-workshop"
+			]
+		}
+	}
+}

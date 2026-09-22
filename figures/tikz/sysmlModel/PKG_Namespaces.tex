@@ -1,0 +1,29 @@
+\begin{tikzpicture}
+
+        \tikzset{
+            package/.style={
+                minimum width = 2cm
+            }
+        }
+    
+        \umlemptypackage[package, fill=white, type=Block]{Namespace}
+        \umlemptypackage[package, left = 1cm of Namespace, fill=white, type=Block]{Node}
+        \umlemptypackage[package, right = 1cm of Namespace, fill=white, type=Block]{Topic}
+    
+        \draw [diamond->, barbarrow, rounded corners] (Namespace.south) ++(-.75,0) --
+            node[at start, below left]{0..1} ++(0,-.5) --
+            node[midway, below]{contains} ++(1.5,0) --
+            node[at end, below right]{0..*}
+            ++(0,.5);    
+
+        \draw [diamond->, barbarrow] (Namespace.west) --
+            node [at start, above left] {1}
+            node [at end, above right] {0..*}
+            (Node.east);
+        
+        \draw [diamond->, barbarrow] (Namespace.east) --
+            node [at start, above right] {1}
+            node [at end, above left] {0..*}
+            (Topic.west);
+
+\end{tikzpicture}

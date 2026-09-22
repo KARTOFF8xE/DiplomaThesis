@@ -1,0 +1,50 @@
+\begin{tikzpicture}[>={Triangle[angle=60:4]},help help lines/.style={lightgray!50,very thin}, help lines/.style={gray!50,thin}]
+    \node[umlClass] at (0,0)    (shadow)    {Digital Shadow};
+    \node[umlClass] at (0,-1.5) (tracer)    {DataTracer};
+
+    \node[umlClass] at (4, .5) (purpose)    {Purpose};
+    \node[umlClass] at (4,-.5) (model)      {Model};
+
+    \node[umlClass] at (-4,.5) (asset)      {Asset};
+
+    \node[umlClass] at (-4,-1) (source)     {Source};
+
+    \node[umlClass] at (-7,-1) (property)   {Property};
+    \node[umlClass] at (-7,-2) (measurement){Measurement};
+    \node[umlClass] at (-7,-3) (processing) {Processing};
+    \node at (-7, -2.5) {...};
+
+    \node[umlClass] at (-1.25,-3) (point)   {DataPoint};
+    \node[umlClass] at ( 1.25,-3) (metadata){MetaData};
+
+    \node[umlClass] at (2.8,-1.75) (structure) {Structure};
+    \node[umlClass] at (5.2,-1.75) (behavior)  {Behavior};
+    \node at (4, -1.9) {...};
+
+    \node[umlClass] at (4,-3.25) (sysconf)   {System\\Configuration};
+
+    %%% Compositions
+    \draw [-diamond] (tracer.north) -- node [at start, above right = -.1cm and 0cm] {\footnotesize 1..*} (shadow.south);
+    \draw [-diamond] (property.east) -- node [at start, above right] {\footnotesize *} (source.west);
+    \draw [diamond-, rounded corners] (tracer.south) ++(-.5,0) -- ++(0,-.5) -| node [at end, above right = -.1cm and 0cm] {\footnotesize 1..*} (point.north);
+    \draw [diamond-, rounded corners] (tracer.south) ++( .5,0) -- ++(0,-.5) -| node [at end, above left = -.1cm and 0cm] {\footnotesize 1..*} (metadata.north);
+    \draw [-diamond, rounded corners] (asset.north) |- node [at start, above right] {\footnotesize *} ++ (-1.1,.25) |- (asset.west);
+
+    %%% Inheritances
+    \draw [-open triangle 60] (asset.south) -- (source.north);
+    \draw [-open triangle 60, rounded corners] (measurement.east) -| (source.south);
+    \draw [-open triangle 60, rounded corners] (processing.east) -| (source.south);
+    \draw [-open triangle 60, rounded corners] (structure.north) -- ++(0,.285) -| (model.south);
+    \draw [-open triangle 60, rounded corners] (behavior.north) -- ++(0,.285) -| (model.south);
+    \draw [-open triangle 60, rounded corners] (sysconf.north) |- ++(-2.4,.3) -- ++(0,1.205) -| (model.south);
+
+
+    %%% Association
+    \draw [->, rounded corners] (shadow.north) ++(-1,0) -- ++(0,.25) -- node [midway, above] {\footnotesize links to} ++(2,0) --  node [at end, above right] {\footnotesize *} ++(0,-.25);
+    \draw [<-, rounded corners] (sysconf.west) ++(0,-.25) -| node [midway, below right = -.1cm and -.25cm] {\footnotesize knows} node [at start, below left] {\footnotesize 1} (metadata.south);
+    \draw [->, rounded corners] (shadow.west) -- ++(-1,0) |- node [midway, above right = 0cm and -.5cm] {\footnotesize stands for} node[at end, above right] {\footnotesize 1} (asset.east);
+    \draw [->, rounded corners] (tracer.west) -- ++(-1,0) |- node [midway, above right = -.05cm and -1cm] {\footnotesize originates from} node [at end, below right] {\footnotesize 1} (source.east);
+    \draw [->, rounded corners] (shadow.east) ++(0, .15) -- ++(1,0) node [midway, above] {\footnotesize fulfills} |- node [at end, below left] {\footnotesize 1} (purpose.west);
+    \draw [->, rounded corners] (shadow.east) ++(0,-.15) -- ++(1,0) node [midway, below] {\footnotesize uses} |- node [at end, above left] {\footnotesize 1..*} (model.west);
+
+\end{tikzpicture}

@@ -1,0 +1,85 @@
+\newif\ifdraft
+	\drafttrue
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\definecolor{ColorGM}{RGB}{190,174,255}
+	\definecolor{ColorQuestion}{RGB}{255,204,0}
+
+    \newcommand{\gm}[1] {
+        \ifdraft
+            \todo[inline, color=ColorGM!20, bordercolor=ColorGM!0]{\scriptsize\textbf{GM:} #1}
+        \fi
+    }
+    \newcommand{\q}[1] {
+        \ifdraft
+            \todo[inline, color=ColorQuestion!20, bordercolor=ColorQuestion!0]{\scriptsize\textbf{Question:} #1}
+        \fi
+    }
+
+\newcommand{\textline}[1][blue]{\ifdraft{\begin{center}\color{#1}\hrulefill\end{center}}\fi}
+
+\newcommand{\stb}[3][-]{\ifdraft{\textcolor{blue}{{\bf Story: (#2)}\\ #3\ \\ (Comments: #1)}}\fi}
+\newcommand{\cmpr}[1]{cf.~\cref{#1}}
+
+% \newcommand{\timer}{\text{\scriptsize\StopWatchStart}}
+\newcommand{\timer}{\text{$\circlearrowleft$}}
+\newcommand{\send}{\text{$\shortuparrow$}}
+\newcommand{\pub}{\text{$\curlyveeuparrow$}}
+\newcommand{\sub}{\text{$\curlywedgeuparrow$}}
+
+\newcommand{\config}{{\scriptsize\faUserCog}}
+\newcommand{\fboxemph}[1]{\textbf{\texttt{#1}}}%{\fbox}
+
+\newcommand{\legend}{\protect\hyperlink{target:legend}{
+  \tikz[baseline=-0.6ex]{
+    \draw[thick, fill=black, rounded corners = .004] (0,.17)  ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+    \draw[thick, fill=black, rounded corners = .004] (0,-.17) ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+    \draw[thick, fill=black, rounded corners = .004] (.12,0)  ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+    \draw[thick, fill=black, rounded corners = .004] (-.12,0) ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+  }
+}}
+\newcommand{\legendadapted}{\protect\hyperlink{target:legend}{
+    \tikz[baseline=-0.6ex]{
+    \draw[thick, rounded corners = .004] (0,.17)  ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+    \draw[thick, rounded corners = .004] (0,-.17) ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+    \draw[thick, rounded corners = .004] (.12,0)  ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+    \draw[thick, rounded corners = .004] (-.12,0) ++(0,-0.075) -- ++(.075,.075) -- ++(-.075,.075) -- ++(-.075,-.075) -- cycle;
+  }
+}}
+\newcommand{\circledFilledSectionDiamond}{
+  \tikz[baseline=-0.6ex]{
+    \draw[thick, fill=black] (0,.17) circle(0.07);
+    \draw[thick, fill=black] (0,-.17) circle(0.07);
+    \draw[thick, fill=black] (.12,0) circle(0.07);
+    \draw[thick, fill=black] (-.12,0) circle(0.07);
+  }
+}
+\newcommand{\circledLegend}{\protect\hyperlink{target:circledLegend}{\circledFilledSectionDiamond}}
+\newcommand{\circledSectioningDiamond}{
+  \tikz[baseline=-0.6ex]{
+    \draw[thick] (0,.17) circle(0.075);
+    \draw[thick] (0,-.17) circle(0.075);
+    \draw[thick] (.12,0) circle(0.075);
+    \draw[thick] (-.12,0) circle(0.075);
+  }
+}
+\newcommand{\circledLegendadapted}{\protect\hyperlink{target:circledLegend}{\circledSectioningDiamond}}
+
+\newcommand{\spadesuitfootnote}[1]{\textsuperscript{$\spadesuit$}\footnote[0]{\hspace{-.15cm}$^{\spadesuit}$ #1}}
+
+\newcommand{\addcite}{\todo[color=cyan]{cite}}
+
+\newcommand{\used}[1]{\textcolor{gray}{#1}}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\newcommand{\symbolinfluxDB}{halfsquare left*}
+\newcommand{\symbolneoj}{halfsquare right*}
+\newcommand{\symbolShadowInstance}{diamond*}
+\newcommand{\symbolShadowCaster}{triangle*}
+\newcommand{\symbolProofOfConcept}{square*}
+\newcommand{\symbolROSSystem}{*}
+
+\newcommand{\descriptionIndent}{.5cm}

@@ -1,0 +1,32 @@
+\nomenclature{$G$}{The directed Graph representing a ROS2 system.}
+\nomenclature{$G_0$}{The directed Graph representing the communication structure of a ROS2 system.}
+\nomenclature{$M$}{The Members of a ROS2 system.}
+\nomenclature{$M_0$}{The communication Members representing the Members of the ROS2 communication Graph.}
+\nomenclature{$M_A$}{The active Members of a ROS2 system.}
+\nomenclature{$M_P$}{The passive Members of a ROS2 system.}
+\nomenclature{$E$}{The Edges representing relations between Members within a ROS2 system.}
+\nomenclature{$E_0$}{The communication Edges representing communication and Timers within a ROS2 system.}
+\nomenclature{$E_\send$}{Sending Edges, representing communication between two active Members.}
+\nomenclature{$E_\timer$}{Sending Edges, representing virtual self-communication of an active Member.}
+\nomenclature{$E_\pub$}{Publishing Edges, representing communication from an active to a passive Member.}
+\nomenclature{$E_\sub$}{Subscribing Edges, representing communication from a passive to an active Member}
+\nomenclature{$E_i$}{The Edges representing additional relations between Members within a ROS2 system.}
+\nomenclature{$\theta$}{The attributes function to represent time-varying attributes of Members and communication Edges.}
+
+\nomenclature{$\mathbb{T}$}{Temporal domain to represent a time series.}
+\nomenclature{$R$}{The relation reaching from a Member $M_0$ to a communication Edge $E_0$.}
+\nomenclature{$\rho_{out}$}{The sets of relations $R$, reaching to outgoing, communication Edges.}
+\nomenclature{$\rho_{in}$}{The sets of relations $R$, reaching to incoming, communication Edges.}
+\nomenclature{$\Theta_{out}$}{The attributes function encompassing accumulated Member and outgoing Edge attribute values.}
+\nomenclature{$\Theta_{in}$}{The attributes function encompassing accumulated Member and incoming Edge attribute values.}
+
+\nomenclature{$T_i$}{Directed, rooted Tree that is edge-induced by $E_i$.}
+\nomenclature{$M_i$}{The Members within a specific directed, rooted Tree $T_i$.}
+
+\nomenclature{$\Psi_{i,out}$}{Recursively accumulated attributes function for Tree $T_i$ based on $\Phi_{out}$.}
+\nomenclature{$\Psi_{i,in}$}{Recursively accumulated attributes function for Tree $T_i$ based on $\Phi_{in}$.}
+
+\nomenclature{$T_{i,m}$}{Directed, rooted Subtree of $T_i$, rooted at $m\in M_i$.}
+
+\nomenclature{$\Upsilon_{out}$}{Binary aggregated attributes function based on $\Phi_{out}$.}
+\nomenclature{$\Upsilon_{in}$}{Binary aggregated attributes function based on $\Phi_{in}$.}

@@ -1,0 +1,54 @@
+\begin{tikzpicture}[xscale=.89, yscale=1]
+
+    \begin{umlseqdiag}
+        \umlobject[class=Node, fill=tubaf-accent-26]{logic-cli}
+        
+        \umlobject[class=Client, fill=tubaf-accent-26]{send-goal-cli}
+        \umlobject[class=Client, fill=tubaf-accent-26]{get-result-cli}
+        % \umlobject[class=Client, fill=tubaf-accent-26]{cancel-goal-cli}
+
+        \umlobject[class=Topic, fill=tubaf-accent-26]{feedback}
+        % \umlobject[class=Topic, fill=tubaf-accent-26]{status}
+        
+        \umlobject[class=Server, fill=tubaf-accent-26]{send-goal-srv}
+        \umlobject[class=Server, fill=tubaf-accent-26]{get-result-srv}
+        % \umlobject[class=Server, fill=tubaf-accent-26]{cancel-goal-srv}
+        
+        \umlobject[class=Node, fill=tubaf-accent-26]{logic-srv}
+
+        \begin{umlcall}[draw=tubaf-geo, op=goal request, dt=5, padding=-34]{send-goal-cli}{send-goal-srv}
+            \begin{umlcallself}[op=callback()]{send-goal-srv}
+            \end{umlcallself}
+            \begin{umlcall}[draw=tubaf-geo, type=return, op=goal response (accept), dt=0, padding=-2.5]{send-goal-srv}{send-goal-cli}   \end{umlcall}
+            \begin{umlcall}[op=handle-goal, padding=0]{send-goal-srv}{logic-srv}
+                \begin{umlcall}[draw=tubaf-environment, op=result request, return = result response, dt=16, padding=0]{get-result-cli}{get-result-srv}
+                    \begin{umlfragment}[draw=tubaf-material, type=loop]
+                        \begin{umlcall}[draw=tubaf-material, op=\phantom{--}publish feedback, padding=-3, dt=9]{logic-srv}{feedback}
+                        \begin{umlcall}[draw=tubaf-material, op=\phantom{p}forward feedback\phantom{p}]{feedback}{logic-cli}                                               \end{umlcall}\end{umlcall}
+                        \begin{umlcall}[draw=tubaf-material, op=\phantom{--}publish feedback, padding=-3]{logic-srv}{feedback}
+                        \begin{umlcall}[draw=tubaf-material, op=\phantom{p}forward feedback\phantom{p}]{feedback}{logic-cli}                                               \end{umlcall}\end{umlcall}
+                        \begin{umlcall}[draw=tubaf-material, op=\phantom{--}publish feedback, padding=-3]{logic-srv}{feedback}
+                        \begin{umlcall}[draw=tubaf-material, op=\phantom{p}forward feedback\phantom{p}]{feedback}{logic-cli}                                               \end{umlcall}\end{umlcall}
+                    \end{umlfragment}
+                    \begin{umlcall}[op=set result, dt=7,padding=0]{logic-srv}{get-result-srv}                               \end{umlcall}
+                \end{umlcall}
+                % \begin{umlcall}[draw=tubaf-environment, type=return, op=, dt=27.1,padding=0]{get-result-srv}{get-result-cli}      \end{umlcall}
+            \end{umlcall}
+        \end{umlcall}
+
+    \end{umlseqdiag}
+
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (send-goal-cli.north west) -- (get-result-cli.north east) node[midway,yshift=2.25em]{Action Client};
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (send-goal-srv.north west) -- (get-result-srv.north east) node[midway,yshift=2.25em]{Action Server};
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=6ex}]
+        (send-goal-cli.north west) -- (get-result-srv.north east) node[midway,yshift=4.5em]{Action};
+
+    
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=10ex}]
+        (logic-cli.north west) -- (get-result-cli.north east) node[midway,yshift=6.75em]{Action Client Node};
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=10ex}]
+        (send-goal-srv.north west) -- (logic-srv.north east) node[midway,yshift=6.75em]{Action Server Node};
+
+\end{tikzpicture}

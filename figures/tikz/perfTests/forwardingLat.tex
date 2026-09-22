@@ -1,0 +1,73 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Latency [s]},
+        boxplot/draw direction=x,
+        ymajorgrids=true,
+        yticklabel style={font=\small},
+        ytick={1,2},
+        ytick pos=bottom,
+        yticklabels={LTTng-Live,Rotation},
+        xmin=0,
+        xmax=2,
+        xtick distance=.5,
+        minor x tick num=1,
+        xticklabel style={font=\small},
+        width=14cm,
+        height=5cm,
+        line width=.5pt,
+        xtick pos=left,
+        tick align=center,
+    ]
+    
+    \addplot+[
+        name=first,
+        title={rotation},
+        boxplot,
+        draw=tubaf-primary,
+        thick,
+        % /pgfplots/boxplot/hide outliers,
+    ] table[y expr=\thisrowno{0}*1e-9] {measurements/forwardingLatencyLIVE.dat}
+        [right, tubaf-black]
+        % node at
+        % (boxplot box cs: \boxplotvalue{lower whisker},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+        % node at
+        % (boxplot box cs: \boxplotvalue{lower quartile},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{lower quartile}}}
+        node[right] at
+        (boxplot box cs: \boxplotvalue{median},0.75)
+        {\footnotesize\pgfmathprintnumber{\boxplotvalue{median}}};
+        % node at
+        % (boxplot box cs: \boxplotvalue{upper quartile},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{upper quartile}}}
+        % node at
+        % (boxplot box cs: \boxplotvalue{upper whisker},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+
+    \addplot+[
+        name=first,
+        title={rotation},
+        boxplot,
+        draw=tubaf-primary,
+        semithick,
+        % /pgfplots/boxplot/hide outliers,
+    ] table[y expr=\thisrowno{0}*1e-9] {measurements/forwardingLatencyRotation.dat}
+        [right, tubaf-black]
+        % node at
+        % (boxplot box cs: \boxplotvalue{lower whisker},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{lower whisker}}}
+        % node at
+        % (boxplot box cs: \boxplotvalue{lower quartile},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{lower quartile}}}
+        node[right] at
+        (boxplot box cs: \boxplotvalue{median},0.75)
+        {\footnotesize\pgfmathprintnumber{\boxplotvalue{median}}};
+        % node at
+        % (boxplot box cs: \boxplotvalue{upper quartile},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{upper quartile}}}
+        % node at
+        % (boxplot box cs: \boxplotvalue{upper whisker},.75)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{upper whisker}}};
+    \end{axis}
+
+\end{tikzpicture}

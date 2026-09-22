@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \begin{axis}[cpu]
+    \addplot [
+        matrix plot*,
+        mesh/rows=11,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=num_pairs,
+        meta expr=100*\thisrow{continuous/cpu_median},
+    ] {measurements/cpu_usage_trace.csv};
+    \end{axis}
+\end{tikzpicture}

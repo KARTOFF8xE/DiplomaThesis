@@ -1,0 +1,61 @@
+\begin{tikzpicture}
+    \tikzset{
+        class/.style={
+            minimum width = 2.5cm,
+            fill=tubaf-accent-26
+        }
+    }
+
+
+    \begin{umlpackage}[type=Block, fill=white]{Node}
+        \umlclass[class, x=0, y=0]{classic Node}{
+            name \\
+            namespace \\
+            state% \\
+            % stateChangeTime \\
+            % setOperatingCounter \\
+            % QoS
+        }{}
+
+        \umlclass[class, x=0, y=3.5]{Managed Node}{}{}
+
+        \umlclass[class, x=-5, y=2]{Server}{
+            name \\
+            callbackDuration
+        }{}
+        \umlclass[class, x=-5, y=-2]{Client}{
+            serviceName \\
+            sendReq \\
+            receivedResp \\
+            callbackDuration
+        }{}
+        
+        \umlclass[class, x=5, y=2]{Publisher}{
+            topicName \\
+            publishingRate \\
+            bandwith \\
+            type
+        }{}
+        \umlclass[class, x=5, y=-2]{Subscriber}{
+            topicName \\
+            callbackDuration
+        }{}
+        
+        \umlclass[class, x=0, y=-3.75]{Timer}{
+            frequency
+        }{}
+
+
+        \draw [diamond->, barbarrow, rounded corners] (classic Node.west) ++(0,.5) -- node[at start, above left]{1} ++(-.75,0) |- node[at end, above right]{0..*} (Server.east);
+        \draw [diamond->, barbarrow, rounded corners] (classic Node.west) ++(0,-.5) -- node[at start, below left]{1} ++(-.75,0) |- node[at end, below right]{0..*} (Client.east);
+        \draw [diamond->, barbarrow, rounded corners] (classic Node.east) ++(0,.5)  -- node[at start, above right]{1} ++( .75,0) |- node[at end, above left]{0..*} (Publisher.west);
+        \draw [diamond->, barbarrow, rounded corners] (classic Node.east) ++(0,-.5) -- node[at start, below right]{1} ++( .75,0) |- node[at end, below left]{0..*} (Subscriber.west);
+        \draw [<-diamond, barbarrow, rounded corners] (Timer.north) -- node[at start, above right]{0..*} node[at end, below right]{1} (classic Node.south);
+        
+        \draw [-open triangle 60] (Managed Node.south) -- (classic Node.north);
+        
+        \draw [<-, barbarrow, rounded corners] (Client.west) -- ++(-.75,0) |- node[at start, below]{0..*} node[midway, yshift=-2cm, above, rotate=90]{serves for} node[midway, above]{1} (Server.west);
+
+    \end{umlpackage}
+
+\end{tikzpicture}

@@ -1,0 +1,72 @@
+\begin{tikzpicture}
+
+    \begin{umlpackage}[x=0, y=0, type=Block, fill=white]{Node}
+        \umlclass[x=0,y=0]{classic Node}{}{}
+        \umlclass[x=0,y=2]{Managed Node}{}{}
+
+        \umlclass[x=4.2,y=1]{Publisher}{}{}
+        \umlclass[x=4.2,y=-1]{Subscriber}{}{}
+
+        \umlclass[x=-4,y=1]{Server}{}{}
+        \umlclass[x=-4,y=-1]{Client}{}{}
+
+        \umlclass[x=0,y=-2.5]{Timer}{}{}
+
+
+        % \umlcompo[geometry=-|-,
+        %     arg1=1, pos1=2.7, anchor1=160,
+        %     mult2=0..*, pos2=.5]{classic Node}{Server}
+        \draw [-diamond] (classic Node.west) ++(0,.2) -- ++(-.75,0) |- (Server.east);
+        % \umlcompo[geometry=-|-,
+        % mult1=1, pos1=2.7, anchor1=200,
+        % mult2=0..*, pos2=1]{classic Node}{Client}
+        \draw [-diamond] (classic Node.west) ++(0,-.2) -- ++(-.75,0) |- (Client.east);
+        % \umlcompo[geometry=-|-,
+        % arg1=1, pos1=.5, anchor1=20,
+        % mult2=0..*, pos2=2.55]{classic Node}{Publisher}
+        \draw [-diamond] (classic Node.east) ++(0,.2) -- ++(.75,0) |- (Publisher.west);
+        % \umlcompo[geometry=-|-,
+        % mult1=1, pos1=.5, anchor1=-20,
+        % arg2=0..*, pos2=2.55]{classic Node}{Subscriber}
+        \draw [-diamond] (classic Node.east) ++(0,-.2) -- ++(.75,0) |- (Subscriber.west);
+        % \umlcompo[arg1=1, pos1=.2,
+        % arg2=0..*, pos2=.8]{classic Node}{Timer}
+        \draw [-diamond] (Timer.north) -- (classic Node.south);
+
+        % \umlinherit{Managed Node}{classic Node}
+        \draw [-open triangle 60] (Managed Node.south) -- (classic Node.north);
+    \end{umlpackage}
+
+    \begin{umlpackage}[x=.4, y=-6, type=Block, fill=white]{Process}
+        \umlclass[x=0,y=0]{Process}{}{}
+    \end{umlpackage}
+    \begin{umlpackage}[x=-3.2, y=-6, type=Block, fill=white]{Container}
+        \umlclass[x=0,y=0]{Container}{}{}
+    \end{umlpackage}
+    \begin{umlpackage}[x=4, y=-6, type=Block, fill=white]{Executor}
+        \umlclass[x=0,y=0]{Executor}{}{}
+    \end{umlpackage}
+    
+
+    % \draw let \p1 = (Node.east),
+    %             \p2 = (Executor.east) in
+    %             [-open diamond] (\x1,\y2) -- (\p2);
+    \draw [-open diamond] (Node.south east) |- (Executor.east);
+    \draw [-diamond] (Container.east) -- (Process.west);
+    \draw [-open diamond] (Node.south west) |- (Container.west);
+    \draw let \p1 = (Node.south),
+                \p2 = (Process.east) in
+                [-diamond] (\x2,\y1) ++(.5,0) |- (\p2);
+    % \draw let \p1 = (Node.south west),
+    %             \p2 = (Container.west) in
+    %             [-open diamond] (\x1,\y1) |- (\p2);
+    
+    \begin{umlpackage}[x=8, y=0, type=Block, fill=white]{Topic}
+        \umlclass[x=0,y=0]{Topic}{}{}
+    \end{umlpackage}
+    \draw [<-] (Topic.west) ++(0,.5) -- ++(-.75,0) |- node[above, xshift=-.1cm]{\footnotesize$\ll$pubs to$\gg$} (Publisher.east);
+    \draw [<-] (Topic.west) ++(0,-.5) -- ++(-.75,0) |- node[below, xshift=.75cm]{\footnotesize$\ll$subscribes from$\gg$} (Subscriber.east);
+
+    \draw [->] (Client.west) -- ++(-.75,0) node[midway, left, xshift=-.35cm, yshift=1cm]{\footnotesize$\ll$uses$\gg$} |- (Server.west);
+
+\end{tikzpicture}

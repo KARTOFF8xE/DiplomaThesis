@@ -1,0 +1,59 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        name=first,
+        xlabel={Relative Time [min]},
+        ylabel={CPU Utilisation [\%]},
+        tick align=center,
+        legend style={
+            at={(.99,.02)},
+            anchor=south east,
+            legend columns=3,
+            draw=black,
+            font=\footnotesize
+        },
+        xtick distance=1,
+        minor ytick={0.125,.375,...,5},
+        % minor ytick={0.5,1.5,...,5},
+        ytick distance=.25,
+        xmin=0, xmax=5.9,
+        ymin=0,
+        grid=both,
+        height=7cm,
+        width=14cm,
+        xtick pos=bottom,
+        ytick pos=left,
+    ]
+
+        \addplot+ [mark=none, color=tubaf-geo, thick] table [
+            x expr=(\thisrow{timeRelative}/60)-6.5,
+            y expr=\thisrow{stream/cpu}*100/6,
+            col sep=comma,
+            mark=none
+        ] {measurements/totaling_overhead.csv};
+
+        \addplot+ [mark=none, color=tubaf-environment, thick] table [
+            x expr=(\thisrow{timeRelative}/60)-6.5,
+            y expr=\thisrow{influxdb/cpu}*100/6,
+            col sep=comma,
+            mark=none,
+        ] {measurements/totaling_overhead.csv};
+
+        \addplot+ [mark=none, color=tubaf-material, thick] table [
+            x expr=(\thisrow{timeRelative}/60)-6.5,
+            y expr=\thisrow{neo4j/cpu}*100/6,
+            col sep=comma,
+            mark=none,
+        ] {measurements/totaling_overhead.csv};
+
+        \legend{
+            {Shadow Caster},
+            {influxDB},
+            {neo4j}
+        }
+
+        \draw [tubaf-primary-dark, <-]  (2.75,.8/6) --  (2.75,1.55/6) node (tmp) [at end, above] {started request};
+        \draw [tubaf-primary-dark, <-]  (2.75,2.5/6) --  (tmp.north);
+
+    \end{axis}
+
+\end{tikzpicture}

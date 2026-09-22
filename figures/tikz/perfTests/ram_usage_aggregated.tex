@@ -1,0 +1,67 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        name=third,
+        xlabel={Number of Publisher-Subscriber Pairs (n)},
+        ylabel={RAM Utilisation [MB]},
+        legend style={at={(.01,.98)}, anchor=north west, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=14cm,
+        height=7cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xmin=0,
+        xmax=40,
+        xtick distance=10,
+        xtick pos=bottom,
+        ytick pos=left,
+        ytick distance=500,
+        minor x tick num=0,
+        minor y tick num=1,
+        ymin=0,
+        grid=both,
+        tick align=center,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/ram_usage_aggregated_trace.csv}\datatable
+
+    \addplot+[ %% Shadow Instance
+        mark=\symbolShadowInstance,
+        mark options={color=tubaf-geo},
+        color=tubaf-geo,
+        solid,
+        thick
+    ] table [
+        x=num_pairs,
+        y expr=(\thisrow{influxdb/memrss_mean}+\thisrow{neo4j/memrss_mean})*1e-6,
+        % y error expr=\thisrow{#1/stream/proportionalResident_std}*1e-6,
+    ] {\datatable};
+        \addlegendentry{Shadow Instance}
+    \addplot+[ %% Shadow Caster
+        mark=\symbolShadowCaster,
+        mark options={color=tubaf-material},
+        color=tubaf-material,
+        solid,
+        thick
+    ] table [
+        x=num_pairs,
+        y expr=\thisrow{datamgmt/proportionalResident_mean}*1e-6,
+        % y error expr=\thisrow{#1/stream/proportionalResident_std}*1e-6,
+    ] {\datatable};
+        \addlegendentry{Shadow Caster}
+    \addplot+[ %% ROS2
+        mark=\symbolROSSystem,
+        mark options={color=tubaf-energy},
+        color=tubaf-energy,
+        solid,
+        thick
+    ] table [
+        x=num_pairs,
+        y expr=(\thisrow{ros2talker/proportionalResident_mean}+\thisrow{ros2listener/proportionalResident_mean})*1e-6,
+        % y error expr=\thisrow{#1/stream/proportionalResident_std}*1e-6,
+    ] {\datatable};
+        \addlegendentry{ROS2 System}
+
+    \end{axis}
+
+\end{tikzpicture}

@@ -1,0 +1,36 @@
+\begin{tikzpicture}[xscale=.89, yscale=1]    
+    \node[umlClass] at (0,0)    (shadow)    {: Digital Shadow};
+    \node[umlClass] at (0,-1.5) (tracer)    {: DataTracer};
+
+    \node[umlClass] at (6.75, .15) (purpose)    {support FDD\\: Purpose};
+    \node[umlClass] at (6.75,-1.35) (model)      {mathematical\\meta-model : Model};
+
+    \node[umlClass] at (-6,0) (asset)      {ROS2 System\\: Asset};
+
+    \node[umlClass] at (-6,-1.5) (source)     {: Source};
+
+    \node[umlClass] at (-6,-3.5) (property)   {: Property};
+
+    \node[umlClass] at (0,-3) (mydatatrace) {: DataTrace};
+    \node[umlClass] at (-1.5,-4.5) (point)   {: DataPoint};
+    \node[umlClass] at ( 1.5,-4.5) (metadata){: MetaData};
+    
+    %%% Compositions
+    \draw [-diamond] (tracer.north) -- node [at start, above right = -.1cm and 0cm] {\footnotesize 1..*} (shadow.south);
+    \draw [-diamond] (property) -- node [at start, above right] {\footnotesize *} (source);
+    \draw [diamond-, rounded corners] (mydatatrace.south) ++(-.5,0) -- ++(0,-.5) -| node [at end, above right = -.1cm and 0cm] {\footnotesize 1..*} (point.north);
+    \draw [diamond-, rounded corners] (mydatatrace.south) ++( .5,0) -- ++(0,-.5) -| node [at end, above left = -.1cm and 0cm] {\footnotesize 1..*} (metadata.north);
+    
+    %%% Inheritances
+    \draw [open triangle 60-] (asset.south) -- (source.north);
+    \draw [-open triangle 60, rounded corners] (mydatatrace) -- (tracer);
+
+
+    %%% Association
+    \draw [->, rounded corners] (shadow.west) -- node [midway, above right = 0 and -.75cm] {\footnotesize stands for} node[at end, above right] {\footnotesize 1} (asset.east);
+    \draw [->, rounded corners] (tracer.west) -- node [midway, above right = -.05cm and -1cm] {\footnotesize originates from} node [at end, below right] {\footnotesize 1} (source.east);
+    \draw [->, rounded corners] (shadow.east) ++(0, .15) -- ++(2,0) node [midway, above] {\footnotesize fulfills} -- node [at end, below left] {\footnotesize 1} (purpose.west);
+    \draw [->, rounded corners] (shadow.east) ++(0,-.15) -- ++(2,0) node [midway, below] {\footnotesize uses} |- node [at end, above left] {\footnotesize 1..*} (model.west);
+
+    \draw [rounded corners, tubaf-material, thick] (-3,-5) rectangle (3,-2.5) node [at end, right] {\Cref{tab:structuraldatatracers,tab:attributedatatracers}};
+\end{tikzpicture}

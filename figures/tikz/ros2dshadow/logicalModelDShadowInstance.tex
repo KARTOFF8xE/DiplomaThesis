@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+    \node [db, anchor = east] (gdb) at (-2,-.5) {graph db};
+        \whitebigodot{tubaf-geo}{(gdb.270)}
+    \node [db] (tsdb) at (0,-.5) {time-series db};
+        \whitebigodot{tubaf-material}{(tsdb.270)}
+    \node [db, anchor = west] (ldb) at (2,-.5) {log db};
+       \whitebigodot{tubaf-environment}{(ldb.270)}
+\end{tikzpicture}

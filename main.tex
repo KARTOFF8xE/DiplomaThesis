@@ -1,0 +1,87 @@
+\documentclass{tubaf-thesis}
+\input{config.tex}
+\input{macros.tex}
+\begin{document}
+
+%%% Cover Sheet %%%
+    % \maketitle
+
+    \pagenumbering{Roman}
+
+%%% Acknowledgements %%%
+% \clearpage
+\include{sections/9_acknowledgments}
+
+%%% Abstract %%%
+    \shipout\null
+    \setcounter{page}{1}
+    \input{sections/0_abstract}
+
+%%% Listings %%%
+    \newpage\phantom{foo}\thispagestyle{empty}
+    \newpage\phantom{bar}\thispagestyle{empty}
+    \setcounter{page}{2}
+    \tableofcontents
+
+    % \thispagestyle{empty}
+    \listoffigures
+
+    \listoftables
+
+    \settcblistofwidth{2.75em}
+    \tcblistof[\chapter*]{def}{List of Definitions}
+    \newpage
+
+    \input{symbols.tex}
+    \printnomenclature
+    \vspace*{-1.5cm}
+
+\begingroup
+    \renewcommand{\cleardoublepage}{}
+    \renewcommand{\clearpage}{}
+    \chapter*{List of Abbreviations} 
+    \vspace{-.5cm}
+    \enlargethispage{2\baselineskip}
+    \input{acronyms.tex}
+    \newpage
+\endgroup
+    
+    % \pagebreak
+    % \resetstandardheader
+    \shipout\null
+    \pagenumbering{arabic}
+    \setcounter{page}{1}
+    % \cleardoubleoddpage
+%%% main Content %%%
+    \include{sections/1_motivation}
+
+    \include{sections/2_fundamentals}
+
+    \include{sections/3_stateOfTheArt}
+
+    \include{sections/4_concept}
+
+    \include{sections/5_mathmetamodel}
+
+    \include{sections/6_digitalShadow}
+
+    \include{sections/7_evaluation}
+
+    \include{sections/8_futureWork}
+
+
+%%% Bibliography %%%
+    \sloppy
+    \printbibliography
+    
+%%% Appendix %%%
+    \begin{appendices}
+        \crefalias{chapter}{appendix}
+        \include{sections/10_appendix}
+    \end{appendices}
+
+    %%% Declaration of authorship %%%
+        \makedeclarationofauthorship[07.07.2025]
+
+
+\end{document}

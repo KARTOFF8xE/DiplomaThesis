@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+    \newcommand{\enull}{Adjacent Entity}
+    \newcommand{\constraint}{Accumulate Attribute Values}
+    \newcommand{\Member}{Node}
+
+    \umlclass[type=Block, fill = white]{\enull}{attribute $\in \mathbb{R}$\phantom{foo}}{}
+    \umlclass[type=Constraints, fill = white, right = 1.5cm of \enull]{\constraint}{attribute\_total$= \sum\limits_{0}^n$ attribute}{}
+    \umlclass[type=Block, fill = white, right = 1.5cm of \constraint]{\Member}{attribute\_total}{}
+
+    \node [rectangle, draw = black, fill = white] (port1) at (\enull.-13) {\phantom{a}};
+    \node [xshift=5] at (port1.north east) {n};
+    \path let \p1 = (port1),
+            \p2 = (\constraint.west) in
+            node (port2) [rectangle, draw = black, fill = white] at (\x2,\y1) {\phantom{a}};
+    \path let \p1 = (port1),
+            \p2 = (\constraint.east) in
+            node (port3) [rectangle, draw = black, fill = white] at (\x2,\y1) {\phantom{a}};
+    \path let \p1 = (port1),
+            \p2 = (\Member.west) in
+            node (port4) [rectangle, draw = black, fill = white] at (\x2,\y1) {\phantom{a}};
+
+    \draw [->] (port1) -- (port2);
+    \draw [->] (port3) -- (port4);
+\end{tikzpicture}

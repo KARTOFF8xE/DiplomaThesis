@@ -1,0 +1,20 @@
+\begin{tikzpicture}[>={Triangle[angle=60:4]},help help lines/.style={lightgray!50,very thin}, help lines/.style={gray!50,thin}]
+    
+    \tikzset{
+        block/.style={
+            rectangle,
+            rounded corners = 5,
+            draw = black,
+            inner sep = 3,
+        },
+    }
+
+    \node [block] (pm) {Physical System};
+    \node [block, below = of pm] (vm) {Digital Object};
+
+    \path (vm.north) ++(-.5,0) coordinate (tmp);
+    \draw [->] (pm.south) ++(-.5, 0) -- (tmp);
+    \path (vm.north) ++(.5,0) coordinate (tmp);
+    \draw [<-, dashed] (pm.south) ++(.5, 0) -- (tmp);
+
+\end{tikzpicture}

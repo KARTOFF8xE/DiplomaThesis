@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \begin{axis}[ram]
+    \addplot [
+        matrix plot*,
+        mesh/rows=11,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=num_pairs,
+        meta expr=\thisrow{stream/proportionalResident_median}/1024/1024,
+    ] {measurements/ram_usage_trace.csv};
+    \end{axis}
+\end{tikzpicture}

@@ -1,0 +1,165 @@
+\chapter{Modelling ROS2 using \acl{mbse} and \acs{sysml}} \label{chap:ros2systemModel}
+
+For the creation of a Shadow Instance, an associated model is needed that serves as a blueprint for the Shadow Caster \cite{DSConceptualModelElsevier}\cite{DSConceptualModelSpringer}. Since one requirement is adaptability to a broad range of ROS2 systems, this model will be represented by a mathematical meta-model that considers the fundamental concepts of ROS2 systems.
+This chapter serves as the basis for the meta-model, presenting and modelling various aspects of ROS2 systems, including certain concepts and their connections to the operating system.
+
+The concept of Nodes is analysed in detail in \Cref{sec:model:node} before delving into the communication within ROS2 systems in \Cref{sec:model:communication}. The subsequent \Cref{sec:model:containers} describes ROS2 Containers --~a concept in which Nodes are grouped to enable more efficient communication and optimise resource utilisation.
+Besides the ROS2 communication and thus the structure of a ROS2 network, Timers (described in \Cref{sec:model:timers}), Executors (\Cref{sec:model:executors}) and the operating system are to be considered to create an authentic Shadow Instance. To address the operating system, the significance of considering processes and their structure is described in \Cref{sec:model:processes}.\newline
+\Cref{fig:tikz:BDD:Components} depicts the structure and relationships between several of these elements that will be described throughout this chapter, additionally providing references to the respective sections.
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/sysmlModel/BDD_ROS2Systems.tex}
+    \caption[Elements of ROS2 and their Respective Relations]{BDD: Elements of ROS2 and their Respective Relations} \label{fig:tikz:BDD:Components}
+\end{figure}
+
+\section{The Concept of Nodes in ROS2} \label{sec:model:node}
+    ROS2 employs a component-based structure where Nodes serve as autonomous execution units. They are provided by the user and execute specific tasks, such as reading sensor data, motion planning, or actuation control \cite[p.~3f]{ROS2usesInTheWild}. Their communication is presented in \Cref{sec:model:communication}.
+
+    \Cref{fig:tikz:BDD:Node} illustrates the concept of a Node and its relations to further concepts the Node manages, it also contains exemplary attributes. A Node may manage Publishers, Subscribers, Servers, Clients, and Timers, their concepts are described in the following sections. Each of them only exists in connection to a Node and cannot exist without a Node.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/sysmlModel/BDD_Node.tex}
+        \caption[The ROS2 Node and Adjacent Elements of ROS2]{BDD: ROS2 Node and Adjacent Elements of ROS2} \label{fig:tikz:BDD:Node}
+    \end{figure}
+
+    Each Node in ROS2 has a \emph{name} and is associated with a specific namespace. Both the name and the namespace remain constant during runtime. Although the ROS2 documentation necessitates a unique fully qualified name for each Node \cite{website:fullyQualifiedName}, this constraint is not enforced. However, for the approach of this thesis, the author assumes that the fully qualified name of a Node identifies it.\newline
+
+    \emph{Namespaces} provide a hierarchical structure for organising Nodes into groups. Each namespace follows a distinct naming structure and can contain multiple sub-namespaces. As illustrated in \Cref{fig:tikz:PKG:Namespaces}, each sub-namespace is nested within exactly one parent namespace. The hierarchy is rooted in a global namespace, which itself is not subordinate to any other namespace. While every Node and Topic is associated with exactly one namespace, a single namespace may include multiple Nodes and Topics. Topics will be described within the subsequent \Cref{subsec:model:topics}.\newline
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/sysmlModel/PKG_Namespaces.tex}
+        \caption[Namespace Hierarchy in ROS2 Systems]{PKG: Namespace Hierarchy in ROS2 Systems} \label{fig:tikz:PKG:Namespaces}
+    \end{figure}
+
+    Despite the flexibility of classic Nodes, their utilisation is not recommended due to their disadvantages in, e.g., CPU utilisation, latency, and unmanaged states \cite[p.~6]{ROS2usesInTheWild}. Instead, recommended architectural patterns are the concepts of Node Composition and Managed Nodes, which can also be employed in combination. \emph{Node Composition} will be described in \Cref{sec:model:containers}. The concept of \emph{Managed Nodes} provides an architectural pattern for managing the Node's lifecycle. It is a managed execution model with the well-defined states
+    \begin{enumerate*}[label=\Alph*)]
+        \item \glqq{}active\grqq{},
+        \item \glqq{}inactive\grqq{},
+        \item \glqq{}unconfigured\grqq{}, and
+        \item \glqq{}finalised\grqq{}.
+    \end{enumerate*}
+    This structured lifecycle enables finer control over the Node \cite[p.~4]{ROS2usesInTheWild}\cite{website:lifecycleNode}. As a classic Node only exists within the states 
+    \begin{enumerate*}[label=\Alph*)]
+        \item \glqq{}active\grqq{} and
+        \item \glqq{}inactive\grqq{}
+    \end{enumerate*}, its states constitute a real subset of those offered by Managed Nodes.
+
+    Publishers, Subscribers, Servers, and Clients refer to the communication of Nodes and will be described in the subsequent section.
+
+\section{Communication Mechanisms of ROS2} \label{sec:model:communication}
+    ROS2 provides three methodologies of communication, namely
+    \begin{enumerate*}[label=\Alph*)]
+        \item Topics,
+        \item Services, and
+        \item Actions
+    \end{enumerate*} \cite[p.~3]{ROS2usesInTheWild}. Their concepts will be presented and modelled within this section.
+
+
+    \subsection{The Concept of Topics in ROS2} \label{subsec:model:topics}
+        \emph{Topics} represent the predominant communication mechanism within ROS2 systems, exhibiting an asynchronous communication pattern. They are based on a Publisher-Subscriber methodology, acting as intermediaries between Nodes and establishing many-to-many communication. As illustrated in \Cref{fig:tikz:SQ:Topic}, a Node employs a specific \emph{Publisher} to transmit messages of a defined \emph{type} onto a designated Topic. Various properties, such as the \emph{publishing rate} or the \emph{bandwidth} utilised, may be of particular interest. Any Node subscribed to the Topic, utilising a corresponding \emph{Subscriber}, fetches the message and executes an assigned callback function, whose runtime is referred to as the \emph{callback duration} \cite[p.~3]{ROS2usesInTheWild}. It is important to mention that a Topic may distribute messages of multiple types and a Subscriber only fetches the messages that match its type.\newline
+        This communication method is particularly beneficial due to the system's high modularity, as it enables developers to add or remove Nodes without requiring modifications to other Nodes \cite[p.~3]{ROS2usesInTheWild}.
+        \begin{figure}[h]
+            \centering
+            \input{figures/tikz/sysmlModel/SQ_topic.tex}
+            \caption[Communication via Topics in ROS2]{SQ: ROS2 Communication via Topics} \label{fig:tikz:SQ:Topic}
+        \end{figure}
+
+        Attributes such as a Publisher's publishing rate are assigned to their origin, reflecting local properties. However, these individual values collectively affect the characteristics of the connected Topic. For instance, the Topic's overall message forwarding rate can be understood as the sum of the rates of all associated Publishers. This influence is depicted in \Cref{fig:tikz:PAR:Frequency}.
+        \begin{figure}[h]
+            \centering
+            \input{figures/tikz/sysmlModel/PAR_edgeaccumulation_Topic.tex}
+            \caption[Calculating a Topic's Forwarding Rate]{PAR: Accumulate Publisher related Attributes to Topics} \label{fig:tikz:PAR:Frequency}
+        \end{figure}
+
+    
+    \subsection{The Concept of Services in ROS2} \label{subsec:model:services}
+        \emph{Services} represent a synchronous, one-to-one communication between Nodes as visualised in \Cref{fig:tikz:SQ:SrvCli}. This concept adheres to a uniform, non-blocking request-response paradigm, wherein a Client sends a request to a Server that processes the requested task and returns a corresponding response upon completion \cite[p.~4]{ROS2usesInTheWild}. This induces that each request the Client sends is responded to by the Server. Storing the number of \emph{sent requests} and \emph{received responses} enables the validation of the specific Server-Client communication. It is important to mention that it is up to the user whether the Client waits for the response to return or triggers a callback that is executed upon the return of the response. However, as both may trigger callbacks, they also hold a \emph{callback duration} analogous to Subscribers.\newline
+        Services are uniquely identified by their \emph{name}. Even though it is not enforced, an ambiguous name leads to undefined behaviour in terms of which Service Server executes the request \cite{website:services}. Therefore, this thesis assumes an unambiguous name.
+        \begin{figure}[h]
+            \centering
+            \input{figures/tikz/sysmlModel/SQ_srvcli.tex}
+            \caption[Communication via Services in ROS2]{SQ: ROS2 Server-Client Communication} \label{fig:tikz:SQ:SrvCli}
+        \end{figure}
+
+        \begin{landscape}
+            \begin{figure}[h]
+                \hspace*{-.6cm}
+                \vspace*{.6cm}
+                \input{figures/tikz/sysmlModel/SQ_Actions.tex}
+                \caption[Communication via Actions in ROS2]{SQ: ROS2 Communication via Actions based on \cite{website:actions}} \label{fig:tikz:SQ:Action}
+            \end{figure}
+        \end{landscape}
+
+    \subsection{The Concept of Actions in ROS2} \label{subsec:model:actions}
+        \emph{Actions} represent a more unique way of communication and are the optimal method in scenarios where tasks are requested and necessitate continuous feedback.
+        They are predicated on the concepts of Topics and Services described previously. More specifically, each Action consists of the Services 
+        \begin{enumerate*}[label=\Alph*)]
+            \item \glqq{}send\_goal\grqq{},
+            \item \glqq{}cancel\_goal\grqq{}, and
+            \item \glqq{}get\_result\grqq{},
+        \end{enumerate*}
+        and the Topics
+        \begin{enumerate*}[label=\Alph*)]
+            \item \glqq{}feedback\grqq{} and
+            \item \glqq{}status\grqq{}
+        \end{enumerate*}.
+        The standard procedure of an Action is illustrated in \Cref{fig:tikz:SQ:Action}. To concentrate on the essentials of communication, only a subset of Services and Topics is represented. Whereas the Services \glqq{}send\_goal\grqq{} and \glqq{}get\_result\grqq{} are coloured brown and green, respectively. The feedback loop is coloured blue.\newline
+        The Action Client of a Node sends a requested goal to the \glqq{}send\_goal\grqq{}-Server of the Node that contains the corresponding Action Server. Upon acception, the Action Server triggers the user-defined logic and responds to the Client with an acception, prompting the Action Client to request the \glqq{}get\_result\grqq{}-Server. Concurrently, the user-defined logic starts publishing continuous feedback on the designated feedback Topic that is subscribed to by the Node containing the Action Client. Upon completion of the goal, the Action Server responds via its \glqq{}get\_result\grqq{}-Service. \cite{website:actions}\newline
+        Throughout this process, the Action Server maintains a state machine that tracks the state for each request from each Action Client \cite{website:actions}. State changes are published onto the status Topic. A more detailed description of Actions is available at \Textcite{website:actions}.
+
+    For clarity, in this thesis, \glqq{}Servers\grqq{} and \glqq{}Clients\grqq{} refer to the concept of Services, whereas \glqq{}Action Servers\grqq{} and \glqq{}Action Clients\grqq{} refer to the concept of Actions.
+
+The present section provided a comprehensive overview of the various forms of communication that are employed by ROS2. The subsequent section elaborates on the concept of Containers.
+\vspace{-.25cm}
+\section{The Concept of Containers in ROS2} \label{sec:model:containers}
+\vspace{-.25cm}
+    As mentioned in \Cref{sec:model:node}, the concept of \emph{Node Composition} reflects another recommended architectural pattern. It enables grouping several Nodes into a single Container for execution within a single process of the operating system. This approach facilitates intra-process communication, significantly reducing latency and CPU utilisation \cite[p.~6f]{ROS2usesInTheWild}.
+    The concept of grouping Nodes into Containers serves as another basis for subsequent aggregations and is illustrated in \Cref{fig:tikz:PKG:Containers}.
+\enlargethispage{2\baselineskip}
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/sysmlModel/PKG_Containers.tex}
+        \caption[Grouping Nodes by Containers]{PKG: Grouping Nodes by Containers} \label{fig:tikz:PKG:Containers}
+    \end{figure}
+
+
+\section{The Concept of Timers in ROS2} \label{sec:model:timers}
+    In ROS2, callbacks are not exclusively triggered upon the arrival of messages. A further possibility to trigger callbacks is through Timers. These \emph{Timers} specifically initiate a designated callback execution at a specified frequency \cite[p.~213]{multiExecutor}\cite{website:Jazzy:ros2Executors}. Therefore, Timers also hold a \emph{callback duration} analogous to Subscribers.
+
+\section{The Concept of Executors in ROS2} \label{sec:model:executors}
+    In ROS2, \emph{Executors} are responsible for managing the execution of callbacks, \glqq{}the smallest schedulable entity in ROS2\grqq{} \cite[p.~2]{ROS2executors}, and can therefore be referred to as high-level schedulers \cite[p.~6512]{ros2_tracing}.
+    Given the existence of different types of callbacks --~namely
+    \begin{enumerate*}[label=\Alph*)]
+        \item Timer-,
+        \item Subscriber-,
+        \item Service Server-, and
+        \item Service Client callbacks
+    \end{enumerate*}~-- with differing priorities, the sequence of execution is determined by the priorities assigned to each callback type, with the highest priority assigned to A) descending to the lowest priority assigned to D) \cite{website:Jazzy:ros2Executors}\cite[p.~3]{ROS2executors}. \newline
+    \emph{Wait sets} function to inform an Executor of the availability of events and messages queued. When the processing time of each callback exceeds the period of incoming events and messages, the queue is populated, and the respective Executor prioritises callbacks according to their priority. Executors may be under such a high workload that processing a callback can be delayed \cite[p.~7ff]{ros2_tracing:msgFlowAnalysis}, which motivates the observation of their utilisation.
+    However, if the processing time does not exceed the period of incoming events and messages, callbacks are executed in a FIFO (first-in-first-out) manner. \cite{website:Jazzy:ros2Executors}\cite{ROS2executors}\newline
+    To counteract the population of the queue and thus enable a more prompt execution of callbacks, multithreaded Executors enable the concurrent execution of callbacks within a predetermined number of threads. They further enable the grouping of callbacks into callback groups to prevent hazardous behaviour that might occur through parallel execution. To prevent such hazardous behaviour, \emph{Mutually Exclusive Callback Groups} disable parallel execution and execute callbacks one after the other. Conversely, \emph{Reentrant Callback Groups} enable the parallel execution of callbacks, which is only limited to a specific number of threads. Nevertheless, multithreaded Executors cannot completely exclude the risk of populating the queue. \cite{website:Jazzy:ros2Executors}
+
+    Since each Node is assigned to a specific Executor, but every Executor can schedule callbacks of multiple Nodes, Nodes can be grouped by those Executors. This perspective is especially beneficial, since queues might be populated and therefore cause a certain delay in execution. \Cref{fig:tikz:PKG:Executors} illustrates this grouping, which forms another basis for aggregating a ROS2 system in the subsequent.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/sysmlModel/PKG_Executors.tex}
+        \caption[Executors within ROS2]{PKG: ROS2 grouping by Executors} \label{fig:tikz:PKG:Executors}
+    \end{figure}
+
+\enlargethispage{2\baselineskip}
+    While the previous sections have focused on internal mechanisms and concepts of ROS2, a comprehensive system understanding also requires consideration of the underlying operating system processes. The following section therefore extends the perspective onto the underlying operating system.
+
+\section{Considering Operating System Processes within ROS2 Systems} \label{sec:model:processes}
+    Given the objective of this thesis to model ROS2 systems rather than ROS2 itself, the model also incorporates aspects of the underlying operating system. Each Node runs inside a \emph{process} that may execute multiple Nodes.
+    These Nodes and thus processes may be started either directly or via \emph{launch files}. The latter facilitates the coordinated launch of multiple ROS2 Nodes \cite{website:launch}. For the approach of this thesis, the author assumes that related Nodes are launched by an encompassing launch file. This assumption enables a meaningful grouping of Nodes within a ROS2 system. \newline
+    In order to elaborate further on the system-level execution context, it is essential to consider the instantiation and management of processes.
+    Each process, with the exception of the operating system's first process, is initiated by an entity that runs within another process, forming a hierarchical process structure as illustrated in \Cref{fig:tikz:PKG:Processes}. Nodes inherently represent such entities.
+    In order to maintain focus on the ROS2 system, multiple subtrees are later extracted from the resulting tree, which depicts the complete process structure of the operating system. These subtrees relate to the structure that is initiated by the launch files, ensuring that the analysis remains centred on the ROS2 software stack.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/sysmlModel/PKG_Process.tex}
+        \caption[Process Hierarchy in ROS2 Systems]{PKG: Process Hierarchy in ROS2 Systems} \label{fig:tikz:PKG:Processes}
+    \end{figure}
+
+\enlargethispage{2\baselineskip}
+In summary, this chapter applied \acl{mbse} to model key aspects of ROS2 systems, with a particular focus on Nodes, their communication mechanisms and related concepts. In addition, the underlying operating system was considered, as it provides the execution environment for the ROS2 software stack. The following chapter builds upon this ROS2 model to derive a mathematical meta-model. This meta-model abstracts core concepts, aggregates system areas, and defines computational rules to support \acl{fdd} by facilitating the analysis of a ROS2 system in question.

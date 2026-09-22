@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+    \activeCausalMember{actCli}{(-4,0)}{action-cli}
+    \activeCausalMember{actSrv}{( 4,0)}{action-srv}
+    \CommunicationTimer{actCli}{160}
+    \CommunicationTimer{actCli}{200}
+
+    \passiveCausalMember{feedback}{(-2.5, 2.75)}{feedback}
+    \passiveCausalMember{status}  {( 2.5, 2.75)}{status}
+    \passiveCausalMember{rosout}  {( 2.5,-2.75)}{rosout}
+    \passiveCausalMember{paramEv} {(-2.5,-2.75)}{paramEv}
+
+    \curvedEdgeWithProperties{actCli}{actSrv}{\textit{send\_goal} (req)}{33}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{actCli}{\textit{send\_goal} (resp)}{-20}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{actSrv}{\textit{get\_result} (req)}{7}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{actCli}{\textit{get\_result} (resp)}{7}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{actSrv}{\textit{cancel\_goal} (req)}{-20}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{actCli}{\textit{cancel\_goal} (resp)}{33}{G0, thick}
+
+    \curvedEdgeWithProperties{actSrv}  {status}{}{-15}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}  {feedback}{}{-20}{G0, thick}
+    \curvedEdgeWithProperties{status}  {actCli}{}{-20}{G0, thick}
+    \curvedEdgeWithProperties{feedback}{actCli}{}{-15}{G0, thick}
+
+    \curvedEdgeWithProperties{actSrv}{rosout}{}{15}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{paramEv}{}{15}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{rosout}{}{-15}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{paramEv}{}{-15}{G0, thick}
+
+    \curvedEdgeWithProperties{rosout}{actSrv}{}{-35}{G0, thick}
+    \curvedEdgeWithProperties{paramEv}{actSrv}{}{-24}{G0, thick}
+    \curvedEdgeWithProperties{rosout}{actCli}{}{24}{G0, thick}
+    \curvedEdgeWithProperties{paramEv}{actCli}{}{35}{G0, thick}
+\end{tikzpicture}

@@ -1,0 +1,96 @@
+\documentclass[a2paper,landscape]{article}
+\usepackage[left=0cm, right=1.5cm, top=0cm, bottom=0cm]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{caption}
+\pagestyle{empty}
+\usetikzlibrary{positioning, calc}
+
+\newcommand{\circledSectioningDiamond}{
+  \tikz[baseline=-0.6ex]{
+    \draw[thick] (0,.17) circle(0.075);
+    \draw[thick] (0,-.17) circle(0.075);
+    \draw[thick] (.12,0) circle(0.075);
+    \draw[thick] (-.12,0) circle(0.075);
+  }
+}
+
+
+\definecolor{tubaf-energy}{RGB}{182,28,62}
+\definecolor{tubaf-energy}{HTML}{b61b3d}
+\definecolor{tubaf-energy}{cmyk}{0.3,1.0,0.7,0.0}
+
+\definecolor{tubaf-environment}{RGB}{14,136,44}
+\definecolor{tubaf-environment}{HTML}{0d882b}
+\definecolor{tubaf-environment}{cmyk}{0.8,0.0,1.0,0.25}
+
+\definecolor{tubaf-accent-3}{RGB}{148,193,28}
+\definecolor{tubaf-accent-3}{HTML}{94c01b}
+\definecolor{tubaf-accent-3}{cmyk}{0.5,0.0,1.0,0.0}
+
+\definecolor{tubaf-accent-13}{RGB}{225,132,4}
+\definecolor{tubaf-accent-13}{HTML}{e08303}
+\definecolor{tubaf-accent-13}{cmyk}{0.1,0.55,1.0,0.0}
+
+
+\begin{document}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[remember picture,overlay]
+        \node[anchor=south west, xshift=43cm, yshift=2cm] at (current page.south west) {
+            \begin{minipage}{6cm}
+                \begin{tabular}{ll}
+                    \textbf{Nodes} \\
+                    /emergency\_stop    &   /lynx/system\_monitor       \\
+                    /fixposition\_driver\_ros2  &   /twist\_mux \\
+                    /foxglove\_bridge   &   /velocity\_smoother \\
+                    /foxglove\_bridge\_component\_manager   &   /wrapper/fixposition\_wrapper\_node \\
+                    /joy\_teleop/joy\_node  &   /wrapper/livox\_front\_wrapper\_node \\
+                    /joy\_teleop/teleop\_twist\_joy\_node   &   /wrapper/sick\_front\_wrapper\_node \\
+                    /launch\_ros\_1 &   /wrapper/sick\_rear\_wrapper\_node \\
+                    /launch\_ros\_143238    &   /zed2i\_front/transform\_listener\_impl\_... \\
+                    /launch\_ros\_82636 &   /zed2i\_front/zed2i\_front\_state\_publisher \\
+                    /lifecycle\_manager\_rosee  &   /zed2i\_front/zed\_container \\
+                    /lynx/battery\_driver   &   /zed2i\_front/zed\_node\_front \\
+                    /lynx/controller\_manager   &   /zed2i\_left/transform\_listener\_impl\_... \\
+                    /lynx/drive\_controller &   /zed2i\_left/zed2i\_left\_state\_publisher \\
+                    /lynx/hardware\_controller  &   /zed2i\_left/zed\_container \\
+                    /lynx/imu\_broadcaster  &   /zed2i\_left/zed\_node\_left \\
+                    /lynx/joint\_state\_broadcaster &   /zed2i\_rear/transform\_listener\_impl\_... \\
+                    /lynx/joy2twist\_node   &   /zed2i\_rear/zed2i\_rear\_state\_publisher \\
+                    /lynx/joy\_node &   /zed2i\_rear/zed\_container \\
+                    /lynx/lights\_container &   /zed2i\_rear/zed\_node\_rear \\
+                    /lynx/lights\_controller    &   /zed2i\_right/transform\_listener\_impl\_... \\
+                    /lynx/lights\_driver    &   /zed2i\_right/zed2i\_right\_state\_publisher \\
+                    /lynx/lights\_manager   &   /zed2i\_right/zed\_container \\
+                    /lynx/robot\_state\_publisher   &   /zed2i\_right/zed\_node\_right \\
+                    /lynx/safety\_manager   &   
+                \end{tabular}
+            \end{minipage}
+        };
+        
+        \node (pub)     [anchor=south west, xshift=38.5cm, yshift=4.95cm] at (current page.south west) {Publishing Edge};
+        \node (sub)     [below = .4cm of pub.west, anchor=north west]   {Subscribing Edge};
+        \node (send)    [below = .4cm of sub.west, anchor=north west]   {Sending Edge};
+        \node (tim)     [below = .4cm of send.west, anchor=north west]  {Self-Sending Edge/Timer};
+        \node (org)     [below = .4cm of tim.west, anchor=north west]   {Organising Edge};
+
+        \draw [very thick, tubaf-accent-3]      (pub.west) ++(-.5,0) -- ++ (-2,0);
+        \draw [very thick, tubaf-environment]   (sub.west) ++(-.5,0) -- ++ (-2,0);
+        \draw [very thick, tubaf-energy]        (send.west) ++(-.5,0) -- ++ (-2,0);
+        \draw [very thick, tubaf-accent-13]     (tim.west) ++(-.5,0) -- ++ (-2,0);
+        \draw [very thick, lightgray]                (org.west) ++(-.5,0) -- ++ (-2,0) coordinate (bottom);
+
+        \draw [thick] ($ (bottom) + (-.3,-.3) $) rectangle ($ (pub.north east) + (1.5,.1) $);
+
+    \end{tikzpicture}
+    
+    \includegraphics[width=0.9\paperwidth,height=.9\paperheight,keepaspectratio]{graph2.pdf}
+
+    \vspace{1em}
+    Figure D.1.: Real-World Scenario: Generated ROS2 Graph (Stage 3) \circledSectioningDiamond
+    \label{app:bigfig:graphA}
+\end{figure}
+
+\end{document}

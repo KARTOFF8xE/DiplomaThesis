@@ -1,0 +1,12 @@
+node.TypeA {
+  shape: rectangle;
+  color: #FFB6C1;
+  border-color: #8B0000;
+  border-width: 2px;
+}
+
+node.TypeB {
+  shape: ellipse;
+  color: #ADD8E6;
+  border-color: #00008B;
+}

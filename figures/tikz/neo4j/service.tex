@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+    \activeCausalMember{actcli}{(-4,0)}{action-cli}
+    \activeCausalMember{actsrv}{(4,0)}{action-srv}
+    \CommunicationTimer{actcli}{160}
+    \CommunicationTimer{actcli}{200}
+
+    \curvedEdgeWithProperties{actcli}{actsrv}{\textit{send\_goal} (req)}{33}{G0, thick}
+    \curvedEdgeWithProperties{actsrv}{actcli}{\textit{send\_goal} (resp)}{-20}{G0, thick}
+    \curvedEdgeWithProperties{actcli}{actsrv}{\textit{get\_result} (req)}{7}{G0, thick}
+    \curvedEdgeWithProperties{actsrv}{actcli}{\textit{get\_result} (resp)}{7}{G0, thick}
+    \curvedEdgeWithProperties{actcli}{actsrv}{\textit{cancel\_goal} (req)}{-20}{G0, thick}
+    \curvedEdgeWithProperties{actsrv}{actcli}{\textit{cancel\_goal} (resp)}{33}{G0, thick} 
+
+\end{tikzpicture}

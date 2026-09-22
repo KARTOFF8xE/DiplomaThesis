@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+    
+    \node [M, G0] (node1) {\phantom{$m\in M_A$}};
+    \node [M, G0, below = 1cm of node1] (node2) {\phantom{$M_A$}$m$\phantom{$M_A$}};
+
+    \draw [->, E0] (node1) -- node [midway, right] {$e$} (node2);
+
+\end{tikzpicture}

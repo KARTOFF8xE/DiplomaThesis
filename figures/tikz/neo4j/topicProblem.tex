@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+    \activeCausalMember{pub1}{(0,1)}{talker1}
+    \activeCausalMember{pub2}{(0,-1)}{talker2}
+    \passiveCausalMember{topic}{(4,0)}{topic}
+    \activeCausalMember{sub1}{(8,1)}{listener1}
+    \activeCausalMember{sub2}{(8,-1)}{listener2}
+
+    \curvedEdgeWithProperties{pub1}{topic}{}{0}{tubaf-environment}
+    \curvedEdgeWithProperties{pub2}{topic}{}{0}{tubaf-geo}
+    \curvedEdgeWithProperties{topic}{sub1}{}{0}{tubaf-environment}
+    \curvedEdgeWithProperties{topic}{sub2}{}{0}{tubaf-geo}
+\end{tikzpicture}

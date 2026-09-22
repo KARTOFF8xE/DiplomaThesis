@@ -1,0 +1,16 @@
+\begin{tikzpicture}
+    \activeMember{launch}{(-4,0)}{launch file}
+    \activeCausalMember{pub1}{(0,1)}{node1}
+    \activeCausalMember{pub2}{(0,-1)}{node2}
+    \activeCausalMember{topic}{(4,0)}{child}
+
+    \curvedEdgeWithProperties{launch}{pub1}{}{0}{TreeProcess}
+    \curvedEdgeWithProperties{launch}{pub2}{}{0}{TreeProcess}
+    
+    \curvedEdgeWithProperties{pub1}{topic}{}{0}{TreeProcess}
+    \curvedEdgeWithProperties{pub2}{topic}{}{0}{TreeProcess}
+
+    \draw [rounded corners] (-1.2,-2) rectangle (1.2,2) node [above] at (0,2) {Container};
+
+    \node [tubaf-energy] at (2.4,0) {\Huge !};
+\end{tikzpicture}

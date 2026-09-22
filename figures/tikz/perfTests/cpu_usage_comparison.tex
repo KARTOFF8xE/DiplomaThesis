@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+    \begin{axis}[cpu, name=first, colorbar=false, point meta min=0, point meta max=100, title=ROS2 system]
+    \addplot [
+        matrix plot*,
+        mesh/rows=11,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=num_pairs,
+        meta expr=\thisrow{ros2/cpu_median} * 100
+    ] {measurements/cpu_usage_trace.csv};
+    \end{axis}
+    \begin{axis}[cpu, at={(first.south east)}, anchor=south west, ytick=\empty, ylabel=\empty, point meta min=0, point meta max=100, title=Shadow Caster + Instance]
+    \addplot [
+        matrix plot*,
+        mesh/rows=11,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=num_pairs,
+        meta expr=\thisrow{stream/cpu_median} * 100
+    ] {measurements/cpu_usage_trace.csv};
+    \end{axis}
+
+\end{tikzpicture}

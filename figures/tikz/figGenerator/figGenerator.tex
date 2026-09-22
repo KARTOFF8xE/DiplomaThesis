@@ -1,0 +1,99 @@
+\documentclass{standalone}
+
+\usepackage{tubaf-color}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{xifthen}
+\usepackage{xstring}
+\usepackage{calc}
+\usepackage{pgfopts}
+\usepackage{tikz-uml}
+
+\usepackage{upgreek}
+\usepackage{amsmath}
+\usepackage{pgfplots, pgfplotstable}
+\usepackage{filecontents}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{statistics}
+
+\usetikzlibrary{arrows.meta, arrows, automata, calc, positioning, quotes, decorations.pathreplacing,petri, shadings, fadings, decorations.text}
+\usepackage[clock]{ifsym}
+% \usepackage{mathabx}
+\usepackage{amsfonts}
+\usepackage{soul}
+% \usepackage{pgfplotstable}
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+
+\usetikzlibrary{shapes.geometric,arrows.meta,calc,babel,backgrounds}
+\input{../tikzConfig.tex}
+
+\makeatletter
+\pgfplotsset{
+    boxplot/hide outliers/.code={
+        \def\pgfplotsplothandlerboxplot@outlier{}%
+    }
+}
+\makeatother
+
+
+\begin{document}
+
+\begin{tikzpicture}
+    \begin{axis}[
+        name=third,
+        xlabel={Number of Publisher-Subscriber Pairs (n)},
+        ylabel={Relative RAM Utilisation ($\frac{\text{Entity}*100}{\text{ROS2 System}}$) [\%]},
+        legend style={at={(.98,.5)}, anchor= east, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=14cm,
+        height=10cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xmin=10,
+        xmax=40,
+        xtick distance=10,
+        xtick pos=bottom,
+        ytick pos=left,
+        % ytick distance=500,
+        minor x tick num=0,
+        minor y tick num=1,
+        ymin=0,
+        grid=both,
+        tick align=center,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/ram_usage_aggregated_trace.csv}\datatable
+
+    \addplot+[
+        mark=none,
+        mark options={color=tubaf-geo},
+        color=tubaf-geo,
+        solid,
+        very thick
+    ] table [
+        x=num_pairs,
+        y expr=((\thisrow{influxdb/memrss_mean}+\thisrow{neo4j/memrss_mean})/(\thisrow{ros2talker/proportionalResident_mean}+\thisrow{ros2listener/proportionalResident_mean}))*100,
+    ] {\datatable};
+    \addlegendentry{Shadow Instance}
+
+    \addplot+[
+        mark=none,
+        mark options={color=tubaf-material},
+        color=tubaf-material,
+        solid,
+        very thick
+    ] table [
+        x=num_pairs,
+        y expr=((\thisrow{datamgmt/proportionalResident_mean})/(\thisrow{ros2talker/proportionalResident_mean}+\thisrow{ros2listener/proportionalResident_mean}))*100,
+    ] {\datatable};
+    \addlegendentry{Shadow Caster}
+
+    \end{axis}
+
+\end{tikzpicture}
+
+\end{document}

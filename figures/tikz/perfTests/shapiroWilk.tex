@@ -1,0 +1,61 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        title=not monitored,
+        name=first,
+        xlabel={frequency [Hz]},
+        ylabel={number of pub-sub pairs},
+        point meta min=0,
+        point meta max=1,
+        colorbar style={
+            ylabel=p-value,
+            yticklabel style={
+                align=right,
+            },
+            ytick={0,0.05,0.5,1},
+            yticklabels={0,0.05,0.5,1},
+        }
+    ]
+    \addplot [
+        matrix plot*,
+        mesh/rows=10,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=n,
+        meta expr=\thisrow{shapiro_p_value}
+    ] {measurements/normaltest_base.csv};
+    \end{axis}
+        \begin{axis}[
+        title=monitored,
+        at={(first.south east)}, anchor=south west,
+        xlabel={frequency [Hz]},
+        ylabel={number of pub-sub pairs},
+        colormap name=colormap-latencies,
+        colorbar,
+        colorbar sampled,
+        point meta min=0,
+        point meta max=1,
+        ytick=\empty, ylabel=\empty,
+        colorbar style={
+            samples=512,
+            ylabel=p-value,
+            yticklabel style={
+                align=right,
+            },
+            ytick={0,0.05,0.5,1},
+            yticklabels={0,0.05,0.5,1},
+        }
+    ]
+    \addplot [
+        matrix plot*,
+        mesh/rows=10,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=n,
+        meta expr=\thisrow{shapiro_p_value}
+    ] {measurements/normaltest_base.csv};
+    \end{axis}
+\end{tikzpicture}

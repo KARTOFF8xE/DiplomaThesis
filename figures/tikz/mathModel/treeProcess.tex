@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (-6,2.6) -- ++(0,1.8) node[midway,xshift=-3.8em]{subtrees} coordinate (tmp);
+
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (tmp) -- ++(0,1) node[midway,xshift=-4.7em]{virtual to join};
+
+    \node [MP] (root)               at (0,5.25) {virtual root};
+
+    \node [MA] (launchScript)       at (0,4) {launch file};
+
+    \node [MA, G0] (controller1)    at (-4.5,3) {\phantom{controller}};
+    \node [MA, G0] (turtlesim1)     at (-1.9,3) {\phantom{turtlesim}};
+
+    \node [MA, G0] (controller2)    at (1.9,3) {\phantom{controller}};
+    \node [MA, G0] (turtlesim2)     at (4.5,3) {\phantom{turtlesim}};
+
+    \draw [TreeProcess, ->] (root) -- (launchScript);
+
+    \draw [TreeProcess, ->] (launchScript) -| (controller1);
+    \draw [TreeProcess, ->] (launchScript) -| (turtlesim1);
+
+    \draw [TreeProcess, ->] (launchScript) -| (controller2);
+    \draw [TreeProcess, ->] (launchScript) -| (turtlesim2);
+
+\end{tikzpicture}

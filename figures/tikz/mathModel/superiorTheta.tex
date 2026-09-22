@@ -1,0 +1,104 @@
+    \begin{tikzpicture}
+
+        \draw [fill = tubaf-environment, opacity=.1] (0,  0) rectangle ++(12,.5);
+        \draw [fill = tubaf-environment, opacity=.1] (0, .5) rectangle ++(12,.5);
+        \draw [fill = tubaf-environment, opacity=.1] (0,  1) rectangle ++(12,.5);
+        \draw [fill = tubaf-environment, opacity=.1] (0,1.5) rectangle ++(12,.5);
+        \draw [fill = tubaf-environment, opacity=.1] (0,  2) rectangle ++(12,.5);
+
+
+        \foreach \y / \label in {
+            0   / {$A_n$},
+            .5  / {$A_{n-1}$},
+            1   / {$\cdots$},
+            1.5 / {$A_1$},
+            2   / {$A_0$}
+            } {
+            \node [above left = -.03cm and 0cm] at (0,\y) {\label};
+        };
+
+        \foreach \y / \label / \opacity in {
+            0   / 0                 /  0,
+            .5  / 0                 /  0,
+            1   / {$\cdots$}        / .25,
+            1.5 / 13                / .5,
+            2   / 10                / .5,
+            2.5 / {$\theta(m,t)$}   / 0
+            } {
+            \draw [fill=tubaf-primary, opacity=\opacity] (0,\y) rectangle ++(2,.5);
+            \draw (0,\y) -- node [midway, above = -.01cm] {\label} node [at end, above right] {+} ++(2,0) coordinate (top);
+        };
+        \draw (0,0) |- (top);
+        \draw (0,0) -| (top);
+
+
+        \foreach \y / \label / \opacity in {
+            0   / 20                / .5,
+            .5  / 0.3               / .5,
+            1   / {$\cdots$}        /.25,
+            1.5 / 0                 /  0,
+            2   / 0                 /  0,
+            2.5 / {$\theta(e_1,t)$} / 0
+            } {
+            \draw [fill=tubaf-environment, opacity=\opacity] (2.5,\y) rectangle ++(2,.5);
+            \draw (2.5,\y) -- node [midway, above = -.01cm] {\label} node [at end, above right] {+} ++(2,0) coordinate (top);
+        };
+        \draw (2.5,0) |- (top);
+        \draw (2.5,0) -| (top);
+
+
+        \foreach \y / \label / \opacity in {
+            0   / 10                / .5,
+            .5  / 0.05              / .5,
+            1   / {$\cdots$}        /.25,
+            1.5 / 0                 /  0,
+            2   / 0                 /  0,
+            2.5 / {$\theta(e_2,t)$} / 0
+            } {
+            \draw [fill=tubaf-environment, opacity=\opacity] (5,\y) rectangle ++(2,.5);
+            \draw (5,\y) -- node [midway, above = -.01cm] {\label} node [at end, above right] {+} ++(2,0) coordinate (top);
+        };
+        \draw (5,0) |- (top);
+        \draw (5,0) -| (top);
+
+
+        \foreach \y / \label / \opacity in {
+            0   / 1                 / .5,
+            .5  / 0.3               / .5,
+            1   / {$\cdots$}        /.25,
+            1.5 / 0                 /  0,
+            2   / 0                 /  0,
+            2.5 / {$\theta(e_3,t)$} / 0
+            } {
+            \draw [fill=tubaf-environment, opacity=\opacity] (7.5,\y) rectangle ++(2,.5);
+            \draw (7.5,\y) -- node [midway, above = -.01cm] {\label} node [at end, above right] {+} ++(2,0) coordinate (top);
+        };
+        \draw (7.5,0) |- (top);
+        \draw (7.5,0) -| (top);
+
+
+        \foreach \y / \label / \opacity in {
+            0   / 31                    / .5,
+            .5  / 0.65                  / .5,
+            1   / {$\cdots$}            / .5,
+            1.5 / 13                    / .5,
+            2   / 10                    / .5,
+            2.5 / {$\Theta_{in}(m,t)$}  / 0
+            } {
+            \draw [fill=tubaf-primary, opacity=\opacity] (10,\y) rectangle ++(2,.5);
+            \draw (10,\y) -- node [midway, above = -.01cm] {\label} ++(2,0) coordinate (top);
+        };
+        \draw (10,0) |- (top);
+        \draw (10,0) -| (top);
+
+
+        \draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=2ex}]
+            (0,.25) -- ++(2,0) node[midway,yshift=-2.25em]{$\theta(m,t)$};
+        \node [below right] at (2,-.4) {+};
+        \draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=2ex}]
+            (2.5,.25) -- ++(7,0) node[midway,yshift=-2.75em]{$\sum\limits_{e\in\rho_{in}(m)} (\theta(e,t))$};
+        \node [below right] at (9.5,-.4) {=};
+        \draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=2ex}]
+            (10,.25) -- ++(2,0) node[midway,yshift=-2.25em]{$\Theta_{in}(m,t)$};
+
+    \end{tikzpicture}

@@ -1,0 +1,14 @@
+\begin{tikzpicture}
+    \begin{axis}[net]
+    \addplot [
+        matrix plot*,
+        mesh/rows=11,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=num_pairs,
+        meta expr=\thisrow{neo4j/received_median}/1024,
+    ] {network_usage_trace.csv};
+    \end{axis}
+\end{tikzpicture}

@@ -1,0 +1,10 @@
+\begin{tikzpicture}
+
+    \node [MP, G0] (topic) {\phantom{$m_2$}};
+    \node [MA, G0, left = 2cm of topic] (node1) {\phantom{$m_1$}};
+    \node [MA, G0, right = 2cm of topic] (node2) {\phantom{$m_3$}};
+
+    \draw [->, E0] (node1) -- node [midway, above] {\phantom{$e_1\in E_{\pub}$}} (topic);
+    \draw [->, E0] (topic) -- node [midway, above] {\phantom{$e_2\in E_{\sub}$}} (node2);
+
+\end{tikzpicture}

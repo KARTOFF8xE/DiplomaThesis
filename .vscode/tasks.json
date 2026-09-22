@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build with Nomenclature",
+      "command": "./.devcontainer/build-script.zsh build",
+      "type": "shell",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "focus": true,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": "zsh"
+      },
+      "group": "none"
+    }
+  ]
+}

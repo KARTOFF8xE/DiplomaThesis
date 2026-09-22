@@ -1,0 +1,104 @@
+\begin{tikzpicture}
+    \pgfplotstableread[col sep=comma]{measurements/cpu_usage_rotationLive.csv}\datatable
+    \begin{axis}[
+        name=first,
+        ylabel={CPU Utilisation [\%]},
+        xlabel={Time running [min]},
+        legend style={at={(.02,.575)}, anchor=west, font=\footnotesize},
+        boxplot/draw direction=y,
+        xmajorgrids=true,
+        xticklabel style={font=\small},
+        % xtick={1,2},
+        xtick pos=bottom,
+        % xticklabels={LTTng-Live,Rotation},
+        xmin=0,
+        xmax=12,
+        ymin=0,
+        ymax=8.5,
+        ytick distance=2.5,
+        minor y tick num=1,
+        yticklabel style={font=\small},
+        width=9cm,
+        height=10cm,
+        line width=.5pt,
+        ytick pos=left,
+        tick align=center,
+        grid=both,
+    ]
+
+    \addplot+[ 
+        mark=none,
+        color=tubaf-energy,
+        solid,
+        thick
+    ] table [
+        x expr=\thisrow{t}/60,
+        y expr=\thisrow{structuralLive}*100/6,
+    ] {\datatable};
+    \addplot+[
+        mark=none,
+        color=tubaf-primary,
+        solid,
+        thick
+    ] table [
+        x expr=\thisrow{t}/60,
+        y expr=\thisrow{sessiond}*100/6,
+    ] {\datatable};
+
+    \addlegendimage{color=tubaf-energy, thick}
+    \addlegendentry{LTTng-Live}
+    \addlegendimage{color=tubaf-primary, thick}
+    \addlegendentry{Rotation}
+    \end{axis}
+    \begin{axis}[
+        at={(first.north east)},
+        anchor=north west,
+        ylabel=\empty,
+        boxplot/draw direction=y,
+        xmajorgrids=true,
+        xtick={1,2},
+        xticklabel=\empty,
+        xmajorticks=false,
+        ymin=0,
+        ymax=8.5,
+        yticklabel=\empty,
+        ytick distance=2.5,
+        minor y tick num=1,
+        width=4cm,
+        height=10cm,
+        line width=.5pt,
+        ytick pos=left,
+        tick align=center,
+        grid=both,
+    ]
+
+    \addplot+[
+        name=second,
+        at={(first.north east)},
+        anchor=north west,
+        boxplot,
+        draw=tubaf-energy,
+        thick,
+    ] table[
+        col sep=comma,
+        y expr=\thisrow{structuralLive}*100/6,
+    ] {measurements/cpu_usage_rotationLive.csv} [right, tubaf-black]
+        node at
+        (boxplot box cs:\boxplotvalue{median},1)
+        {\footnotesize\pgfmathprintnumber{\boxplotvalue{median}}};
+
+    \addplot+[
+        boxplot,
+        draw=tubaf-primary,
+        thick,
+    ] table[
+        col sep=comma,
+        y expr=\thisrow{sessiond}*100/6,
+    ] {measurements/cpu_usage_rotationLive.csv} [left, tubaf-black]
+        node at
+        ($(boxplot box cs:\boxplotvalue{median},1) + (-.2,.1)$)
+        % {\footnotesize\pgfmathprintnumber{\boxplotvalue{median}}};
+        {\footnotesize\pgfmathprintnumber[fixed,precision=4]{0.0833}};
+
+    \end{axis}
+\end{tikzpicture}

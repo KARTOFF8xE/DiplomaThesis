@@ -1,0 +1,178 @@
+\begin{tikzpicture}
+    \newcommand{\ramPlotShadowCaster}[2]{
+        \addplot+[
+            mark=\symbolShadowCaster,
+            mark options={color=#2},
+            color=#2,
+            solid,
+            thick
+        ] table [
+            x=frequency,
+            y expr=\thisrow{#1/stream/proportionalResident_median}*1e-6,
+            % y error expr=\thisrow{#1/stream/proportionalResident_std}*1e-6,
+        ] {\datatable};
+    }
+    \newcommand{\ramPlotShadowInstance}[2]{
+        \addplot+[
+            mark=\symbolShadowInstance,
+            mark options={color=#2},
+            color=#2,
+            solid,
+            thick
+        ] table [
+            x=frequency,
+            y expr=\thisrow{#1/db/memrss_median}*1e-6,
+        ] {\datatable};
+    }
+    \newcommand{\ramPlotRos}[2]{
+        \addplot+[
+            mark=\symbolROSSystem,
+            mark options={color=#2},
+            color=#2,
+            solid,
+            thick
+        ] table [
+            x=frequency,
+            y expr=\thisrow{#1/ros2/proportionalResident_median}*1e-6,
+        ] {\datatable};
+    }
+
+    \begin{axis}[
+        name=third,
+        xlabel={Frequency [Hz]},
+        ylabel=\empty,
+        legend style={at={(.99,.09)}, anchor=east, legend columns=5, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=13cm,
+        height=8cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xmin=0,
+        xmax=100,
+        xtick pos=bottom,
+        ytick pos=left,
+        ytick distance=250,
+        minor y tick num=1,
+        ymin=0,
+        % ymax=100,
+        grid=both,
+        tick align=center,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/ram_usage_trace_reformatted.csv}\datatable
+
+        \addlegendimage{color=tubaf-energy, thick, mark=\symbolROSSystem}
+        \addlegendentry{n=0}
+        \addlegendimage{color=tubaf-geo, thick, mark=\symbolROSSystem}
+        \addlegendentry{n=10}
+        \addlegendimage{color=tubaf-primary-dark, thick, mark=\symbolROSSystem}
+        \addlegendentry{n=20}
+        \addlegendimage{color=tubaf-material, thick, mark=\symbolROSSystem}
+        \addlegendentry{n=30}
+        \addlegendimage{color=tubaf-environment, thick, mark=\symbolROSSystem}
+        \addlegendentry{n=40}
+
+        \ramPlotRos{0}{tubaf-energy}
+        \ramPlotRos{10}{tubaf-geo}
+        \ramPlotRos{20}{tubaf-primary-dark}
+        \ramPlotRos{30}{tubaf-material}
+        \ramPlotRos{40}{tubaf-environment}
+    \end{axis}
+    \begin{axis}[
+        name=second,
+        at={($ (third.north west) + (0,2) $)},
+        anchor=south west,
+        xlabel=\empty,
+        ylabel={RAM Utilisation [MB]},
+        legend style={at={(.99,.02)}, anchor=south east, legend columns=5, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=13cm,
+        height=8cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xmin=0,
+        xmax=100,
+        xticklabels=\empty,
+        xtick pos=bottom,
+        ytick pos=left,
+        ytick distance=250,
+        minor y tick num=1,
+        % ytick={0,1,2,3,4,5},
+        ymin=500,
+        % ymax=100,
+        grid=both,
+        tick align=center,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/ram_usage_trace_reformatted.csv}\datatable
+
+        \addlegendimage{color=tubaf-energy, thick, mark=\symbolShadowInstance}
+        \addlegendentry{n=0}
+        \addlegendimage{color=tubaf-geo, thick, mark=\symbolShadowInstance}
+        \addlegendentry{n=10}
+        \addlegendimage{color=tubaf-primary-dark, thick, mark=\symbolShadowInstance}
+        \addlegendentry{n=20}
+        \addlegendimage{color=tubaf-material, thick, mark=\symbolShadowInstance}
+        \addlegendentry{n=30}
+        \addlegendimage{color=tubaf-environment, thick, mark=\symbolShadowInstance}
+        \addlegendentry{n=40}
+
+        \ramPlotShadowInstance{0}{tubaf-energy}
+        \ramPlotShadowInstance{10}{tubaf-geo}
+        \ramPlotShadowInstance{20}{tubaf-primary-dark}
+        \ramPlotShadowInstance{30}{tubaf-material}
+        \ramPlotShadowInstance{40}{tubaf-environment}
+    \end{axis}
+    \begin{axis}[
+        name=first,
+        at={($ (second.north west) + (0,2) $)},
+        anchor=south west,
+        xlabel=\empty,
+        ylabel=\empty,
+        legend style={at={(.99,.02)}, anchor=south east, legend columns=5, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=13cm,
+        height=8cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xmin=0,
+        xmax=100,
+        xticklabels=\empty,
+        xtick pos=bottom,
+        ytick pos=left,
+        ytick={21,23,25},
+        minor y tick num=1,
+        ymin=21,
+        ymax=25,
+        grid=both,
+        tick align=center,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/ram_usage_trace_reformatted.csv}\datatable
+
+        \addlegendimage{color=tubaf-energy, thick, mark=\symbolShadowCaster}
+        \addlegendentry{n=0}
+        \addlegendimage{color=tubaf-geo, thick, mark=\symbolShadowCaster}
+        \addlegendentry{n=10}
+        \addlegendimage{color=tubaf-primary-dark, thick, mark=\symbolShadowCaster}
+        \addlegendentry{n=20}
+        \addlegendimage{color=tubaf-material, thick, mark=\symbolShadowCaster}
+        \addlegendentry{n=30}
+        \addlegendimage{color=tubaf-environment, thick, mark=\symbolShadowCaster}
+        \addlegendentry{n=40}
+
+        \ramPlotShadowCaster{0}{tubaf-energy}
+        \ramPlotShadowCaster{10}{tubaf-geo}
+        \ramPlotShadowCaster{20}{tubaf-primary-dark}
+        \ramPlotShadowCaster{30}{tubaf-material}
+        \ramPlotShadowCaster{40}{tubaf-environment}
+    \end{axis}
+
+
+    \node [below, xshift=5, rotate=90] at (first.east) {Shadow Caster};
+    \node [below, xshift=5, rotate=90] at (second.east) {Shadow Instance};
+    \node [below, xshift=5, rotate=90] at (third.east) {ROS2 System};
+\end{tikzpicture}

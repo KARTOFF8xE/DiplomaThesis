@@ -1,0 +1,47 @@
+\begin{tikzpicture}[scale=.95]
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (-6,-.35) -- ++(0,3.75) node[midway,xshift=-3.8em]{subtrees} coordinate (tmp);
+
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (tmp) -- ++(0,1.2) node[midway,xshift=-5.6em, align=right] {virtual to join\\operating system} coordinate (tmp);
+
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (tmp) -- ++(0,1.3) node[midway,xshift=-4.9em, align=right]{virtual to join\\ROS2 system};
+
+
+    \node [MP] (root)       at (0,5.25) {virtual root\\(ROS2 system)};
+
+    \node [MP] (pc1)        at (-3.1,4) {virtual\\PC\_1};
+    \node [MP] (pc2)        at ( 3.1,4) {virtual\\PC\_2};
+
+    \node [MA] (launchScript1a)  at (-4.7,2.5) {launch\\file 1a};
+    \node [MA] (launchScript1b)  at (-1.5,2.5) {launch\\file 1b};
+    \node [MA] (launchScript2a)  at (1.5,2.5) {launch\\file 2a};
+    \node [MA] (launchScript2b)  at (4.7,2.5) {launch\\file 2b};
+
+    \node [MA, G0] (node1a1)  at (-4.7,1) {\phantom{$m\in M$}};
+    \node [MA, G0] (node1a2)  at (-4.7,0) {\phantom{$m\in M$}};
+    \node [MA, G0] (node1b1)  at (-1.5,1) {\phantom{$m\in M$}};
+    \node [MA, G0] (node2a1)  at (1.5,1) {\phantom{$m\in M$}};
+    \node [MA, G0] (node2a2)  at (1.5,0) {\phantom{$m\in M$}};
+    \node [MA, G0] (node2b1)  at (4.7,1) {\phantom{$m\in M$}};
+    \node [MA, G0] (node2b2)  at (4.7,0) {\phantom{$m\in M$}};
+
+
+
+    \draw [TreeProcess, ->] (root.west) -| (pc1.north);
+    \draw [TreeProcess, ->] (root.east) -| (pc2.north);
+
+    \draw [TreeProcess, ->] (pc1) -| (launchScript1a);
+    \draw [TreeProcess, ->] (pc1) -| (launchScript1b);
+    \draw [TreeProcess, ->] (pc2) -| (launchScript2a);
+    \draw [TreeProcess, ->] (pc2) -| (launchScript2b);
+
+    \draw [TreeProcess, ->] (launchScript1a.west) -- ++(-.25,0) |- (node1a1.west);
+    \draw [TreeProcess, ->] (launchScript1a.west) -- ++(-.25,0) |- (node1a2.west);
+    \draw [TreeProcess, ->] (launchScript1b.west) -- ++(-.25,0) |- (node1b1.west);
+    \draw [TreeProcess, ->] (launchScript2a.west) -- ++(-.25,0) |- (node2a1.west);
+    \draw [TreeProcess, ->] (launchScript2a.west) -- ++(-.25,0) |- (node2a2.west);
+    \draw [TreeProcess, ->] (launchScript2b.west) -- ++(-.25,0) |- (node2b1.west);
+    \draw [TreeProcess, ->] (launchScript2b.west) -- ++(-.25,0) |- (node2b2.west);
+\end{tikzpicture}

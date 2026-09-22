@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+    \begin{axis}[lat]
+    \addplot [
+        matrix plot*,
+        mesh/rows=10,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=n,
+        meta=dev/median
+    ] {measurements/latency_diffs.csv};
+    \end{axis}
+
+\end{tikzpicture}

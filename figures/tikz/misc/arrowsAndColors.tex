@@ -1,0 +1,40 @@
+\documentclass{standalone}
+
+\usepackage{tubaf-color}
+
+\usepackage{tikz}
+\usepackage{ifthen}
+\usepackage{xstring}
+\usepackage{calc}
+\usepackage{pgfopts}
+\usepackage{tikz-uml}
+
+\usepackage[clock]{ifsym}
+\usepackage{mathabx}
+
+
+\usetikzlibrary{shapes.geometric,arrows.meta,calc,babel,backgrounds}
+\input{../tikzConfig.tex}
+
+
+\begin{document}
+    \begin{tikzpicture}
+
+        \node [M] at (0,0) {undefined Member $\circlearrowleft$};
+        \node [MA, G0] at (0,1) {active Member $\rightarrow$};
+        \node [MP] at (0,2) {passive Member};
+
+        \draw [E0, ->] (-2.5,0) -- ++(0,2);
+        \draw [Ei, ->] (-3,0) -- ++(0,2);
+        \draw [TreeNamespace, ->] (-3.25,0) -- ++(0,2);
+        \draw [TreeExecutor, ->] (-3.5,0) -- ++(0,2);
+        \draw [TreeContainer, ->] (-3.75,0) -- ++(0,2);
+        \draw [TreeProcess, ->] (-4,0) -- ++(0,2);
+        
+        \path (0,4) coordinate (tmp);
+        \foreach \x in {1,...,30}{
+            \draw [->, draw=tubaf-accent-\x] (tmp) ++(0,.25) coordinate (tmp) -- node [at start, left] {\tiny tubaf-accent-\x} ++(3,0);
+        };
+
+    \end{tikzpicture}
+\end{document}

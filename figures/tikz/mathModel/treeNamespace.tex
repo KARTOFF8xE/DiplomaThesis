@@ -1,0 +1,31 @@
+\begin{tikzpicture}
+
+    \node [MP] (root)               at (0,5) {/};
+    \node [MP] (turtle1)            at (-4,4) {turtle1/};
+    \node [MA, G0] (controller1)    at (-2,3) {controller};
+    \node [MA, G0] (turtlesim1)     at (-2,2) {turtlesim};
+    \node [MP, G0] (cmdvel1)        at (-6,3) {cmd\_vel};
+    \node [MP, G0] (pose1)          at (-6,2) {pose};
+
+
+    \node [MP] (turtle2)            at (4,4) {turtle2/};
+    \node [MA, G0] (controller2)    at (6,3) {controller};
+    \node [MA, G0] (turtlesim2)     at (6,2) {turtlesim};
+    \node [MP, G0] (cmdvel2)        at (2,3) {cmd\_vel};
+    \node [MP, G0] (pose2)          at (2,2) {pose};
+
+
+    \draw [TreeNamespace, ->] (root) -| (turtle2);
+    \draw [TreeNamespace, ->] (root) -| (turtle1);
+
+    \draw [TreeNamespace, ->] (turtle1) -| (controller1);
+    \draw [TreeNamespace, ->] (turtle1.south) ++(.1,0) |- (turtlesim1);
+    \draw [TreeNamespace, ->] (turtle1) -| (cmdvel1);
+    \draw [TreeNamespace, ->] (turtle1.south) ++(-.1,0) |- (pose1);
+
+    \draw [TreeNamespace, ->] (turtle2) -| (controller2);
+    \draw [TreeNamespace, ->] (turtle2.south) ++(.1,0) |- (turtlesim2);
+    \draw [TreeNamespace, ->] (turtle2) -| (cmdvel2);
+    \draw [TreeNamespace, ->] (turtle2.south) ++(-.1,0) |- (pose2);
+
+\end{tikzpicture}

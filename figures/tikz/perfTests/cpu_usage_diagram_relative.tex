@@ -1,0 +1,56 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        % ymode=logd,
+        xlabel={Frequency [Hz]},
+        ylabel={Relative CPU Utilisation ($\frac{\text{Shadow Implementation}*100}{\text{ROS2 System}}$) [\%]},
+        legend style={at={(.98,.5)}, anchor=east, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=14cm,
+        height=10cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xtick pos=bottom,
+        xmin=10,
+        xmax=100,
+        ytick pos=left,
+        ymin=0.1,
+        ymax=200,
+        ytick distance=50,
+        grid=both,
+        tick align=center,
+        minor y tick num=1,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/cpu_usage_trace_reformatted.csv}\datatable
+
+        \pgfplotstableread[col sep=comma]{measurements/cpu_usage_trace_reformatted.csv}\datatable
+ 
+        \addlegendimage{color=tubaf-geo, thick}
+        \addlegendentry{n=10}
+        \addlegendimage{color=tubaf-primary-dark, thick}
+        \addlegendentry{n=20}
+        \addlegendimage{color=tubaf-material, thick}
+        \addlegendentry{n=30}
+        \addlegendimage{color=tubaf-environment, thick}
+        \addlegendentry{n=40}
+
+
+        \newcommand{\cpuPlotCaster}[2]{
+            \addplot+[
+                mark=none,
+                color=#2,
+                solid,
+                thick
+            ] table [
+                x=frequency,
+                y expr=(\thisrow{#1/stream/cpu_median}/\thisrow{#1/ros2/cpu_median})*100,
+            ] {\datatable};
+        }
+        \cpuPlotCaster{10}{tubaf-geo}
+        \cpuPlotCaster{20}{tubaf-primary-dark}
+        \cpuPlotCaster{30}{tubaf-material}
+        \cpuPlotCaster{40}{tubaf-environment}
+
+    \end{axis}
+\end{tikzpicture}

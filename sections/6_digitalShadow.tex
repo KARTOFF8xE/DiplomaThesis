@@ -1,0 +1,196 @@
+\cleardoublepage
+\addtocontents{lof}{\protect\newpage}
+\chapter{Employing the Mathematical Meta-Model to create a ROS2 System Digital Shadow in Support of \acl{fdd}} \label{chap:dshadow}
+
+Based on the mathematical meta-model, the present chapter introduces a Digital Shadow for ROS2 systems that supports \acl{fdd}. For this purpose, multiple requirements are described within \Cref{sec:dshadow:requirements} before \Cref{sec:dshadow:conceptualmodel} refines the conceptual model for Digital Shadows, outlined by \Textcite{DSConceptualModelSpringer} (\Cref{subsec:DSConceptualModel}), to the objective of this thesis. \Cref{sec:dshadow:logicalmodel} introduces a logical model for the ROS2 Digital Shadow.
+
+
+    \section{Requirements for a Shadow Caster Targeting ROS2 Systems} \label{sec:dshadow:requirements}
+    Prior to the refinement of the conceptual model in the subsequent section, this section presents multiple requirements that the Shadow Caster shall fulfil to meet the objectives of this thesis.
+
+    First and foremost, it is imperative to enable the representation of the mathematical meta-model, since this will enable to capture the structure of the ROS2 system in question, whilst also enabling the integration of ROS2 system specific information.\newline
+    Further requirements are associated with communication. In this context, the Shadow Caster is intended to operate in an event-driven manner in two key aspects. Firstly, the collected data is limited to the necessitated data -- e.g., structural data and data that has been explicitly requested by clients. Secondly, clients should only receive data that they have explicitly requested.\newline
+    These requests are intended to provide insights without requiring expert knowledge about the ROS2 system. In order to meet this objective, standard requests, which reflect the attribute functions defined within the mathematical model, are made available. Given the potentially large number of additional, possibly system specific analyses, the responsibility for custom requests lies with the client. Consequently, the Shadow Caster must provide a mechanism for these custom requests.\newline
+    A further distinction is made regarding the execution frequency of requests. Clients should be enabled to perform both single-time requests and continuous requests, where the latter are executed at a given frequency. To minimise the number of transmitted messages, event-based messages --~such as status changes of Nodes~-- are also to be supported.
+
+    \section{Refining the Conceptual Model for Digital Shadows to ROS2 Systems} \label{sec:dshadow:conceptualmodel}
+    Based on the conceptual model for Digital Shadows described in \Cref{subsec:DSConceptualModel}, this work refines and applies the conceptual model to the context of ROS2 systems.
+
+    This refined conceptual model is illustrated in \Cref{fig:tikz:dshadow:conceptualmodel}.
+    For this thesis, the \emph{Asset} is represented by the ROS2 system. Inheriting from the \emph{Source}, the ROS2 system also serves as the Source the DataTracers originate from. The \emph{DataTracers} form the Digital Shadow by tracing structural information to form the ROS2 Graph and capturing continuous information about the entities within the ROS2 Graph. For clarity, the DataTracers are introduced in \Cref{tab:structuraldatatracers,tab:attributedatatracers} and described in the subsequent. The \emph{Model} is represented by the introduced mathematical meta-model. It serves as a blueprint for the Digital Shadow and is guided by the \emph{Purpose} of supporting \acl{fdd} within ROS2 systems.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/ros2dshadow/conceptualmodel.tex}
+        \caption[Conceptual Model for Digital Shadow Targeting ROS2 Systems]{Conceptual Model for Digital Shadow Targeting ROS2 Systems based on \Textcite{DSConceptualModelSpringer}} \label{fig:tikz:dshadow:conceptualmodel}
+    \end{figure}
+
+    As listed in \Cref{tab:structuraldatatracers}, there are multiple DataTracers to create the structure of a Digital Shadow for a ROS2 system. The DataTracers strictly orient at the mathematical meta-model. Even though it might be confusing that the DataPoints of active and passive Members are this generic, they enable a variety of information to be stored. This is imperative, as it enables the unrestricted creation of Members and thus facilitates the extension of the ROS2 system model. For instance, it enables the construction of multiple, also to the present unknown, Trees within the ROS2 Graph. With exception of the Tree-forming Edges $E_i$, which do not contain attributes, each element is identified by a unique identifier (\emph{UID}), enabling the unambiguous selection and assignment to its continuous information. As the mathematical meta-model does not enable attributes for Tree-forming Edges $E_i$ and they are uniquely identified by their adjacent Members and index $i$, a UID is not required.
+    \begin{table}[h]
+        \centering
+        \caption{DataTracers to Construct Structural ROS2 Graph} \label{tab:structuraldatatracers}
+        \begin{tblr}{llc}
+            \toprule
+                DataTracer          & DataPoint                                     & MetaData  \\
+            \midrule
+                Active Member       & \$\{specificInfo\}                            & UID       \\
+                Passive Member      & \$\{specificInfo\}                            & UID       \\
+                Publisher Init      & activeMember.UID, passiveMember.UID, msgType  & UID       \\
+                Subscriber Init     & passiveMember.UID, activeMember.UID, msgType  & UID       \\
+                Server Init         & activeMember.UID, serverName, msgType         & UID       \\
+                Client Init         & activeMember.UID, serverName, msgType         & UID       \\
+                Timer Init          & activeMember.UID, frequency                   & UID       \\
+                Edges $E_i$ Init    & *member.UID, *member.UID, i                   & ---       \\
+            \bottomrule
+        \end{tblr}
+    \end{table}
+
+
+    All attributes of the mathematical meta-model are provided by a time-dependent component. Consequently, all attribute values are identified as continuous values. Within the conceptual model, the continuous attributes relate to continuous information.
+    In order to accumulate continuous information about the ROS2 system in question, the DataTracers in \Cref{tab:attributedatatracers} describe generic forms of data acquisition capable of capturing a wide range of runtime information. This includes utilisations, service calls, state changes, logs, etc.. Its generic design ensures adaptability and applicability across various requirements and use cases. It also enables the integration of non-ROS2 system information. Each attribute value is assigned to a specific entity via its UID, while the attribute and timestamp describe the content and time of measurement.
+    \begin{table}[h]
+        \centering
+        \caption{DataTracers to Capture Continuous Information} \label{tab:attributedatatracers}
+        \begin{tblr}{llc}
+            \toprule
+                DataTracer        & DataPoint                        & MetaData \\
+            \midrule
+                Attributes Value & value (numerical) & attribute, timestamp, *.UID \\
+                Attributes Value & value (textual)   & attribute, timestamp, *.UID \\
+            \bottomrule
+        \end{tblr}
+    \end{table}
+
+
+    \subsection*{Discussing the Refined Conceptual Model for the Digital Shadow Targeting ROS2 Systems}
+
+    The present section refined the conceptual model for Digital Shadows proposed by \Textcite{DSConceptualModelSpringer}.
+    In contrast to the utilisation of, e.g., structural or behavioural diagrams, as suggested by \Textcite{DSConceptualModelSpringer}, this methodology employs the defined mathematical meta-model. The rationale for this is the objective of the Digital Shadow to represent a broad range of ROS2 systems rather than specific implementations. Moreover, as the mathematical meta-model is abstract, it enables the integration of system specific information that is beyond the concepts of ROS2. For instance, battery level information.\newline
+    The DataTracers of the conceptual model strictly adhere to the mathematical meta-model to ensure consistency. Therefore, they are designed to be generic in order to capture a wide range of runtime information while facilitating the integration of system specific information. The strict separation of structural and continuous values supports efficient storage, as optimal tools can be applied for each type in subsequent stages. Moreover, as will be detailed later, this facilitates a precise and non-redundant evaluation of values through clear queries and structured analysis. This is further supported through the utilisation of unique identifiers, enabling a uniform and unambiguous analysis.\newline
+    The subsequent section builds upon this refined conceptual model to derive a corresponding logical model.
+
+
+    \section{Logical Model to Generate Shadow Instances} \label{sec:dshadow:logicalmodel}
+    Based on the refined conceptual model for a Digital Shadow targeting ROS2 systems, this section introduces a logical model to generate a concrete Shadow Instance. It is based on both the conceptual model and the workflow for creating Shadow Instances (\Cref{subsec:DSWorkFlow}).
+
+    The core components of the logical model are introduced alongside their roles and interactions in \Cref{subsec:dshadow:logical:instance,subsec:dshadow:logical:caster}, and \fboxemph{emphasized} throughout the thesis. Subsequently, multiple examplary processes are described in \Cref{subsec:dshadow:logical:examples}. A detailed explanation on how the logical model meets the Digital Shadows requirements is discussed in \Cref{subsec:dshadow:logical:discussion}.
+
+        \subsection{Representing Shadow Instances} \label{subsec:dshadow:logical:instance}
+        The Shadow Instance relies on three primary databases (\Cref{fig:tikz:dshadow:logicalModelDShadowInstance}) to represent the ROS2 system.
+        A \fboxemph{\emph{graph database}} captures the structural relations within the ROS2 system and thus represents the ROS2 Graph. The primary keys it defines serve as UIDs to distinguish each element.\newline
+        Continuous information is stored within a \fboxemph{\emph{time-series database}} and a \fboxemph{\emph{log database}}, storing numerical and textual information, respectively.
+        \begin{figure}[h]
+            \centering
+            \input{figures/tikz/ros2dshadow/logicalModelDShadowInstance.tex}
+            \caption{Representing the Shadow Instance with three Databases} \label{fig:tikz:dshadow:logicalModelDShadowInstance}
+        \end{figure}
+
+        The communication with databases is illustrated through coloured $\bigodot$ and $\bigotimes$, representing the direction of communication\footnote{For instance: $\bigodot$ \tikz[baseline=-0.5ex, <-, line width=1pt, fill=black, very thick] \draw[fill=black] (0,0) -- (.5,0); $\bigotimes$ or $\bigodot$ \tikz[baseline=-0.5ex, <->, line width=1pt, fill=black] \draw[fill=black] (0,0) -- (.5,0); $\bigodot$.}.
+    
+        The Shadow Instance originates from the DataTracers, is shaped by the mathematical meta-model, and generated by the Shadow Caster.
+
+
+        \subsection{Creating the Shadow Caster} \label{subsec:dshadow:logical:caster}
+        The Shadow Caster generates the Shadow Instance with information originating from the ROS2 system. For the sake of clarity, the components and their relations are illustrated in \Cref{fig:tikz:dshadow:logicalModel}.
+        \begin{figure}[h]
+            \centering
+            \input{figures/tikz/ros2dshadow/logicalModel.tex}
+            \caption{Logical Model of Shadow Caster Targeting ROS2 Systems} \label{fig:tikz:dshadow:logicalModel}
+        \end{figure}
+
+        The following components are responsible for collecting and processing data from various subsources.
+
+\begin{description}
+        \item[Tracer] \hfill \\
+        As first part of the Shadow Caster, the \fboxemph{\emph{Tracer}} acts as a central endpoint for incoming data from multiple subsources. It collects, preprocesses, and forwards data to further Shadow Caster modules. For instance, it forwards Node and Topic information, and information about organisation Edges that serve the aggregation of the ROS2 system, to the \fboxemph{Relation-Management} and all types of information that belong to the ROS2 communication Graph to the \fboxemph{Node-and-Topic-Observer}.
+        Furthermore, it populates the \fboxemph{time-series database} and the \fboxemph{log database} with continuous information. 
+        To this end, it obtains the UID of each entity either from the \fboxemph{Node-and-Topic-Observer} --~when instantiating entities of the ROS2 communication Graph~-- or directly from the \fboxemph{graph database}. This enables the \fboxemph{Tracer} to accurately assign incoming values to their corresponding UID.\newline
+        Additionally, it can be employed to initiate the integration of external information that is not covered by the fundamental ROS2 system. To this end, it directly creates an entity within the ROS2 Graph and thus within the \fboxemph{graph database}. In return, the \fboxemph{Tracer} receives the UID of the entity to populate the \fboxemph{time-series database}.\newline
+        To also consider the message content of a ROS2 system, the \fboxemph{Tracer} is enabled to directly forward ROS2 messages to the \fboxemph{IO-Module} and store them within the \fboxemph{log database}.\newline
+        Even though structural information are mandatory to generate a holistic perspective onto the ROS2 system, continuous information are not always of interest and may be enabled or disabled during runtime, thereby minimising generated overhead to a bare, necessitated minimum. This toggling process is instructed by the \fboxemph{IO-Module}.
+
+        \item[Relation-Management] \hfill \\
+        The \fboxemph{\emph{Relation-Management}} exclusively receives information by the \fboxemph{Tracer}. It is responsible for establishing additional relationships that are beyond the ROS2 communication Graph. Therefore, it queries the \fboxemph{graph database} to construct and manage the Trees introduced in \Cref{subsec:mathModel:trees}. As all organisation Edges within the ROS2 Graph are passed through or initiated by the \fboxemph{Relation-Management}, it sends a trigger to the \fboxemph{Task-Orchestrator}, that updates its aggregations. When process-related information is involved, it also forwards these entities alongside the belonging UIDs to the \fboxemph{Process-Observer} to initiate further monitoring.
+
+        \item[Process-Observer] \hfill \\
+        The \fboxemph{\emph{Process-Observer}} monitors runtime information about all processes associated with the ROS2 system the Shadow Caster is operating on. Therefore, it is a special case that serves both as a data Source for the Asset and as a component of the Shadow Caster, as it also directly contributes data to the \fboxemph{time-series database}. While the monitoring of process related information may be enabled or disabled by the \fboxemph{IO-Module}, the \fboxemph{Process-Observer} always keeps track of the process alive states. Upon detecting terminated processes, it infers the death of associated instances and forwards this information, alongside the belonging UID and timestamp, to the \fboxemph{Node-and-Topic-Observer}.
+
+        \item[Node-and-Topic-Observer] \hfill \\
+        The \fboxemph{\emph{Node-and-Topic-Observer}} fulfills two primary functions. Firstly, managing Nodes, Topics, and their communicational relations within the \fboxemph{graph database} by employing the information received from the \fboxemph{Tracer} and the \fboxemph{Process-Observer}. It returns the UID of instantiated entities to the \fboxemph{Tracer} and populates, e.g., state changes to the \fboxemph{time-series database}.\newline
+        Secondly, it forwards requested events, such as state changes, to the \fboxemph{IO-Module}. The number of requested events may be extended or retracted by the \fboxemph{Task-Orche\-strator}.
+
+        \item[IO-Module] \hfill \\
+        The \fboxemph{\emph{IO-Module}} acts as the interface to a requesting client. It accepts client requests and forwards them to further components of the Shadow Caster --~specifically the \fboxemph{Task-Orchestrator}~-- to fulfill client requests. Vice versa, it forwards the requested information to the respective client.
+        
+        \item[Task-Orchestrator] \hfill \\
+        The \fboxemph{\emph{Task-Orchestrator}} is employed by the \fboxemph{IO-Module} for all client requests and captures what each client requested. For requests that aim at system areas, it queries the \fboxemph{graph database} to extract the requested entities. However, it forwards a single UID or the collected UIDs alongside a requested task to the \fboxemph{Task-Executor}. A special case are event-driven requests that relate to the ROS2 communication Graph (like state changes of Nodes), as such events are managed by the \fboxemph{Node-and-Topic-Observer}. Therefore the \fboxemph{Task-Orchestrator} forwards the collected UIDs to the \fboxemph{Node-and-Topic-Observer}.\newline
+        Additionally, the \fboxemph{Task-Orchestrator} is informed by the \fboxemph{Relation-Management} a\-bout updates within the system topology. On updates, it requeries the \fboxemph{graph database} to update the requested entities and thus notifies the \fboxemph{Task-Executor} and the \fboxemph{Node-and-Topic-Observer}, which adapt their tasks accordingly.
+
+        \item[Task-Executor] \hfill \\
+        The \fboxemph{\emph{Task-Executor}} receives specific tasks and belonging UIDs by the \fboxemph{Task-Orche-strator}. It is enabled to perform four types of tasks, namely
+        \begin{enumerate*} [label=\Alph*)]
+            \item \emph{single-time standard requests},
+            \item \emph{continuous standard requests},
+            \item \emph{single-time custom requests}, and
+            \item \emph{continuous custom requests}
+        \end{enumerate*}. It is important to mention, that A) and B) are implemented tasks that encompass standard requests. For instance, all types of summations that where defined within the mathematical meta-model or information requests about entities within the ROS2 Graph. Conversely, the tasks C) and D) relate to custom tasks that are requested by a client and employ the query language of a database to gain information. Thus they may be utilised to, e.g., analyse an entire time-series or search for the shortest path between two entities. It is important to note that those queries are read-only to prevent the manipulation of the database. Additionally, only non empty database responses are forwarded to the requesting client, who is thus enabled to create a custom, event-driven request that improves system efficiency by minimising data transmission.\newline
+        However, single-time standard- and single-time custom requests are performed a single time and their result is forwarded to the \fboxemph{IO-Module}.\newline
+        Continuous standard- and continuous custom-requests are performed at a specific time interval and their result is forwarded to the \fboxemph{IO-Module}.
+\end{description}
+
+        \subsection*{Integrating Domain Knowledge into the Shadow Caster}
+        The so far developed logical model is enabled to reconstruct a ROS2 system without requiring expert knowledge. However, it does not enable the integration of domain knowledge in form of additonal models. In this context, domain knowledge may refer to information about existing Nodes, Edges, and reference attribute values for various instances. This knowledge is integrated through a configuration mechanism in form of textualised Requirement-Diagrams.
+
+        \Cref{fig:tikz:dshadow:logicalModelextended} illustrates the entire, extended logical model. All modules marked with the configuration symbol \config~can be configured accordingly. Note the new module \fboxemph{\emph{Evaluator}}, that employs the \fboxemph{graph-} and \fboxemph{time-series database} alongside the \fboxemph{configuration} to asses how close the system matches the specified configuration. Initiated by the IO-Module it identifies significant deviations and quantifies their magnitude. Thereby this model supports \acl{fdd} especially in terms of Fault Detection.
+        \begin{figure}[h]
+            \centering
+            \input{figures/tikz/ros2dshadow/logicalModelextended.tex}
+            \caption{Extending the Logical Model to enable the Integration of Domain Knowledge} \label{fig:tikz:dshadow:logicalModelextended}
+        \end{figure}
+
+
+        The present section elaborated the components of the logical model for the Shadow Caster.
+
+        
+        \subsection{Exemplary Interactions with the Shadow Caster} \label{subsec:dshadow:logical:examples}
+        To elaborate and strengthen the illustration of the logical model, this section provides various exemplary scenarios that might occure during runtime.
+
+            \subsubsection{Launching a Node}
+            To properly represent the ROS2 system, the launch of Nodes needs to be processed correctly. Therefore, the first example considers the launch of a Node.\newline
+            Firstly, the \fboxemph{Tracer} receives the data about a new Node that has been launched. This information includes, e.g., the name, namespace, and process of the Node alongside a timestamp. It preprocesses the received data and forwards the gained information to the \fboxemph{Relation-Management} and the \fboxemph{Node-and-Topic-Observer}.
+            
+            The \fboxemph{Relation-Management} processes the namespace and thus identifies the position of the Node within the namespace-driven Tree. Additionally, it analyses the position of the Node within the process-driven Tree employing process information. The gathered information of both Trees is queried to the \fboxemph{graph database} in return for the UIDs. It is imperative to note that the \fboxemph{Relation-Management} only infiltrates quantitative information and only creates non-existing entities.\newline
+            As the gathered information contains process-specific data, it forwards exactly this data alongside the corresponding UIDs to the \fboxemph{Process-Observer}.
+
+            The \fboxemph{Process-Observer} monitors the alive state of the processes and, when requested, also populates process-specific information to the \fboxemph{time-series database}. If a process disappears, it notifies the \fboxemph{Node-and-Topic-Observer}.
+
+            The \fboxemph{Node-and-Topic-Observer} receives the information from the \fboxemph{Tracer} and thus populates the \fboxemph{graph database}. It only adds qualitative information to the \fboxemph{graph database} and also only creates non-existing entities. Additionally, the \fboxemph{Node-and-Topic-Observer} populates the state of the Node to the \fboxemph{time-series data\-base}.\newline
+            As the Node is launched initially, the \fboxemph{Node-and-Topic-Observer} sends its information alongside the UID to the \fboxemph{Tracer}. This enables the \fboxemph{Tracer} to populate the \fboxemph{time-series data\-base} with continuous information about the launched Node.
+
+            Upon receiving a notification regarding a status change of the Node, the \fboxemph{Node-and-Topic-Observer} verifies the relevance of the information and proceeds to update the \fboxemph{graph data\-base} accordingly. In any case, the status change is populated to the \fboxemph{time-series database} with its associated timestamp.
+
+
+            \subsubsection{Requesting Single-Time Information}
+            The second example illustrates the process of requesting single-time attribute values, whereas an area of the ROS2 system is requested.
+            The \fboxemph{IO-Module} forwards the request to the \fboxemph{Task-Orchestrator}, which queries the \fboxemph{graph database} for the requested area. In return, the \fboxemph{Task-Orchestrator} receives the UIDs of the involved entities. Subsequently, it forwards the collected UIDs to the \fboxemph{Task-Executor}, which queries the \fboxemph{time-series} or \fboxemph{log database} to retrieve the requested information. If the attribute values originate from the \fboxemph{time-series database}, the attribute values of the information are totalled and the result is returned to the \fboxemph{IO-Module}, which forwards the totalled attribute value to the requesting client. If the attribute values originate from the \fboxemph{log database}, they are compressed and forwarded to the \fboxemph{IO-Module}.\newline
+            If the request is of a continuous nature, the same behaviour would be observed, with the exception that the \fboxemph{Task-Executor} would query the \fboxemph{time-series database} at regular intervals and forward the result accordingly.
+
+
+            \subsubsection{Integrating an External Data Source}
+            As the Digital Shadow is limited to the information that is provided by the ROS2 system, it provides the option of integrating external information. This is achieved by employing the \fboxemph{Tracer}, which creates a new entity within the \fboxemph{graph database} and thus assigns the source to a specific UID. Subsequently, the \fboxemph{Tracer} populates the \fboxemph{time-series database} with the information provided by the external data source.
+
+
+        \subsection{Discussing the Logical Model for the Shadow Caster} \label{subsec:dshadow:logical:discussion}
+        The present section refined the conceptual model and introduced the logical model for the Digital Shadow targeting ROS2 systems to facilitate \acl{fdd}. It is based on the refined conceptual model and the workflow for creating Shadow Instances \cite{DSConceptualModelSpringer}. Due to the numerous tasks of receiving, organising, and providing the given information, the logical model is modular and thus consists of multiple components, whereas each is dedicated with a specific task. This modularity facilitates the concurrent execution of those tasks and enhances scalability. However, it also increases communication overhead and system complexity, especially due to asynchronous communication. The former can be adressed within the implementation. To target latter one each component is assigned with one specific, unique task. For instance, the information that the \fboxemph{Node-and-Topic-Observer} and the \fboxemph{Relation-Management} populate the \fboxemph{graph database} with, do not intersect. The only intersection is driven by the population of the \fboxemph{time-series database} that is carried out by the \fboxemph{Tracer}, the \fboxemph{Node-and-Topic-Observer}, and the \fboxemph{Process-Observer}, as they are enabled to populate the same time-series. However, as their contributions to the \fboxemph{time-series database} are disjoined and thus differ by their assignment, this risk exists but is unlikely to occure. Outsourcing the \fboxemph{Process-Observer} would solve this drawback, but require another instance, beside the introduced logical model, to take over its essential task. In principle, however, it is possible.
+
+        By employing three types of databases, the logical model is enabled to fully represent the mathematical meta-model. Thereby strictly separating structural and continuous information, exactly as the mathematical meta-model implied. The \fboxemph{graph database} is employed to represent the ROS2 Graph and thus the structural information, while the \fboxemph{time-series database} and the \fboxemph{log database} are utilised to store numerical and textual information, respectively. This separation is crucial to ensure efficient storage of information, as optimal tools can be selected for each type. Moreover, it facilitates a precise and non-redundant evaluation of values through clear queries and structured analysis, thereby considering temporal analyses and the analysis of system areas.
+
+        The logical model provides multiple standard analyses that can be applied to the time-series, e.g. the summations defined within the mathematical meta-model. However, since the procedures for analysing the recorded information are far-reaching and may even be dedicated to a specific ROS2 system, the logical model enables the execution of external analyses, strictly speaken database queries. Related to the \fboxemph{time-series database}, the queries may analyse a temporal sequence, while the \fboxemph{log database} may be queried for specific keywords or types of logs. Additionaly, the \fboxemph{graph database} enables the analyses of the ROS2 systems topology.
+
+        As the attribute values are assigned to a dedicated UID, attribute, and timestamp, all continuous information are of an equal rank. Therefore, the logical model enables a seamless integration of external and ROS2 system specific information.\newline
+        Attribute values that belong to entities that are executed on further operating systems and belong to the same ROS2 system are also integrated through the \fboxemph{Tracer}. Thus, a single source of truth is created, preventing redundancy and facilitating holistic analyses, as all information is stored within the same respective databases.
+
+        The utilisation of UIDs for all entities within the Shadow Instance enables a uniform and unambiguous analysis.
+
+        Besides the topological and continuous information about the entities within the ROS2 system, the logical model also considers message contents. It is imperative to consider this objective, especially in perspective of \acl{fdd}, as sensor failure may cause serious difficulties during runtime, which are independent of faults within the software stack. Due to the extensive range of ROS2 messages and especially the possibility of custom messages, it is impractical to preprocess their content through the Shadow Caster. Therefore, the content is directly forwarded to the \fboxemph{IO-Module}. To facilitate the subsequent assignment of message content to specific circumstances, the message contents can be stored in the \fboxemph{log database}. However, due to communication overhead, this approach becomes unsuitable when the volume or size of messages increases. Especially as rosbags \cite{website:rosbag} already present a method of storing message content.
+
+Based on the introduced logical model, a proof-of-concept is implemented and evaluated in the subsequent section.

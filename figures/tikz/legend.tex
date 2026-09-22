@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+
+    \node [anchor=east] at (2.0,10) {Member in $M$};
+        \node [M] at (3.15,10) {$\cdots$};
+    \node [anchor=east] at (2.0,9.4) {active Member in $M_A \subseteq M$};
+        \node [MA] at (3.15,9.4) {$\cdots$};
+    \node [anchor=east] at (2.0,8.8) {passive Member in $M_P \subseteq M$};
+        \node [MP] at (3.15,8.8) {$\cdots$};
+
+    \node [anchor=east] at (9.5,10) {Member in $M_0\subseteq M$\phantom{.}};
+        \node [M, G0] at (10.6,10) {$\cdots$};
+    \node [anchor=east] at (9.5,9.4) {active Member in $M_A \cap M_0$};
+        \node [MA, G0] at (10.6,9.4) {$\cdots$};
+    \node [anchor=east] at (9.5,8.8) {passive Member in $M_P \cap M_0$};
+        \node [MP, G0] at (10.6,8.8) {$\cdots$};
+
+
+    \node [anchor=east] at (6.4+.9,7.5) {$E_0$ for edge-induced Graph $G_0$};
+        \draw [->, E0] (6.5+.9,7.5) -- ++(2,0);
+    \node [anchor=east] at (6.4+.9,7) {$R$ for relations in $\rho_{out}\cap\rho_{in}$};
+        \draw [->, Relation] (6.5+.9,7) -- ++(2,0);
+    \node [anchor=east] at (6.4+.9,6.5) {$E_i$ for edge-induced Tree $T_i$};
+        \draw [->, Tree] (6.5+.9,  6.5) -- ++(2,0);
+    \node [anchor=east] at (6.4+.9,6) {$E_1$ for edge-induced Tree $T_1$ (namespace-driven)};
+        \draw [->, TreeNamespace] (6.5+.9,6) -- ++(2,0);
+    \node [anchor=east] at (6.4+.9,5.5) {$E_2$ for edge-induced Tree $T_2$ (executor-driven)};
+        \draw [->, TreeExecutor]  (6.5+.9,5.5) -- ++(2,0);
+    \node [anchor=east] at (6.4+.9,5) {$E_3$ for edge-induced Tree $T_3$ (container-driven)};
+        \draw [->, TreeContainer] (6.5+.9,5) -- ++(2,0);
+    \node [anchor=east] at (6.4+.9,4.5) {$E_4$ for edge-induced Tree $T_4$ (process-driven)};
+        \draw [->, TreeProcess]   (6.5+.9,4.5) -- ++(2,0);
+
+\end{tikzpicture}

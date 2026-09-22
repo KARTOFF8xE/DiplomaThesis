@@ -1,0 +1,25 @@
+\begin{tikzpicture}
+    \tikzset{
+        package/.style={
+            minimum width = 2cm
+        }
+    }
+
+    \umlemptypackage[package, fill=white, type=Block]{Process}
+    \umlemptypackage[package, right = 2cm of Process, fill=white, type=Block]{Entity}
+    \umlemptypackage[package, right = 1cm of Entity, fill=white, type=Block]{Node}
+
+    \draw [diamond->, barbarrow] (Process.east) --
+        node [at start, above right] {1}
+        node [at end, above left] {1..*}
+        node [midway, above] {executes}
+        (Entity.west);
+    \draw [-open triangle 60] (Node.west) -- (Entity.east);
+
+
+    \draw [open diamond->, barbarrow, rounded corners] (Entity.south) --
+        node [at start, below right] {1} ++(0,-.5) -|
+        node [at start, above, xshift = -3.1cm] {initiates}
+        node [at end, below left] {0..*}
+        (Process.south);
+\end{tikzpicture}

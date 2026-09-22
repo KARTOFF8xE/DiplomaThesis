@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+
+    \node [MP] (root) {root};
+    \node [MA, below = of root] (executor) {Executor};
+    \node [MA, G0, below = of executor] (m) {\phantom{m}};
+
+    \node [MP, left = of executor] (callbackGr1) {callback Group 1};
+    \node [MP, right = of executor] (callbackGr2) {callback Group 2};
+
+    \draw [->, TreeExecutor] (root) -- (executor);
+    \draw [->, TreeExecutor] (executor) -- (callbackGr1);
+    \draw [->, TreeExecutor] (executor) -- (callbackGr2);
+
+    \draw [<-, E0] (m) -- ++(-6,.5) node [midway, below] (e1) {};%  node [at end, above] {$e_1\in E_{\sub}$};
+    \draw [<-, E0] (m) -- ++(-6,-.5) node [midway, below] (e2) {};%  node [at end, below] {$e_2\in E_{\sub}$};
+    \draw [<-, E0] (m) -- ++(6,0) node [midway, below, yshift=.75] (e3) {};% node [at end, above] {$e_3\in E_{\send}$};
+    \draw[<-, G0, thick] (m.-50) arc (45:-225:4mm) node [pos=.2, xshift=-4] (e4) {};%   node [midway, below] {$e_4\in E_{\timer}$};
+
+    \draw [->, Relation, dotted, bend left = 40] (callbackGr1) edge (e1);
+    \draw [->, Relation, dotted, bend right = 40] (callbackGr1) edge (e2);
+    \draw [->, Relation, dotted, bend left = 40] (callbackGr2) edge (e3);
+    \draw [->, Relation, dotted, bend left = 40] (callbackGr2) edge (e4);
+
+\end{tikzpicture}

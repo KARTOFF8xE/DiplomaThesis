@@ -1,0 +1,398 @@
+\usetikzlibrary{shapes.geometric,arrows.meta,calc,babel,backgrounds,decorations.pathreplacing}
+\usepgfplotslibrary{statistics}
+
+\tikzset{
+    >={Triangle[angle=60:4]},
+        help help lines/.style={lightgray!50,very thin},
+        help lines/.style={gray!50,thin},
+    barbarrow/.style={
+        >={Straight Barb[length=5pt,width=5pt]}
+        },
+    block/.style={
+        rectangle with rounded corners,
+        minimum width=2.5cm,
+        minimum height=1.1cm,
+        inner sep=0pt,
+        align=center,
+        draw=black,
+        fill=white
+    },
+    db/.style={
+        cylinder,
+        thick,
+        draw = black,
+        aspect = .125,
+        % minimum height = 1.2cm,
+        inner sep=5pt,
+        minimum width = 1.5cm,
+        shape border rotate = 90
+    },
+    umlClass/.style={
+        fill=white,
+        draw=black,
+        align=center,
+        inner sep=5pt
+    },
+    M/.style={
+        rectangle,
+        rounded corners,
+        minimum width=2cm,
+        inner sep=3pt,
+        align=center,
+        draw=tubaf-black,
+        semithick,
+    },
+    MA/.style={
+        M,
+        ellipse,
+    },
+    MP/.style={
+        M,
+        rectangle,
+        rounded corners = false
+    },
+    G0/.style={draw=tubaf-primary},
+    E0/.style={G0, fill=tubaf-primary, thick, rounded corners},
+    Ei/.style={thick, dashed, rounded corners},
+    Relation/.style={thick, dashed, tubaf-black},
+    Tree/.style={Ei, draw=gray},
+    % TreeNamespace/.style={Ei, draw=tubaf-accent-4},
+    TreeNamespace/.style={Ei, draw=tubaf-environment!35!tubaf-accent-4},
+    TreeExecutor/.style={Ei, draw=tubaf-accent-24},
+    TreeContainer/.style={Ei, draw=tubaf-accent-13},
+    TreeProcess/.style={Ei, draw=tubaf-energy},
+    rectangle with rounded corners north west/.initial=4pt,
+    rectangle with rounded corners south west/.initial=4pt,
+    rectangle with rounded corners north east/.initial=4pt,
+    rectangle with rounded corners south east/.initial=4pt,
+}
+
+\pgfplotsset{
+    colormap={colormap-cpu}{
+        color(0pt)=(tubaf-primary-dark);
+        color(20pt)=(tubaf-energy);
+        color(40pt)=(tubaf-accent-12);
+        color(60pt)=(tubaf-accent-15);
+        color(80pt)=(tubaf-accent-17);
+        color(100pt)=(tubaf-white);
+    },
+    colormap={colormap-ram}{
+        color(0pt)=(tubaf-primary-dark);
+        color(25pt)=(tubaf-material);
+        color(50pt)=(tubaf-accent-29);
+        color(75pt)=(tubaf-accent-25);
+        color(100pt)=(tubaf-white);
+    },
+    colormap={colormap-net}{
+        color(0pt)=(tubaf-primary-dark);
+        color(20pt)=(tubaf-environment);
+        color(50pt)=(tubaf-accent-3);
+        color(75pt)=(tubaf-accent-5);
+        color(100pt)=(tubaf-white);
+    },
+    colormap={colormap-latencies}{
+        color(0pt)=(tubaf-primary-dark);
+        color(.05pt)=(tubaf-white);
+    },
+    colormap={colormap-disk}{
+        color(0pt)=(tubaf-primary-dark);
+        color(25pt)=(tubaf-accent-11);
+        color(50pt)=(tubaf-accent-13);
+        color(75pt)=(tubaf-accent-16);
+        color(100pt)=(tubaf-white);
+    },
+    cpu/.style={
+        xlabel={Frequency [Hz]},
+        ylabel={Number of Pub-Sub pairs},
+        tick align=center,
+        colormap name=colormap-cpu,
+        colorbar,
+        colorbar sampled,
+        colorbar style={
+            samples=512,
+            ylabel=CPU usage [\%],
+            yticklabel style={align=right},
+        },
+        xtick pos=bottom,
+        ytick pos=left,
+        % point meta min=0,
+        % point meta max=100,
+    },
+    ram/.style={
+        xlabel={Frequency [Hz]},
+        ylabel={Number of Pub-Sub pairs},
+        tick align=center,
+        colormap name=colormap-ram,
+        colorbar,
+        colorbar sampled,
+        colorbar style={
+            samples=512,
+            ylabel=RAM usage [MB],
+            yticklabel style={align=right},
+        },
+        xtick pos=bottom,
+        ytick pos=left,
+        % point meta min=0,
+        % point meta max=1500,
+    },
+    net/.style={
+        xlabel={Frequency [Hz]},
+        ylabel={Number of Pub-Sub pairs},
+        tick align=center,
+        colormap name=colormap-net,
+        colorbar,
+        colorbar sampled,
+        colorbar style={
+            samples=512,
+            ylabel=Network usage [kB/s],
+            yticklabel style={align=right},
+        },
+        xtick pos=bottom,
+        ytick pos=left,
+        % point meta min=0,
+        % point meta max=1500,
+    },
+    disk/.style={
+        xlabel={Frequency [Hz]},
+        ylabel={Number of Pub-Sub pairs},
+        tick align=center,
+        colormap name=colormap-disk,
+        colorbar,
+        colorbar sampled,
+        colorbar style={
+            samples=512,
+            ylabel=Disk Write [kB/s],
+            yticklabel style={align=right},
+        },
+        xtick pos=bottom,
+        ytick pos=left,
+        % point meta min=0,
+        % point meta max=1500,
+    },
+    lat/.style={
+        xlabel={Frequency [Hz]},
+        ylabel={Number of Pub-Sub pairs},
+        colormap name=colormap-latencies,
+        colorbar,
+        colorbar sampled,
+        colorbar style={
+            samples=512,
+            ylabel=Overhead [$\upmu \text{s}$],
+            yticklabel style={
+                align=right,
+            }
+        }
+    }
+}
+
+
+\newcommand{\activeMember}[3]{
+    \node [circle, ultra thick, draw=tubaf-primary, fill=cyan] (#1) at #2 {\phantom{foooooo}};
+    \draw (#1) node {\footnotesize#3};
+}
+\newcommand{\activeCausalMember}[3]{
+    \node [circle, ultra thick, draw=tubaf-primary, fill=cyan] (#1) at #2 {\phantom{foooooo}};
+    \draw (#1) node {\footnotesize\ul{#3}};
+}
+\newcommand{\passiveMember}[3]{
+    \node [circle, very thick, draw=tubaf-accent-20, fill=tubaf-accent-23] (#1) at #2 {\phantom{foooooo}};
+    \draw (#1) node {\footnotesize#3};
+}
+\newcommand{\passiveCausalMember}[3]{
+    \node [circle, very thick, draw=tubaf-accent-20, fill=tubaf-accent-23] (#1) at #2 {\phantom{foooooo}};
+    \draw (#1) node {\footnotesize\ul{#3}};
+}
+\newcommand{\CommunicationTimer}[2]{
+    \draw [G0, thick] (#1.#2+10) -- ++(#2+10:1.1) arc (#2+100:#2:.352);
+    \draw [G0, thick, <-] (#1.#2-10) -- ++(#2-10:1.1) arc (#2-100:#2:.352) coordinate (tmp);
+    \draw (#1) ++(#2:1.8) coordinate (tmp);
+    \node at (tmp) [rotate=#2-180] {\scriptsize timer};
+}
+\newcommand{\CommunicationTimerNoText}[2]{
+    \draw [G0, thick] (#1.#2+10) -- ++(#2+10:1.1) arc (#2+100:#2:.352);
+    \draw [G0, thick, <-] (#1.#2-10) -- ++(#2-10:1.1) arc (#2-100:#2:.352) coordinate (tmp);
+}
+\newcommand{\curvedEdge}[4]{
+    \draw[->, bend left=#4] (#1) to (#2);
+    \ifthenelse{\isempty{#3}}
+        {}
+        {\path[bend left=#4] (#1) to node[midway, fill=white, inner sep=1pt] {\scriptsize #3} (#2);}
+}
+\newcommand{\curvedEdgeWithProperties}[5]{
+    \draw[->, bend left=#4, #5] (#1) to (#2);
+    \ifthenelse{\isempty{#3}}
+        {}
+        {\path[bend left=#4] (#1) to node[midway, fill=white, inner sep=1pt] {\scriptsize #3} (#2);}
+}
+
+
+\newcommand{\whitebigodot}[2]{
+    \node [circle, thick, draw=#1, fill=white, scale=.5] (a) at #2 {\phantom{$\cdot$}};
+    \node (a) at #2 {\color{#1}$\cdot$};
+}
+\newcommand{\whitebigotimes}[2]{
+    \node [circle, thick, draw=#1, fill=white, scale=.5] (a) at #2 {\phantom{$\cdot$}};
+    \draw [thick, #1] (a.south west) -- (a.north east);
+    \draw [thick, #1] (a.north west) -- (a.south east);
+}
+
+\newcommand{\trianglearrow}{
+  \mathrel{
+    \tikz[baseline=-0.5ex]
+      \draw[->, line width=0.4pt] (0,0) -- (1em,0);
+  }
+}
+
+
+\makeatletter
+\pgfdeclareshape{rectangle with rounded corners}{
+\inheritanchorborder[from=rectangle]
+\savedmacro{\neoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north east}{\pgf@rectc}
+    \let\neoffset\pgf@rectc
+}
+\savedmacro{\nwoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north west}{\pgf@rectc}
+    \let\nwoffset\pgf@rectc
+}
+\savedmacro{\seoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south east}{\pgf@rectc}
+    \let\seoffset\pgf@rectc
+}
+\savedmacro{\swoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south west}{\pgf@rectc}
+    \let\swoffset\pgf@rectc
+}
+\savedanchor{\north}{
+    \pgf@y=.5\ht\pgfnodeparttextbox
+    \pgf@x=0pt
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y<.5\pgf@ya
+    \pgf@y=.5\pgf@ya
+    \fi
+}
+\savedanchor{\south}{
+    \pgf@y=-.5\ht\pgfnodeparttextbox
+    \pgf@x=0pt
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y>-.5\pgf@ya
+    \pgf@y=-.5\pgf@ya
+    \fi
+}
+\savedanchor{\east}{
+    \pgf@y=0pt
+    \pgf@x=.5\wd\pgfnodeparttextbox
+    \addtolength{\pgf@x}{2ex}
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x<.5\pgf@xa
+    \pgf@x=.5\pgf@xa
+    \fi
+}
+\savedanchor{\west}{
+    \pgf@y=0pt
+    \pgf@x=-.5\wd\pgfnodeparttextbox
+    \addtolength{\pgf@x}{-2ex}
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x>-.5\pgf@xa
+    \pgf@x=-.5\pgf@xa
+    \fi
+}
+\savedanchor{\northeast}{
+    \pgf@y=.5\ht\pgfnodeparttextbox % height of the box
+    \pgf@x=.5\wd\pgfnodeparttextbox % width of the box
+    \addtolength{\pgf@x}{2ex}
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x<.5\pgf@xa
+    \pgf@x=.5\pgf@xa
+    \fi
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y<.5\pgf@ya
+    \pgf@y=.5\pgf@ya
+    \fi
+}
+\savedanchor{\southwest}{
+    \pgf@y=-.5\ht\pgfnodeparttextbox
+    \pgf@x=-.5\wd\pgfnodeparttextbox
+    \addtolength{\pgf@x}{-2ex}
+%     \pgf@x=0pt
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x>-.5\pgf@xa
+    \pgf@x=-.5\pgf@xa
+    \fi
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y>-.5\pgf@ya
+    \pgf@y=-.5\pgf@ya
+    \fi
+}
+\anchor{text}{%
+    \northeast%
+    \pgf@x=-.5\wd\pgfnodeparttextbox%
+    \pgfmathsetlength{\pgf@y}{-.5ex}
+}
+\anchor{north east}{
+    \northeast
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\neoffset}
+    \addtolength{\pgf@x}{-\nw pt}
+    \addtolength{\pgf@y}{-\nw pt}
+}
+\anchor{center}{
+    \pgf@x=0pt
+    \pgf@y=0pt
+}
+\anchor{south west}{
+    \southwest
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\swoffset}
+    \addtolength{\pgf@x}{\nw pt}
+    \addtolength{\pgf@y}{\nw pt}
+}
+\anchor{north west}{
+    \northeast
+    \pgfmathsetmacro{\temp@x}{\pgf@x}
+    \southwest
+    \pgfmathsetmacro{\temp@xtwo}{\pgf@x}
+    \northeast
+    \pgfmathsetmacro{\xdiff}{\temp@x-\temp@xtwo}
+    \def\pgf@xa{\pgf@x-\xdiff}
+            \pgfmathsetmacro{\nw}{(1-sin(45))*\nwoffset}
+    \def\pgf@xaa{\pgf@xa+\nw}
+    \def\pgf@yaa{\pgf@y-\nw}
+    \pgfpoint{\pgf@xaa}{\pgf@yaa}
+}
+\anchor{south east}{
+    \southwest
+    \pgfmathsetmacro{\temp@x}{\pgf@x}
+    \northeast
+    \pgfmathsetmacro{\temp@xtwo}{\pgf@x}
+    \southwest
+    \pgfmathsetmacro{\xdiff}{\temp@x-\temp@xtwo}
+    \def\pgf@xa{\pgf@x-\xdiff}
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\seoffset}
+    \def\pgf@xaa{\pgf@xa-\nw}
+    \def\pgf@yaa{\pgf@y+\nw}
+    \pgfpoint{\pgf@xaa}{\pgf@yaa}
+}
+\anchor{south}{\south}
+\anchor{north}{\north}
+\anchor{east}{\east}
+\anchor{west}{\west}
+\backgroundpath{% this is new
+    % store lower right in xa/ya and upper right in xb/yb
+    \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % construct main path
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north west}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north east}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south east}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south west}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathclose
+}
+}
+\makeatother

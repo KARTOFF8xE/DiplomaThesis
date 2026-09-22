@@ -1,0 +1,62 @@
+{
+  "files.exclude": {
+    "**/*.aux": false,
+    "**/*.fdb_latexmk": false,
+    "**/*.fls": false,
+    "**/*.lof": false,
+    "**/*.log": false,
+    "**/*.toc": false,
+    "**/*.out": false,
+    "**/*.bbl": false,
+    "**/*.blg": false,
+    "**/*.gz": false,
+    "**/*.run": false,
+    "**/*.run.xml": false,
+    "**/*.bcf": false,
+    "**/.gitignore": true,
+    "**/actions-runner": true,
+    "**/.github": true,
+    "**/.devcontainer": true,
+    "**/.vscode": true,
+    "**/build": true,
+    "**/tikz-uml.sty": true
+  },
+  "explorer.autoReveal": false,
+  "latex-workshop.latex.outDir": "./build",
+  "latex-workshop.view.pdf.viewer": "browser",
+  // "latex-workshop.latex.tools": [
+  //   {
+  //     "name": "latexmk",
+  //     "command": "latexmk",
+  //     "args": [
+  //       "-pdf",
+  //       "-interaction=nonstopmode",
+  //       "-shell-escape",
+  //       "-synctex=1",
+  //       "-use-make",
+  //       "-output-directory=build",
+  //       "main"
+  //     ]
+  //   },
+  //   {
+  //     "name": "makeindex",
+  //     "command": "makeindex",
+  //     "args": [
+  //       "build/main.nlo",
+  //       "-s", "nomencl.ist",
+  //       "-o", "build/main.nls"
+  //     ]
+  //   }
+  // ],
+  // "latex-workshop.latex.recipes": [
+  //   {
+  //     "name": "latexmk (nomencl)",
+  //     "tools": [
+  //       "latexmk",
+  //       "makeindex",
+  //       "latexmk"
+  //     ]
+  //   }
+  // ],
+  // "latex-workshop.latex.recipe.default": "latexmk",
+}

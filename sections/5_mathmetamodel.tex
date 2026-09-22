@@ -1,0 +1,430 @@
+\addtocontents{toc}{\protect\newpage}
+\cleardoublepage
+\chapter{Deriving a Mathematical Meta-Model to represent the Fundamentals of ROS2 Systems} \label{chap:concept}
+    Building upon the ROS2 system model introduced in the previous chapter, this chapter addresses the gap identified in \Cref{chap:motivation,chap:sota}. This chapter introduces a mathematical meta-model that is capable of mirroring ROS2 systems in order to support \acl{fdd}. Later on, it will be utilised as a blueprint for the Shadow Caster in order to generate Shadow Instances.
+
+    Throughout this chapter, multiple definitions describe the characteristics of the proposed meta-model. In order to reflect and evaluate the definitions, multiple examples are illustrated alongside. To ensure an unambiguous and consistent visual representation, \Cref{fig:tikz:legend} illustrates multiple components of the directed Graph, which will be introduced in the following sections. Figures that are labelled with \legend~adhere to this visual standard within the constraints of the meta-model and may be refined in detail. However, to emphasise specific characteristics, certain figures intentionally deviate from the visual standard. These deviations are explicitly mentioned and labelled using \protect\legendadapted.
+    \begin{figure}[h]
+        \centering
+        \hypertarget{target:legend}{}
+        \input{figures/tikz/legend.tex}
+        \caption[Legend to represent Directed Graph]{Legend to represent Directed Graph $G$ \legend} \label{fig:tikz:legend}
+    \end{figure}
+
+    Previously, the author was a member of a research group that proposed a mathematical meta-model for a broad range of distributed robotic systems in \cite{adaPaper}\footnote{The paper was written concurrently with this thesis. Therefore, the contributions intersect. However, as the meta-model was extended and refined, the direct intersections of both models are rare.}. The present work will extend the proposed meta-model by multiple definitions. Furthermore, due to the particular focus of this thesis, the mathematical meta-model is strongly influenced by the concepts of ROS2. Nevertheless, it is intentionally designed to be abstract and generic, with the objective of extending its applicability beyond ROS2 to a broader range of distributed robotic systems.
+
+    To elaborate, \Cref{sec:mathModel:directedGraph} introduces the fundamental, directed Graph that abstractly represents a ROS2 system. The subsequent \Cref{sec:mathModel:aggregation} employs the directed Graph in order to create multiple aggregations, which facilitate the analysis of a ROS2 system in order to support \acl{fdd}.
+
+    \section{Establishing a Directed Graph for Modelling ROS2 Systems} \label{sec:mathModel:directedGraph}
+    In order to represent a ROS2 system abstractly, a directed Graph is introduced gradually within this section. Therefore, \Cref{subsec:mathModel:causalROS2Graph} establishes the fundamental, directed Graph that evolves through multiple versions in \Cref{subsec:mathModel:versioning}. The ROS2 communication Graph is defined in \Cref{subsec:mathModel:causalStructure}.
+
+
+    \subsection{Creating the Fundamental ROS2 Graph} \label{subsec:mathModel:causalROS2Graph}
+
+    We propose the utilisation of a directed Graph to represent a ROS2 system (\Cref{def:ros2graph}). The Graph differentiates between active and passive Members. \emph{Active Members} initiate and carry out tasks by executing operations or controlling the execution of logic within the ROS2 system \cite[p.~2]{adaPaper}, e.g. Nodes. In contrast, \emph{passive Members} neither initiate nor execute operations themselves. Instead, they establish data distribution or function as pure organisational entities \cite[p.~2]{adaPaper}, e.g. Topics.\newline
+    Additionally, the Graph consists of \emph{communication Edges} and \emph{organisation Edges}. This differentiation facilitates subsequent computations that require the Graph to be divided into various, edge-induced areas. These edge-induced areas will be defined throughout this chapter.
+
+\begin{samepage}
+    \begin{definitionbox}{Directed Graph to Represent ROS2 Systems}{ros2graph}
+        The ROS2 system is abstracted as a directed Graph:
+        \begin{align*}
+            G = (M,\,E)\text{,}
+        \end{align*}
+        where
+        \begin{itemize}[label=$\circ$]
+            \item $M = M_A \cup M_P$ represents the set of Members, divided into active Members ($M_A$) and passive Members ($M_P$), with $M_A \cap M_P = \emptyset$,
+            \item $E = E_0 \cup \bigcup\limits_{i=1}^{N\in\mathbb{N}_{>0}} E_i$ represents the set of directed Edges\spadesuitfootnote{$E_0$ and $E_i$ will be defined in \Cref{def:ros2communication,def:ros2edgeInducedTree}, respectively.}.
+        \end{itemize}
+    \end{definitionbox}
+\end{samepage}
+
+
+    To represent the properties of, e.g. Nodes, Topics, and Publishers, the Members and communication Edges are provided with an attributes function. Due to time-varying properties, e.g. the state of a Node or the publishing rate for a Publisher, the attributes function is provided with a time-dependent component.
+
+    \begin{definitionbox}{Attribute Function to Assign Properties to Graph Entities}{ros2graphAttributes}
+        Let $A$ be a tuple of attributes defined as:
+        \begin{align*}
+            A = A_0 \times A_1 \times \ldots \times A_n\text{ with }n\in\mathbb{N}\text{.}
+        \end{align*}
+        Then the attributes function $\theta$ refers to the Members and communication Edges, and is defined as:
+        \begin{align*}
+            \theta\colon\: (M\times\mathbb{T}) \cup (E_0\times\mathbb{T}) \to A\text{.}
+        \end{align*}
+        \bigskip
+        For all $k \in \{0, \dots, n\}$ and all $m \in M$, $e \in E_0$, the function $\theta$ satisfies the conditions:
+            \begin{align*}
+                \left( \exists t \in \mathbb{T}\colon\: \theta(m, t)_k \neq 0 \right)
+                \;&\Rightarrow\;
+                \left( \forall t \in \mathbb{T}\colon\: \theta(e, t)_k = 0 \right) \text{ and } \\
+                \left( \exists t \in \mathbb{T}\colon\: \theta(e, t)_k \neq 0 \right)
+                \;&\Rightarrow\;
+                \left( \forall t \in \mathbb{T}\colon\: \theta(m, t)_k = 0 \right)\text{.}
+            \end{align*}
+        \bigskip
+        Time-dependence is enabled via the temporal domain $\mathbb{T}=[0,t],\,t\in \mathbb{R}_{>0}$.
+    \end{definitionbox}
+
+
+
+    \subsubsection{Reflection}
+    As defined in \Cref{def:ros2graph}, the model introduces two types of Members to abstractly represent various entities in ROS2 systems. Firstly, active Members represent operating or controlling entities within the system and thus represent:
+    \begin{description}[labelwidth=3cm, leftmargin=3.7cm]
+        \item [\hspace{.5cm} Nodes] As they serve as autonomous execution units and encompass the logic for the executed operations.
+        \item [\hspace{.5cm} Executors] As they execute and control the execution of callbacks a Node encompasses.
+        \item [\hspace{.5cm} Launch Files] As they initiate the execution of Nodes.
+    \end{description}
+
+    In contrast, passive Members do not perform or initiate operations themselves, but establish data distribution or serve as pure organisational, non-executing, and non-initiating entities. Thus, they represent:
+    \begin{description}[labelwidth=3cm, leftmargin=3.7cm]
+        \item [\hspace{.5cm} Topics] As they establish data distribution between Publishers and Subscribers of Nodes.
+        \item [\hspace{.5cm} Namespaces] As they facilitate organising and structuring the ROS2 Graph in a hierarchical manner.
+        \item [\hspace{.5cm} Containers] As they group Nodes and thus enable a more efficient execution.
+    \end{description}
+    The presence of passive Members further enables the existence of virtual entities that exist for organisational reasons only. The utilisation of such virtual entities is intended for the subsequent aggregation of the Graph, which will be fulfilled by integrating Trees into the Graph.\newline
+    As will be described in more detail subsequently, the Edges $E_0$ represent the communication within the ROS2 system, while $E_i$ will be employed to model further structures within the Graph. \newline    
+    The attributes function $\theta$ enables the representation of time-varying values, in order to enable differing values at differing timestamps. This time series facilitates the analysis of temporal trends or various accumulations at a subsequent point in time. As $\theta$ does not correspond to a particular spatial domain, both numerical and textual values are permitted. Additionally, the attributes of Members and communication Edges are disjoint. This is an important aspect for later computations.
+
+    With the fundamental directed Graph established, the following section versions the Graph to represent its dynamic nature.
+
+
+    \subsection{Enabling the Evolution of the ROS2 Graph} \label{subsec:mathModel:versioning}
+    In order to gain a comprehensive understanding of the ROS2 system, including its evolution over time, it is imperative for the Graph to adapt and evolve accordingly. This necessitates the extension of the Graph by Members and Edges, and an extension of the attributes function. \newline
+    Hence, \Cref{def:versionedGraph} adds a versioning to the Graph to represent its evolving nature.
+    \begin{definitionbox}{Version the Directed Graph to Enable Evolving Nature}{versionedGraph}
+        Let $G^v = (M^v,\,E^v)$ denote the state of a directed Graph at version $v \in \mathbb{N}_0$.
+        Then, for all $v \geq 0$, the following conditions hold:
+        \begin{itemize}[label=$\circ$]
+            \item $M^{v+1} = M^v \cup M^+$,
+            \item $E^{v+1} = E^v \cup E^+$,
+        \end{itemize}
+        where
+        \begin{itemize}[label=$\circ$]
+            \item $M^+\colon\: M^v \cap M^+ = \emptyset$ denotes the set of newly added Members $M$,
+            \item $E^+\colon\: E^v \cap E^+ = \emptyset$ denotes the set of newly added Edges $E$.
+        \end{itemize}
+        \medskip
+        The attributes function $\theta$ extends accordingly.
+    \end{definitionbox}
+    However, in the following, whenever a Graph $G$ is mentioned, it implicitly refers to the current version $G^{v_{curr}}$, unless stated otherwise.
+
+
+\subsubsection{Reflection}
+    To represent the dynamic nature of ROS2 systems, \Cref{def:versionedGraph} creates a set of directed Graphs that is versioned each time Members or Edges are added.
+    However, neither Members nor Edges are ever removed in order to also represent parts of the ROS2 system that had an influence on the ROS2 system earlier on. Instead, later on, an attribute is to be employed in order to indicate their state.\newline
+    It is imperative to acknowledge the significance of this aspect, particularly in light of the potential for \acl{fdd} algorithms to encompass a comprehensive range of data, including historical relationships. In order to illustrate this, \Cref{fig:tikz:mathModel:versioning} represents multiple versions of the Graph. Note that \Cref{fig:tikz:mathModel:addedMember,fig:tikz:mathModel:removedMember} refer to the same topology of the Graph, but $m$ and $e$ are coloured gray in the latter one. This is because $m$ is removed and thus its state is set to \glqq{}finalised\grqq{}, also disabling $e$. Note that the upper entity transitions from black to blue in \Cref{fig:tikz:mathModel:initialGraph,fig:tikz:mathModel:addedMember}. The rationale for this is described subsequently.
+    \begin{figure}[h]
+        \centering
+        \begin{subfigure}[h]{.3\textwidth}
+            \centering
+            \input{figures/tikz/mathModel/versioning/initialGraph.tex}
+            \caption{Exemplary initial $G$ \legend} \label{fig:tikz:mathModel:initialGraph}
+        \end{subfigure}
+        \begin{subfigure}[h]{.3\textwidth}
+            \centering
+            \input{figures/tikz/mathModel/versioning/addedMember.tex}
+            \caption{Added $m$ and $e$ to $G$ \legend} \label{fig:tikz:mathModel:addedMember}
+        \end{subfigure}
+        \begin{subfigure}[h]{.3\textwidth}
+            \centering
+            \input{figures/tikz/mathModel/versioning/removedMember.tex}
+            \caption{Disabled $m$ from $G$ \legendadapted} \label{fig:tikz:mathModel:removedMember}
+        \end{subfigure}
+        \caption[Adding and Disabling Entities from Exemplary Graph]{Adding and Removing Entities to Exemplary Graph $G$} \label{fig:tikz:mathModel:versioning}
+    \end{figure}
+\FloatBarrier
+
+    With the evolving nature of the directed Graph established, the subsequent section focuses on the communication and thus defines the ROS2 communication Graph.
+
+
+    \subsection{Representing the Communication Structure of ROS2 Systems} \label{subsec:mathModel:causalStructure}
+    To facilitate \acl{fdd} and represent the communication structure of the ROS2 system, the Edges $E_0$ are employed to model the communication between Members.
+
+    Communication within ROS2 is based on the concepts of Topics and Services. The latter represents the direct communication between Nodes and thus active Members, whereas Topics provide a communication mechanism between active and passive Members. To accurately model the information flow within the ROS2 system, different types of directed communication Edges are established: \emph{sending} Edges to represent Service interactions, and \emph{publishing} and \emph{subscribing} Edges to represent Topic-based communication. A special case is the direct communication of an active Member with itself, which will be discussed in the subsequent.
+    \begin{definitionbox}[label=def:ros2communication, list text={ROS2 Communication}]{ROS2 Communication based on \Textcite[p.~3]{adaPaper}}{}
+        The communication Edges inside the directed Graph $G$ are defined as
+        \begin{align*}
+            E_0 &= E_{\send} \cup E_{\pub} \cup E_{\sub}\text{,}
+        \end{align*}
+        where
+        \begin{itemize}[label=$\circ$]
+            \item $E_{\send} \subseteq (M_A \times M_A) \times \{0\} \times j$, with $j\in\mathbb{N}_0$ represents sending Edges,
+            \item $E_{\pub} \subseteq (M_A \times M_P) \times \{0\} \times j$, with $j\in\mathbb{N}_0$ represents publishing Edges,
+            \item $E_{\sub} \subseteq (M_P \times M_A) \times \{0\} \times j$, with $j\in\mathbb{N}_0$ represents subscribing Edges,
+            \item $E_{\timer} \subseteq E_{\send}$ with $E_{\timer}=\{((m,n),\,0,\,j) \in E_{\send} \mid m=n\}$ represents a special\\form of communication that carries zero payload and is employed periodically.
+        \end{itemize}
+    \end{definitionbox}
+
+    With the communication Edges $E_0$ established, the edge-induced, directed Subgraph $G_0\subseteq G$ defined in the following represents the communication structure of the ROS2 system in question and is denoted as the \emph{ROS2 communication Graph}. Analogous to the communication Edges $E_0$, the Members $M_0$ are denoted as \emph{communication Members}.
+\enlargethispage{1\baselineskip}
+    \begin{definitionbox}[label=def:ros2edgeInducedSubgraph, list text={The ROS2 Communication Graph}]{The ROS2 Communication Graph \cite[p.~3]{adaPaper}}{}
+        The edge-induced, directed Subgraph $G_0$ that represents the ROS2 communication Graph is defined as:
+        \begin{align*}
+            G_0=(M_0,\,E_0)\text{,}
+        \end{align*}
+        where $\forall m,\,n\in M_0\subseteq M\colon\:(m,n)\in E_0 \vee (n,m)\in E_0$.
+    \end{definitionbox}
+
+
+    \subsubsection{Reflection}
+    \Cref{def:ros2communication} introduces multiple types of communication Edges that aim to represent the various methods of communication ROS2 offers. These communication Edges unexceptionally reach from the source of information flow to its destination. This facilitates the trace of information flow, as for $s,d\in M_0,\, ((s,d),{0},j\in \mathbb{N}_0)\in E_0$ each $s$ denotes the source and $d$ the destination of information flow.\newline
+    \Cref{fig:tikz:mathModel:pubsub} illustrates the communication between active and passive Members, and refers to the concept of Topics. It is established by publishing Edges and subscribing Edges, representing Publishers and Subscribers, respectively. This is valid, given that each Publisher or Subscriber belongs to a specific Node (active Member) and is associated with a specific Topic (passive Member). Consequently, passive Members in relation with a publishing or subscribing Edge refer to the concept of Topics (\Cref{subsec:model:topics}).
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/pubsubEdges.tex}
+        \caption[Representing the Concept of ROS2 Topics with the Meta-Model]{Representing the Concept of ROS2 Topics with the Meta-Model \legend} \label{fig:tikz:mathModel:pubsub}
+    \end{figure}\newline 
+    Given that each sending Edge $E_{\send}$ connects two active Members, the concept of Services (\Cref{subsec:model:services}) is constructed by employing $E_{\send}$. However, as the Edges of the Graph are directed and indicate the direction of the information flow, every Service is represented by exactly two sending Edges, relating to request and response. \Cref{fig:tikz:mathModel:sending} illustrates this type of communication, with $m_1$ referring to a Service Client and $m_2$ referring to the respective Service Server.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/sendingEdges.tex}
+        \caption[Representing the Concept of ROS2 Services with the Meta-Model]{Representing the Concept of ROS2 Services with the Meta-Model \legend} \label{fig:tikz:mathModel:sending}
+    \end{figure}
+    Linking the number of sent messages to their respective sending Edges facilitates the analysis of whether each Service Client request received a corresponding Service Server response.
+
+    The concept of Actions is constructed by employing multiple Services and Topics (\Cref{subsec:model:actions}). Due to the existence of three Services and two Topics that are encompassed by the concept of Actions, each Action Server - Action Client pair is represented by six sending, two publishing and two subscribing Edges. \Cref{fig:tikz:mathModel:action} exemplarily represents the concept of ROS2 Actions with the mathematical meta-model, whereas $m_1$ refers to an Action Client and $m_2$ refers to the respective Action Server.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/actions.tex}
+        \caption[Representing the Concept of ROS2 Actions with the Meta-Model]{Representing the Concept of ROS2 Actions with the Meta-Model \legend} \label{fig:tikz:mathModel:action}
+    \end{figure}
+
+    Beneath the concept of Actions, there are further scenarios where two Members are connected by multiple Edges $E_0$, e.g. a Node encompassing multiple Publishers or Subscribers to the same Topic. To enable such characteristics while maintaining unambiguity, each communication Edge $((s,d),\,{0},\,j\in \mathbb{N}_0)\in E_0$, with $s,\,d\in M_0$ is uniquely identified by its source $s$, destination $d$ and index $j$. This unambiguity is mandatory, as it enables the unambiguous assignment of attribute values to communication Edges. It is important to note that a multigraph \cite[p.~153]{multigraph} would also enable multiple Edges between two Members and thus enable the representation of the exact same topology. However, multigraphs do not keep track of the distinct identity of individual relationships represented by those Edges \cite[p.~153]{multigraph}.
+
+    Even though Topics and Services form the two fundamental mechanisms of communication within ROS2, they do not represent all correlations within a ROS2 system. To elaborate, Timers are not based on communication. However, Timers form one of four callback triggers within ROS2 and are the only callback trigger that is not inherently based on communication. Therefore, Timers are represented by a special case of sending Edges, reaching from an active Member to itself. This virtual self-communication is illustrated in \Cref{fig:tikz:mathModel:timers}.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/timer.tex}
+        \caption[Timers in ROS2 Communication Graph]{Timers in $G_0$ represented by $E_{\timer}$ \legend} \label{fig:tikz:mathModel:timers}
+    \end{figure}
+
+    Modelling Timers as virtual communication Edges, where a Node communicates with itself, may at first appear artificial, given that no actual data transmission occurs.
+    However, in ROS2, Timers are registered as callback sources analogous to Subscribers. From a scheduling and profiling perspective, Timer callbacks are handled by the same Executor infrastructure as communication callbacks and thus compete for the same computational resources. Therefore, this abstraction ensures that Timer-triggered executions are seamlessly integrated into the ROS2 communication Graph, enabling a structurally coherent analysis of ROS2 systems.
+
+    \Cref{def:ros2edgeInducedSubgraph} denotes the ROS2 communication Graph that is edge-induced by the communication Edges $E_0$. Its existence is imperative as it represents the entire communication structure of the ROS2 system without additional, organising Edges. The ROS2 communication Graph is necessitated in the subsequent \Cref{def:ros2extendedTree}.
+
+The present section introduced a directed Graph to represent ROS2 systems. It categorised the entities of a ROS2 system into active and passive Members, established their communication, enabled its evolution, and added a temporal domain to represent time-dependent behaviour.\newline
+Based on this Graph, the subsequent section introduces multiple types of aggregation to facilitate \acl{fdd}.
+
+
+\section{Aggregating ROS2 Systems to Support \acl{fdd}} \label{sec:mathModel:aggregation}
+To support \acl{fdd} by facilitating the analysis of the ROS2 system in question, this section provides multiple forms of aggregation in order to organise the entities of the ROS2 communication Graph. These aggregations will be employed to total values and enable a broad view onto parts of ROS2 systems.
+
+
+    \subsection{Creating Relations to Aggregate Member- and Edge-Specific Attributes} \label{subsec:mathModel:relation}
+    In order to represent the ROS2 system in question with a high degree of detail, multiple characteristics are assigned to the communication Edges rather than to a Member directly. For instance, the forwarding rate of a Topic is determined by accumulating the publishing rates of the adjacent publishing Edges. To accumulate those Edge-specific values and thus enable a structured analysis of local Edge properties, a relation is introduced that reaches from communication Members to communication Edges. To this end, the following definition introduces the sets of outgoing and incoming adjacent communication Edges with respect to a specific Member.
+\begin{samepage}
+    \begin{definitionbox}[label=def:ros2extendedTree, list text={Creating Relations between communication Members and Edges}]{Creating Relations between Members $M_0$ and Edges $E_0$}{}
+        Let $G_0 = (M_0,\,E_0)$ be a directed Graph as defined in \Cref{def:ros2edgeInducedSubgraph}. We define the relation $R \subseteq M_0 \times E_0$, which lets us define $\rho_{out}$ and $\rho_{in}$ to denote outoing and incoming adjacent Edges $E_0$ for each Member $M_0$:
+        \begin{itemize}[label=$\circ$]
+            \item $\rho_{out}(m) = \{((m,\,n),\,0,\,j) \in E_0 \mid (m,\,((m,\,n),\,0,\,j)) \in R \wedge n\in M_0\}$ with $j \in\mathbb{N}$,
+            \item $\rho_{in}(m) = \{((n,\,m),\,0,\,j) \in E_0 \mid (m,\,((n,\,m),\,0,\,j)) \in R \wedge n\in M_0\}$ with $j \in\mathbb{N}$.
+        \end{itemize}
+    \end{definitionbox}
+\end{samepage}
+
+    Building on the relation between Members $M_0$ and communication Edges, \Cref{def:superiorTheta} introduces a method for aggregating Edge-specific attribute values. This offers a more comprehensive perspective onto specific parts of the ROS2 system. Rather than undertaking an individual analysis of each Edge, it employs a summation of the attribute values associated with adjacent Edges to a particular Member. It is important to note that this aggregation is only enabled for attributes that are of numerical value.
+    \begin{definitionbox}{Total Adjacent Edge-Related Attribute Values}{superiorTheta}
+        For assessing the attributes of a Member and its adjacent Edges in $T_i$ we denote the attribute functions $\Theta_{out}: M_i\times\mathbb{T} \rightarrow A$ and $\Theta_{in}: M_i\times\mathbb{T} \rightarrow A$ with $n\in \mathbb{N}$. \newline $\Theta_{out}$ and $\Theta_{in}$ are defined as follows:
+            \begin{itemize}[label=$\circ$]
+                \item $\Theta_{out}(m,t) = \theta(m,t) + \sum\limits_{e\in \rho_{out}(m)}(\theta(e,t))$, where $\theta(m,t),\,\theta(e,t) \in \mathbb{R}$,
+                \item $\Theta_{in}(m,t) = \theta(m,t) + \sum\limits_{e\in \rho_{in}(m)}(\theta(e,t))$,\hspace{.255cm} where $\theta(m,t),\,\theta(e,t) \in \mathbb{R}$.
+            \end{itemize}
+    \end{definitionbox}
+
+
+    \subsubsection{Reflection}
+    To evaluate the defined relations, two exemplary characteristics are introduced.\newline
+    Firstly, publishing Edges exhibit a publishing rate, as they represent Publishers. As described in \Cref{subsec:model:topics} and illustrated in \Cref{fig:tikz:PAR:Frequency}, these Publishers are connected to a specific Topic whose forwarding rate corresponds to the total of all belonging publishing rates. Instead of analysing each publishing rate directly to accumulate their values manually, the total forwarding rate of the Topic should be available directly.\newline
+    Secondly, subscribing Edges and sending Edges trigger specific callbacks, which are executed subsequently. As each callback is executed for a certain time, its durations can be regarded as relative callback durations (by referring them to a time interval) that are assigned to the triggering communication Edge. Since each Node might encompass multiple callbacks, the total utilisation of all belonging callbacks might be of interest.
+
+    \Cref{def:ros2extendedTree} introduces the sets of outgoing or incoming communication Edges $E_0$, denoted by $\rho_{out}$ and $\rho_{in}$, respectively, related to a specific Member.
+    The distinction between $\rho_{out}$ and $\rho_{in}$ is imperative to prevent degenerated behaviour by maintaining unambiguity. In order to prove this statement, \Cref{fig:tikz:mathModel:rhosunambiguity} exemplarily illustrates two active Members that are connected by two sending Edges $E_{\send}$. Ignoring the direction of Edges leads to distorted results, as totalling the attribute values of $\rho(m_1)$ component-wise would incorrectly include the relative callback durations caused by $e_2$ and executed by $m_2$.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/ambiguity.tex}
+        \caption[Proof to Consider Edge Direction in order to Prevent Ambiguity]{Proof to Consider Edge Direction in order to Prevent Ambiguity \legend} \label{fig:tikz:mathModel:rhosunambiguity}
+    \end{figure}
+
+    Based on the proof that the sets $\rho_{out}$ and $\rho_{in}$ are justified in their existence, an exemplary topology is given in \Cref{fig:tikz:mathModel:extendedTree}. It illustrates relations $R$ defined in \Cref{def:ros2extendedTree} reaching from an active Member to adjacent communication Edges. The communication Edges, that $\rho_{out}$ and $\rho_{in}$ relate to, are coloured in brown and green, respectively. In conjunction with the examples described previously, the brown Edge corresponds to a publishing Edge $E_{\pub}$, while the green Edges correspond to one subscribing Edge $E_{\sub}$ and one sending Edge $E_{\send}$ each. A mixture is exemplarily given by the Timer $E_{\timer}$. It is evident that the Timer $E_{\timer}$ is associated as an outgoing and an incoming Edge.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/extendedTree.tex}
+        \caption[Relation to Accumulate Adjacent Communication Edges]{Relation to Accumulate $E_0$-Related Attributes \legendadapted} \label{fig:tikz:mathModel:extendedTree}
+    \end{figure}
+
+    With the topology established, \Cref{fig:tikz:mathModel:accEdges} illustrates the summation of Edge-related attribute values as denoted in \Cref{def:superiorTheta}.
+    It presents the superior attribute functions $\Theta_{in}$ and accumulates the values of the adjacent communication Edges $e_1$ to $e_3$. As the characteristics of Members and Edges are disjoint, the corresponding values inside $\Theta_{out}$ and $\Theta_{in}$ are well-defined. This means that $\theta(e,t)$ has no value if a $\theta(m,t)$ contains one and thus adds $0$, while $\theta(m,t)$ adds its attribute value and vice versa.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/superiorTheta.tex}
+        \caption{Totaling Edge and Member-related attribute values} \label{fig:tikz:mathModel:accEdges}
+    \end{figure}
+
+    Exemplarily, $A_{n-1}$ refers to the relative callback durations from the above example and thus accumulates within $\Theta_{in}$. Analogously, the accumulated publishing rate of Publishers publishing to a specific Topic accumulates within the superior attributes function $\Theta_{in}$ of the associated Topic. However, it is important to note that this fine-grained approach also enables further analyses, e.g. the total publishing rate a Node initiates.
+
+    The \Cref{def:ros2extendedTree,def:superiorTheta} thus facilitate the analysis of the ROS2 system in question by accumulating attribute values without losing the high degree of detail.
+        
+
+    \subsection{Creating Organisational Trees} \label{subsec:mathModel:trees}
+    Multiple concepts and structures of ROS2 systems follow the structure of a Tree, e.g. the namespace of a Node described in \Cref{sec:model:node}. Further concepts create a set of Trees that might be joined (by a virtual and thus passive Member) to create a superior Tree encompassing all Trees of a given set, e.g. the concept of Executors (described in \Cref{sec:model:executors}).
+    To represent those Trees within the directed Graph, the following definition denotes families of organisation Edges $E_i$, to extend $G$ and construct edge-induced, rooted Trees.
+    \begin{definitionbox}[label=def:ros2edgeInducedTree, list text={Rooted Tree for Various Perspectives}]{Rooted Tree for Various Perspectives \cite[p.~3]{adaPaper}}{}
+       Let $0<i<N$ with $N \in \mathbb{N}_{>0}$, then $E_i$ is defined as
+        \begin{align*}
+            E_i &= (M \times M) \times \{i\}\text{.}
+        \end{align*}
+        Whereas the edge-induced, directed Subgraph $T_i = (M_i,\,E'_i)$ forms a directed, rooted Tree, with
+        \begin{itemize}[label=$\circ$]
+            \item $E'_i = \{ (m,n) \mid ((m,n),\, i) \in E_i \} \text{, with } m,\,n\in M$,
+            \item $M_i = \{m,\,n\in M \mid (m,n) \in E'_i \cup (n,m) \in E'_i\}$.
+        \end{itemize}
+        \medskip
+        The root is represented by
+        \begin{align*}
+            \exists !r\in M_i\: \forall m\in M_i\colon\:(m,r)\notin E_i\text{.}
+        \end{align*}
+    \end{definitionbox}
+
+    \subsubsection{Reflection}
+    \Cref{def:ros2edgeInducedTree} enables the construction of edge-induced Trees $T_i$ by creating additional relations between Members. Those hierarchies aggregate areas of the ROS2 system and will be utilised in the subsequent to total the attribute values of Members.
+    Since the root of each Tree is defined as the unique Member without incoming adjacent Edges, the resulting Tree is well-defined. Each adjacent outgoing Edge connects a specific Member to one of its children, thus directing to the leaves of the respective Tree. To elaborate, multiple exemplary Trees are illustrated in the following. For the sake of clarity, only the edge-induced Trees are visualised.
+
+    The first exemplary, edge-induced Tree that can be created within the ROS2 Graph is outlined by the namespaces described in \Cref{sec:model:node} and represented as a model in \Cref{fig:tikz:PKG:Namespaces}. As namespaces organise Members and neither execute nor control any operations, they refer to the concept of passive Members. There are no constraints to the leaves of the Tree as they may either be Nodes or Topics and thus active or passive Members, respectively. An exemplarily, namespace-driven Tree is visualised in \Cref{fig:tikz:mathModel:namespace}. To clarify the example, the Members are filled with exemplary names. It is important to note that although multiple Members may have the same name, they are differentiated by their respective namespaces. Thus, the fully qualified name of the bottom outer right active Member is \glqq{}/turtle2/turtlesim\grqq{}, while the second active Member called \glqq{}turtlesim\grqq{} is identified as \glqq{}/turtle1/turtlesim\grqq{}.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/treeNamespace.tex}
+        \caption[Exemplary Namespace-Driven Tree]{Exemplary Namespace-Driven Tree \legend} \label{fig:tikz:mathModel:namespace}
+    \end{figure}
+
+    The concept of Executors, as described in \Cref{sec:model:executors} and represented as a model in \Cref{fig:tikz:PKG:Executors}, organises Nodes into groups and thus creates a set of Trees, whereas the root relates to an Executor and the leaves to the Nodes. The only inner Member\footnote{inner Member: Analogous to a classic \glqq{}inner node\grqq{} but called \glqq{}inner Member\grqq{} to avoid confusion.} of each Tree refers to its root, representing the Executor itself. As illustrated in \Cref{fig:tikz:mathModel:executors}, the set of Trees is joined by employing a passive Member as a virtual root in order to connect to the root of each Subtree for creating a superior Tree.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/treeExecutor.tex}
+        \caption[Exemplary and Joined Executor-Driven Tree]{Exemplary and Joined Executor-Driven Tree \legend} \label{fig:tikz:mathModel:executors}
+    \end{figure}
+
+    A further hierarchy constructs a process-driven Tree, illustrated in \Cref{fig:tikz:mathModel:processesbig}. It is of particular interest, as it facilitates the assignment of Nodes to an operating system. To this end, a passive Member is created to establish a further level within this hierarchy. It connects to the roots of each (operating system specific) process-driven Tree\footnote{To elaborate how operating system specific, process-driven Trees are created, see \Cref{app:processdrivenTree}.}. Thus, it enables the analysis of active Members that belong to a specific operating system. Process-driven trees are elaborated in \Cref{app:furtherTreeStructures}.
+    \begin{figure}[h]
+        \centering
+        \hspace*{-.17cm}\input{figures/tikz/mathModel/treeProcessBig.tex}
+        \caption[Exemplary Process-Driven Tree]{Exemplary Process-Driven Tree (of the ROS2 system) \legend} \label{fig:tikz:mathModel:processesbig}
+    \end{figure}
+
+    The concept of Node Composition shapes a Container-driven Tree and is described within \Cref{app:furtherTreeStructures}. It is important to mention that not every Node has to be part of a Container and thus not every Node has to be part of a Container-driven Tree.
+
+    In summary, the creation of edge-induced Trees $T_i$ enables further perspectives onto the ROS2 system in question by grouping Members within a hierarchical manner. In order to derive the maximum benefit from this grouping, the creation of a top-down approach is introduced in the following.
+
+
+    \subsubsection{Aggregate Areas of a ROS2 System by Employing a Top-Down approach}
+    Based on the previously defined Trees, a top-down approach is introduced to facilitate the analysis of ROS2 systems by totalling up the attribute values of multiple Members instead of analysing each one individually.
+    \begin{definitionbox}[label=def:topDown, list text={Top-Down Approach to Analyse Directed, Rooted Tree}]{Top-Down Approach to Analyse Directed, Rooted Trees $T_i$}{}
+        Let $T_i=(M_i,\,E'_i)$ be a directed, rooted Tree as in \Cref{def:ros2edgeInducedTree}.
+        Let $C_i(p) = \{m \in M_i \mid (p,\,m) \in E_i\}$ denote the children of $p \in M_i$. 
+        Then the accumulated attribute functions $\Psi_{i, out} \colon\: M_i\times\mathbb{T} \to A$ and $\Psi_{i, in} \colon\: M_i\times\mathbb{T} \to A$ are recursively defined as
+        \begin{align*}
+            \Psi_{i,out}(p,t) &= \sum_{c \in C_i(p)} \left( \Psi_{i,out}(c,t) + \Theta_{out}(c,t) \right) \text{,} \\
+            \Psi_{i,in}(p,t) &= \sum_{c \in C_i(p)} \left( \Psi_{i,in}(c,t) + \Theta_{in}(c,t) \right) \text{,}
+        \end{align*}
+        where the sum is evaluated component-wise on $A$, $t\in\mathbb{T}$  and $\Psi_{i,out}(p)=\Psi_{i,in}(p)=\vec{0}$, for all $p$ with $C_i(p) = \emptyset$.
+    \end{definitionbox}
+
+
+    \subsubsection{Reflection}
+    \Cref{def:topDown} introduces a top-down approach for analysing directed, rooted Trees $T_i$, enabling a comprehensive view of the system's behaviour without analysing each Member individually.
+    This top-down approach propagates and accumulates edge-related properties along the hierarchical structure of $T_i$ through a recursive traversal similar to a Depth-First Search. In this process, each Member totals up attribute values from its descendants by accumulating the recursively aggregated attribute values of its direct children. Those attribute values are represented through the attribute functions $\Psi_{i,out}$ and $\Psi_{i,in}$.
+    To elaborate, \Cref{fig:tikz:mathModel:topDown} illustrates a more extensive, exemplary single step of the totalling. Note the exemplary calculation that elaborates the summation.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/topDown.tex}
+        \caption[Exemplary Single Step of Totaling]{Exemplary Single Step of Totaling \legendadapted} \label{fig:tikz:mathModel:topDown}
+    \end{figure}
+
+    A broader example of this procedure is illustrated in \Cref{fig:tikz:mathModel:topDownExample} for $\Psi_{i,out}$. It further illustrates that $p\in M_i$ can refer to any Member that is part of the edge-induced Tree $T_i$. This property is illustrated by the $\Psi_{3,out}$ column, which contains the respective values. Therefore, $p$ is employed to increase the resolution onto specific parts of the system.\newline    
+    The entities with wide rounded corners refer to active Members.
+    \begin{figure}[h!]
+        \centering
+        \input{figures/tikz/mathModel/topDownExample.tex}
+        \caption[Exemplary Top-Down Aggregation]{Exemplary Top-Down Aggregation of the Executor-Driven Tree for $\Psi_{3,out}$ \legendadapted} \label{fig:tikz:mathModel:topDownExample}
+    \end{figure}
+
+    As a result, this mechanism enables a holistic view by abstracting Members into groups and totalling their attribute values, offering a broad analysis of the ROS2 system.
+
+
+    \subsection[Creating Subtrees and Adding Binary Operations]{Creating Subtrees and Adding Binary Operations for Finer Aggregation} \label{subsec:mathModel:binaryAggregation}
+    As the in \Cref{def:ros2edgeInducedTree} described directed, rooted Trees organise and group Members of the ROS2 system, they enable a comprehensive view onto parts of the ROS2 system. In order to accumulate more specific parts, binary operations might be applied to the Members of respective Trees. For an even finer granulary selection, the following definition introduces the creation of Subtrees. Note that a Tree is also enabled to be its own Subtree.
+\clearpage
+
+    \begin{definitionbox}{Extracting Subtrees for a Fine-Grained Perspective}{ros2edgeInducedSubTree}
+        Given a directed, rooted Tree $T_i = (M_i,\,E'_i)$ and a Member $m\in M_i$, the directed Subtree rooted at $m$ is defined as
+        \vspace{-.25cm}
+        \begin{align*}
+            T_{i,m} = (M_{i,m},\,E'_{i,m})\text{,}
+        \end{align*}\vspace{-.25cm}
+        with
+        \begin{itemize}[label=$\circ$]
+            \item $M_{i,m} = \{ m \} \cup \{ u \in M_i \mid m \leadsto u \}$\spadesuitfootnote{$a \leadsto b$: there exists a directed path from $a$ to $b$ \cite[p.~787]{paths}} and
+            \item $E'_{i,m} = \{ (v,\,w) \in E'_i \mid v,\,w \in M_{i,m} \}$.
+        \end{itemize}
+    \end{definitionbox}
+
+    With the existence of Subtrees, the following definition denotes multiple binary operations to be applied on Subtrees.
+    \begin{definitionbox}{Binary Operations on Trees}{treeOperations}
+        Let $T_{i} = (M_i,\,E_i)$ and $T_{j} = (M_j,\,E_j)$ be directed, rooted Trees like defined in \Cref{def:ros2edgeInducedTree} and let $m \in M_i$ and $n \in M_j$. Then the corresponding Subtrees $T_{i,m}~=~(M_{i,m},\,E_{i,m})$ and $T_{j,n} = (M_{j,n},\,E_{j,n})$ are rooted at $m$ and $n$ as defined in \Cref{def:ros2edgeInducedSubTree}. \newline
+        Hence, the following operations on Member sets of Subtrees are defined:
+        \begin{itemize}[label=$\circ$]
+            \item Intersection: \hspace{1.6cm}
+                $M_{(i,m)\cap (j,n)} = M_{i,m} \cap M_{j,n}$,
+            \item Union: \hspace{2.6cm}
+                $M_{(i,m)\cup (j,n)} = M_{i,m} \cup M_{j,n}$,
+            \item Difference: \hspace{1.92cm}
+                $M_{(i,m)\setminus (j,n)} = M_{i,m} \setminus M_{j,n}$.
+        \end{itemize}
+    \end{definitionbox}
+
+    With the created sets of Members, the following definition denotes how the attribute values of collected Members are totalled.
+\begin{samepage}
+    \begin{definitionbox}{Accumulation of Binary Aggregated Subsets}{treeOperationAggregation}
+       Let $\circledast$ be the abstract binary operation to represent one of the concrete operations highlighted in \Cref{def:treeOperations}:
+       $$\circledast \in \{\cap,\,\cup,\,\setminus\}$$
+       and $t \in \mathbb{T}$. Then the attribute functions $\Upsilon_{out}\colon\:M_{(i,m)\circledast(j,n)}\times \mathbb{T}\to A$ and $\Upsilon_{in}~\colon\:M_{(i,m)\circledast(j,n)}~\times~\mathbb{T}~\to~A$ are defined as
+       \begin{align*}
+            \Upsilon_{out}(M_{(i,m)\circledast(j,n)},t)&=\sum\limits_{w\in M_{(i,m)\circledast(j,n)}}\Theta_{out}(w,t)\text{ and} \\
+            \Upsilon_{in}(M_{(i,m)\circledast(j,n)},t)&=\sum\limits_{w\in M_{(i,m)\circledast(j,n)}}\Theta_{in}(w,t)\text{.}
+       \end{align*}
+    \end{definitionbox}
+\end{samepage}
+
+
+    \subsubsection{Reflection}
+    In order to facilitate the analysis of specific parts of a ROS2 system, \Cref{def:ros2edgeInducedSubTree} introduces Subtrees to select specific sections. Based on those Subtrees, \Cref{def:treeOperations} denotes three binary operations to analyse Trees with more detail by creating the
+    \begin{enumerate*}[label=\Alph*)]
+        \item intersection,
+        \item union, and
+        \item difference.
+    \end{enumerate*}
+    \Cref{def:treeOperationAggregation} totals the Member attribute values of the given set. As the attribute functions $\Theta_{out}$ and $\Theta_{in}$ consider either outgoing or incoming Edges, respectively, the corresponding attribute functions $\Upsilon_{out}$ and $\Upsilon_{in}$ inherit those characteristics and thus also the characteristics of unambiguity. All binary operations are exemplarily illustrated in \Cref{fig:tikz:mathModel:binaryAggregation}, whereas the gray dashed lines represent the Tree $T_i$ while the purple dashed lines represent the Tree $T_j$. The union (\rom{1}) is induced by $\Upsilon(M_{(i,m_1)\cup(i,m_2)},t)$. The intersection (\rom{2}) is induced by $\Upsilon(M_{(i,m_1)\cap(j,m_4)},t)$. The difference (\rom{3}) is induced by $\Upsilon(M_{(i,m_2)\setminus(j,m_3)},t)$.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/binaryOperations.tex}
+        \caption[Exemplary Binary Operations]{Exemplary Binary Operations \legendadapted} \label{fig:tikz:mathModel:binaryAggregation}
+    \end{figure}
+
+\vspace{-.75cm}
+    \section{Discussing the Mathematical Meta-Model: Capabilities and Challenges} \label{sec:mathModel:discussion}
+\vspace{-.5cm}
+    This chapter introduced a mathematical meta-model that abstracts the introduced ROS2 model in order to represent the fundamentals of ROS2 systems by providing active Members and passive Members to reflect various entities of ROS2 systems. As the Members of the Graph are abstract and not dedicated exclusively to, e.g., Nodes or Topics, they enable the integration of ROS2 system specific entities or information, e.g., battery level information. Such data can be integrated into the model by creating and maintaining a respective instance, without being a fundamental component of ROS2 systems.\newline
+    Furthermore, the chapter introduced multiple communication Edges to represent the overall communication structure of ROS2 systems alongside the concept of timers. The latter are represented as virtual communication Edges and thus a part of the ROS2 communication Graph. To facilitate \acl{fdd}, the introduced mathematical meta-model enables the construction of edge-induced Trees and thus creates additional perspectives onto the ROS2 system in question. Finally, three types of aggregation are introduced to facilitate the analysis of system areas. It is imperative to acknowledge the significance of those aggregations, as they enable a broad analysis of the ROS2 system in question without necessitating expert knowledge. For instance, the root of an arbitrary Tree can be observed, employing $\Psi_{out}$ or $\Psi_{in}$, in order to gather a blurred but broad analysis of the ROS2 system which might be refined on suspicious behaviour. Moreover, the introduced meta-model enables the allocation of all attributes to their respective origins, thereby enabling a precise and detailed analysis.\newline
+    Alongside the forms of aggregation, the mathematical meta-model also enables time-series by employing various attribute values through the temporal domain. For constant attributes, the attribute values remain constant for each timestamp. However, varying attribute values represent a time-series that may be analysed at a later point in time. Importantly, this property enables the analysis of time-dependent behaviour and statistical evaluation by calculating, e.g., the variance or the arithmetic mean.\newline
+    Additionally, as there are no restrictions to the attributes, the content of the messages is also representable by the mathematical meta-model, enabling their analysis.\newline
+    The time-series are separated from the structural information that are represented by the directed Graph and the edge-induced Trees. This separation enables a flexible analysis of the ROS2 system, as the time-series can be evaluated independently of the structural information.
+
+    Despite the variety of concepts that the mathematical meta-model is able to represent, and the multiple types of aggregation that facilitate the analysis of a ROS2 system in question, it does not adequately capture callback groups.
+    As illustrated in \Cref{fig:tikz:mathModel:callbackgroups}, callback groups are subordinate groups of an Executor and represent organisational entities and thus passive Members. They necessitate a relation that reaches from a passive Member, for which applies $m_P\notin G_0$, to a sending or subscribing Edge.
+    \begin{figure}[h]
+        \centering
+        \input{figures/tikz/mathModel/callbackGroups.tex}
+        \caption[Aggregating Values by Callback Groups]{Aggregating Values by Callback Groups \legendadapted} \label{fig:tikz:mathModel:callbackgroups}
+    \end{figure}\enlargethispage{1\baselineskip}
+    Even though \Cref{def:ros2extendedTree} defines similar relations, they reach from an arbitrary communication Member to its adjacent communication Edges. This excludes relations from Members that are not part of the ROS2 communication Graph, as well as relations from Members $M_0$ to non-adjacent Edges. The Edges that would be necessitated but are not established are visualised as dotted lines within \Cref{fig:tikz:mathModel:callbackgroups}.
+
+In summary, this chapter abstracts the introduced ROS2 model to derive a mathematical meta-model that supports \acl{fdd}.

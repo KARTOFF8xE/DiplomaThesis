@@ -1,0 +1,8 @@
+\begin{tikzpicture}
+    \activeCausalMember{pub}{(0,0)}{talker}
+    \passiveCausalMember{topic}{(4,0)}{topic}
+    \activeCausalMember{sub}{(8,0)}{listener}
+
+    \curvedEdgeWithProperties{pub}{topic}{}{0}{E0}
+    \curvedEdgeWithProperties{topic}{sub}{}{0}{E0}
+\end{tikzpicture}

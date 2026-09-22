@@ -1,0 +1,36 @@
+\begin{tikzpicture}
+
+    \newcommand{\board}[7]{
+        \begin{tabular}{c c c}
+            \multicolumn{3}{c}{{\small #1}} \\ \hline
+                  & \small $\Theta_{out}$ & \small $\Psi_{3,out}$ \\
+            \small $A_0$ & \small #2 & \small #5 \\
+            \small $A_1$ & \small #3 & \small #6 \\ 
+            \multicolumn{3}{c}{\hspace{-.5cm}  \small $\cdots$} \\
+            \small $A_n$ & \small #4 & \small #7 \\
+        \end{tabular}
+    }
+    
+        \node [MP] (root) at (0,7.5) {\board{root}{0}{0}{0}{16}{20}{24}};
+    
+        \node [MA, rectangle, rounded corners = 22] (executor1)          at (-3.75,3.75) {\board{executor1}{0}{0}{0}{5}{7}{9}};
+        \node [MA, rectangle, rounded corners = 22, G0] (controller1)    at (-5.6,0) {\board{controller}{1}{2}{3}{0}{0}{0}};
+        \node [MA, rectangle, rounded corners = 22, G0] (turtlesim1)     at (-1.87,0) {\board{turtlesim}{4}{5}{6}{0}{0}{0}};
+    
+        \node [MA, rectangle, rounded corners = 22] (executor2)          at (1.87,3.75) {\board{executor2}{0}{0}{0}{7}{8}{9}};
+        \node [MA, rectangle, rounded corners = 22, G0] (controller2)    at (1.87,0) {\board{controller}{7}{8}{9}{0}{0}{0}};
+    
+        \node [MA, rectangle, rounded corners = 22] (executor3)          at (5.6,3.75) {\board{executor3}{0}{0}{0}{4}{5}{6}};
+        \node [MA, rectangle, rounded corners = 22, G0] (turtlesim2)     at (5.6,0) {\board{turtlesim}{4}{5}{6}{0}{0}{0}};
+    
+        \draw [TreeExecutor, ->] (root) -| (executor1);
+        \draw [TreeExecutor, ->] (root) -| (executor2.80);
+        \draw [TreeExecutor, ->] (root) -| (executor3);
+    
+        \draw [TreeExecutor, ->] (executor1) -| (controller1.110);
+        \draw [TreeExecutor, ->] (executor1) -| (turtlesim1.70);
+    
+        \draw [TreeExecutor, ->] (executor2) -- (controller2);
+        \draw [TreeExecutor, ->] (executor3) -- (turtlesim2);
+    
+\end{tikzpicture}

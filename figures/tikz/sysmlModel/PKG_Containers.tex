@@ -1,0 +1,13 @@
+\begin{tikzpicture}
+    \tikzset{
+        package/.style={
+            minimum width = 2cm
+        }
+    }
+
+    \umlemptypackage[package, fill=white, type=Block]{Container}
+    \umlemptypackage[package, x=5, fill=white, type=Block]{Node}
+
+    \draw [<-diamond, barbarrow] (Node.west) -- node[at start, above left]{0..*} node[at end, above right]{0..1} (Container.east);
+
+\end{tikzpicture}

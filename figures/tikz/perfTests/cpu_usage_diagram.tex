@@ -1,0 +1,113 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        name=second,
+        xlabel={Frequency [Hz]},
+        ylabel=\empty,
+        legend style={at={(.015,.98)}, anchor=north west, legend columns=2, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=14cm,
+        height=4cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xtick pos=bottom,
+        xmin=0,
+        xmax=100,
+        ytick pos=left,
+        ymin=0,
+        ymax=3,
+        % ytick distance=5,
+        ytick={0,1,2},
+        grid=both,
+        tick align=center,
+        minor y tick num=1,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/cpu_usage_trace_reformatted.csv}\datatable
+
+        \newcommand{\cpuPlotCaster}[2]{
+            \addplot+[
+                mark=\symbolProofOfConcept,
+                mark options={color=#2},
+                color=#2,
+                solid,
+                thick
+            ] table [
+                x=frequency,
+                y expr=\thisrow{#1/stream/cpu_median}*100/6,
+            ] {\datatable};
+        }
+        \cpuPlotCaster{0}{tubaf-energy}
+        \cpuPlotCaster{10}{tubaf-geo}
+        \cpuPlotCaster{20}{tubaf-primary-dark}
+        \cpuPlotCaster{30}{tubaf-material}
+        \cpuPlotCaster{40}{tubaf-environment}
+
+    \end{axis}
+    \begin{axis}[
+        at={($(second.north west) + (0,3)$)},
+        anchor=south west,
+        xlabel=\empty,
+        ylabel=\empty,
+        legend style={at={(.015,.98)}, anchor=north west, legend columns=2, font=\footnotesize},
+        /tikz/every even column/.append style={column sep=0.4cm},
+        width=14cm,
+        height=8cm,
+        error bars/y dir=both,
+        error bars/y explicit,
+        xtick pos=bottom,
+        xmin=0,
+        xmax=100,
+        xticklabels=\empty,
+        ytick pos=left,
+        ymin=0,
+        ymax=20,
+        grid=both,
+        tick align=center,
+        minor y tick num=1,
+        minor grid style={gray!25},
+    ]
+
+        \pgfplotstableread[col sep=comma]{measurements/cpu_usage_trace_reformatted.csv}\datatable
+        \addlegendimage{color=tubaf-energy, thick}
+        \addlegendentry{n=~~0}
+        \addlegendimage{only marks, mark=\symbolROSSystem,color=tubaf-black}
+        \addlegendentry{ROS2 System}
+        \addlegendimage{color=tubaf-geo, thick}
+        \addlegendentry{n=10}
+        \addlegendimage{only marks, mark=\symbolProofOfConcept,color=tubaf-black}
+        \addlegendentry{Shadow Implementation}
+        \addlegendimage{color=tubaf-primary-dark, thick}
+        \addlegendentry{n=20}
+        \addlegendimage{white}
+        \addlegendentry{}
+        \addlegendimage{color=tubaf-material, thick}
+        \addlegendentry{n=30}
+        \addlegendimage{white}
+        \addlegendentry{}
+        \addlegendimage{color=tubaf-environment, thick}
+        \addlegendentry{n=40}
+
+
+        \newcommand{\cpuPlotROS}[2]{
+            \addplot+[
+                mark=\symbolROSSystem,
+                mark options={color=#2},
+                color=#2,
+                solid,
+                thick
+            ] table [
+                x=frequency,
+                y expr=\thisrow{#1/ros2/cpu_median}*100/6,
+            ] {\datatable};
+        }
+        \cpuPlotROS{0}{tubaf-energy}
+        \cpuPlotROS{10}{tubaf-geo}
+        \cpuPlotROS{20}{tubaf-primary-dark}
+        \cpuPlotROS{30}{tubaf-material}
+        \cpuPlotROS{40}{tubaf-environment}
+
+    \end{axis}
+
+    \node [above, rotate=90, xshift=1cm, yshift=1cm] at (second.north west) {CPU Utilisation [\%]};
+\end{tikzpicture}

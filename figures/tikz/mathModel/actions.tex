@@ -1,0 +1,20 @@
+\begin{tikzpicture}
+        
+    \node [MA, G0] (node1) at (3,0) {$m_2$};
+    \node [MA, G0] (node2) at (-3,0) {$m_1$};
+    \node [MP, G0] (topic1) at (0,1.75) {\phantom{$m_1\in M_A$}};
+    \node [MP, G0] (topic2) at (0,-1.75) {\phantom{$m_1\in M_A$}};
+
+    \draw [<-, E0] (node1) edge [bend right=10]  (node2);
+    \draw [->, E0] (node1) edge [bend  left=10]  (node2);
+    \draw [<-, E0] (node1) edge [bend right=23]  (node2);
+    \draw [->, E0] (node1) edge [bend  left=23]  (node2);
+    \draw [<-, E0] (node1) edge [bend right=36]  (node2);
+    \draw [->, E0] (node1) edge [bend  left=36]  (node2);
+
+    \draw [->, E0] (node1) edge [bend right=30]  (topic1.east);
+    \draw [->, E0] (node1) edge [bend  left=30]  (topic2.east);
+    \draw [<-, E0] (node2) edge [bend  left=30]  (topic1.west);
+    \draw [<-, E0] (node2) edge [bend right=30]  (topic2.west);
+
+\end{tikzpicture}

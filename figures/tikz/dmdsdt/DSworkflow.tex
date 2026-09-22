@@ -1,0 +1,38 @@
+\begin{tikzpicture}[>={Triangle[angle=60:4]},help help lines/.style={lightgray!50,very thin}, help lines/.style={gray!50,thin}]
+
+    \tikzset{
+        ExecutingBlock/.style={
+            rectangle,
+            rounded corners = 5,
+            draw = black,
+            inner sep = 5,
+        },
+        Block/.style={
+            rectangle,
+            draw = black,
+            inner sep = 5,
+        },
+    }
+
+    %%% Nodes
+    \node [Block] (instance) {Shadow \textbf{Instance}};
+    \node [ExecutingBlock, above = .5cm of instance] (caster) {Shadow \textbf{Caster}};
+    \node [above = 1.4cm of caster] (data) {\textbf{Data}};
+    \node [Block, below left = .5cm of data] (type) {Shadow \textbf{Type}};
+    \node [Block, below right = .4cm and .9cm of data] (models) {\textbf{Models}};
+
+    \node [above left = .5cm and .9cm of data] (asset) {\textbf{Asset}};
+    \node [above right = .4cm and 0cm of data] (others) {\textbf{other Systems}}; % , text width = 1.75cm
+
+    %%% Arrows
+    \draw [->] (caster) -- (instance);
+    
+    \draw [->] (type.south) |- (caster.west);
+    \draw [->] (data.south) -- (caster.north);
+    \draw [->] (models.south) |- (caster.east);
+
+    
+    \draw [->] (asset.south) |- (data.west);
+    \draw [->] (others.south) |- (data.east);
+
+\end{tikzpicture}

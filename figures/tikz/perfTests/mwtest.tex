@@ -1,0 +1,37 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Frequency [Hz]},
+        ylabel={Number of Publisher-Subscriber Pairs (n)},
+        colormap name=colormap-latencies,
+        colorbar,
+        colorbar sampled,
+        point meta min=0,
+        point meta max=0.05,
+        colorbar style={
+            samples=512,
+            ylabel=Mann-Whitney $p$-value,
+            yticklabel style={
+                align=right,
+            },
+            ytick={0,0.025,0.05,1},
+            % yticklabels={0,0.025,0.05},
+        },
+        yticklabel style={
+            align=right,
+            /pgf/number format/fixed,
+            /pgf/number format/precision=3,
+        },
+    ]
+    \addplot [
+        matrix plot*,
+        mesh/rows=10,
+        point meta=explicit,
+    ] table [
+        col sep=comma,
+        x=frequency,
+        y=n,
+        meta expr=\thisrow{mw_p_value}
+    ] {measurements/latencies_sig.csv};
+    \end{axis}
+
+\end{tikzpicture}

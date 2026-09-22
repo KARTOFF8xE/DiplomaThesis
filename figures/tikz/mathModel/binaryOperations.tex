@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+\definecolor{blue-violet}{rgb}{0.55, 0.0, 0.55}
+    \node (root1) [M] {\phantom{$m_0$}};
+    \node (inode11) [M, left = of root1] {$m_1$};
+    \node (inode12) [M, right = of root1] {$m_2$};
+
+    \node (leaf1) [M, G0, below = .6 of inode11] {\phantom{$m_0$}};
+    \node (leaf2) [M, G0, below = .6 of inode12] {\phantom{$m_0$}};
+    \node (leaf3) [M, G0, below = of leaf1] {\phantom{$m_0$}};
+    \node (leaf4) [M, G0, below = of leaf2] {\phantom{$m_0$}};
+
+
+    \node (inode21) [M, below right = .6 and of leaf3] {\phantom{$m_0$}};
+    \node (inode22) [M, below = .6 of inode21] {$m_3$};
+    \node (root2) [M, below = .6 of inode22] {$m_4$};
+
+    \draw [->, Tree] (root1) -- (inode11);
+            \draw [->, Tree] (inode11) -- (leaf1);
+            \draw [->, Tree] (inode11.west) -- ++(-.5,0) |- (leaf3.west);
+    \draw [->, Tree] (root1) -- (inode12);
+        \draw [->, Tree] (inode12) -- (leaf2);
+        \draw [->, Tree] (inode12.east) -- ++(.5,0) |- (leaf4.east);
+    
+    
+    \draw [->, Tree, blue-violet] (root2) -- (inode22);
+        \draw [->, Tree, blue-violet] (inode22) -| (leaf3);
+        \draw [->, Tree, blue-violet] (inode22) -| (leaf4);
+
+    \draw [->, Tree, blue-violet] (root2.west) -- ++(-.5,0) |- (inode21.west);
+        \draw [->, Tree, blue-violet] (inode21.120) |- (leaf1);
+        \draw [->, Tree, blue-violet] (inode21.60) |- (leaf2);
+
+    \draw [tubaf-environment, thick, rounded corners = 6] (-4.3,-2.95) rectangle (4.3,-0.6) node [midway, below right = 1.25cm and 3.75cm] {\rom{1}};
+    \draw [tubaf-geo, thick, rounded corners ] (-4.2,-2.85) rectangle (-1.8,-0.7) node [midway, right = 1.2cm] {\rom{2}};
+    \draw [tubaf-energy, thick, rounded corners] (4.2,-2.85+1.45) rectangle (1.85,-2.15+1.45) node [midway, below left = .2cm and 1.2cm] {\rom{3}};
+
+    \draw [->, E0] (leaf1) -- (leaf3);
+    \draw [->, E0] (leaf2) -- (leaf4);
+
+\end{tikzpicture}

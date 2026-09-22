@@ -1,0 +1,44 @@
+\begin{tikzpicture}
+    \passiveMember{processRoot}{(0,0)}{host}
+    \activeMember{ros2a}{(2, 2)}{ros2}
+    \activeMember{ros2b}{(2, -2)}{ros2}
+    \activeCausalMember{actSrv}{(4.5,2)}{fib\_act\_srv}
+    \activeCausalMember{actCli}{(4.5,-2)}{fib\_act\_cli}
+
+    \passiveCausalMember{status}{(8,1)}{status}
+    \passiveCausalMember{feedback}{(8,3)}{feedback}
+    \passiveCausalMember{rosout}{(8,-1)}{rosout}
+    \passiveCausalMember{paramEv}{(8,-3)}{paramEv}
+
+    \curvedEdgeWithProperties{processRoot}{ros2a}{}{0}{TreeProcess}
+    \curvedEdgeWithProperties{processRoot}{ros2b}{}{0}{TreeProcess}
+    \curvedEdgeWithProperties{ros2a}{actSrv}{}{0}{TreeProcess}
+    \curvedEdgeWithProperties{ros2b}{actCli}{}{0}{TreeProcess}
+
+
+    \curvedEdgeWithProperties{actSrv}{actCli}{}{25}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{actSrv}{}{-15}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{actCli}{}{5}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{actSrv}{}{5}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{actCli}{}{-15}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{actSrv}{}{25}{G0, thick}
+
+    \curvedEdgeWithProperties{actSrv}{feedback}{}{0}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{status}{}{0}{G0, thick}
+    \curvedEdgeWithProperties{feedback}{actCli}{}{0}{G0, thick}
+    \curvedEdgeWithProperties{status}{actCli}{}{0}{G0, thick}
+
+    \curvedEdgeWithProperties{actSrv}{rosout}{}{3}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{rosout}{}{3}{G0, thick}
+    \curvedEdgeWithProperties{actSrv}{paramEv}{}{3}{G0, thick}
+    \curvedEdgeWithProperties{actCli}{paramEv}{}{3}{G0, thick}
+
+
+    \curvedEdgeWithProperties{rosout}{actSrv}{}{3}{G0, thick}
+    \curvedEdgeWithProperties{rosout}{actCli}{}{3}{G0, thick}
+    \curvedEdgeWithProperties{paramEv}{actSrv}{}{3}{G0, thick}
+    \curvedEdgeWithProperties{paramEv}{actCli}{}{3}{G0, thick}
+
+    \CommunicationTimerNoText{actCli}{-70}
+    \CommunicationTimerNoText{actCli}{-120}
+\end{tikzpicture}

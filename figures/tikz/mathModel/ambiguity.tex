@@ -1,0 +1,15 @@
+\begin{tikzpicture}
+
+    \node [MA, G0] (node1) {$m_1$};
+    \node [MA, G0, right = 2cm of node1] (node2) {$m_2$};
+
+    \draw [<-, E0] (node1) edge [bend left=20] node (e1) [midway, above] {$e_1$} (node2);
+    \draw [->, E0] (node1) edge [bend right=20] node (e2) [midway, below] {$e_2$} (node2);
+
+    \draw [Relation] (node1.90) edge [->] [bend left=10] node [midway, above left] {\small$(e_1, m)\in\rho(m_1)$} (e1.west);
+    \draw [Relation] (node1.270) edge [->] [bend right=10] node [midway, below left] {\small$(m, e_2)\in\rho(m_1)$} (e2.west);
+
+    \draw [Relation] (node2.90) edge [->] [bend right=10] node [midway, above right] {\small$(m, e_1)\in\rho(m_2)$} (e1.east);
+    \draw [Relation] (node2.270) edge [->] [bend left=10] node [midway, below right] {\small$(e_2, m)\in\rho(m_2)$} (e2.east);
+
+\end{tikzpicture}

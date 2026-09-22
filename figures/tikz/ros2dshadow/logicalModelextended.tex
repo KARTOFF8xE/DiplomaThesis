@@ -1,0 +1,99 @@
+\begin{tikzpicture}
+    \node [db, anchor = east] (gdb) at (-2,-.5) {graph db};
+        \whitebigodot{tubaf-geo}{(gdb.270)}
+    \node [db] (tsdb) at (0,-.5) {time-series db};
+        \whitebigodot{tubaf-material}{(tsdb.270)}
+    \node [db, anchor = west] (ldb) at (2,-.5) {log db};
+       \whitebigodot{tubaf-environment}{(ldb.270)}
+
+    \node [block, rectangle] (config) at (-6,-.5) {Config};
+        \node [anchor=north west] at (config.north west) {\config};
+    
+    \node [block] (tracer) at (-6,-4) {Tracer};
+        \whitebigodot{tubaf-geo}{(tracer.230)}
+        \whitebigotimes{tubaf-material}{(tracer.270)}
+        \whitebigotimes{tubaf-environment}{(tracer.310)}
+    \node [block] (relation) at (-2,-2) {\phantom{Management}};
+        \whitebigodot{tubaf-geo}{(relation.270)}
+        \node [anchor=north west] at (relation.north west) {\config};
+        \node [align=center] at (relation) {Relation-\\Management};
+    \node [block] (proc) at ( 2,-2) {\phantom{Observer}};
+        \whitebigotimes{tubaf-material}{(proc.270)}
+        \node [align=center] at (proc) {Process-\\Observer};
+    \node [block] (nodeandtopic) at (-2,-4) {\phantom{Management}};
+        \whitebigodot{tubaf-geo}{(nodeandtopic.247)}
+        \whitebigotimes{tubaf-material}{(nodeandtopic.293)}
+        \node [align=center] at (nodeandtopic) {Node-and-\\Topic-Observer};
+        \node [anchor=north west] at (nodeandtopic.north west) {\config};
+    \node [block] (aggregator) at (2,-4) {\phantom{Observer}};
+        \whitebigodot{tubaf-geo}{(aggregator.270)}
+        \node [align=center] at (aggregator) {Task-\\Orchestrator};
+    \node [block] (summarizer) at (2,-6) {\phantom{Observer}};
+        \whitebigodot{tubaf-geo}{(summarizer.230)}
+        \whitebigodot{tubaf-material}{(summarizer.270)}
+        \whitebigodot{tubaf-environment}{(summarizer.310)}
+        \node [align=center] at (summarizer) {Task-\\Executor};
+    \node [block] (io) at (6,-4) {IO-Module};
+    % \node [block] (tsanalyser) at (6,-2) {};
+    %     \whitebigodot{tubaf-material}{(tsanalyser.270)}
+    %     \node [align=center] at (tsanalyser) {Time-Series-\\Analyser};
+    \node [block] (evaluator) at (6,-2) {Evaluator};
+        \whitebigodot{tubaf-geo}{(evaluator.247)}
+        \whitebigodot{tubaf-material}{(evaluator.293)}
+
+    %%% Tracer -> ...
+    \path (tracer.east) ++(0,.2) coordinate (source);
+    \path (nodeandtopic.west) ++(0,.2) coordinate (dest);
+        \draw [->] (source) -- (dest);
+    \draw [->, rounded corners] (tracer) |- (relation);
+    \path (io.south) ++(.75,0) coordinate (source);
+    \path (tracer.south) ++(-.85,0) coordinate (dest);
+        \draw [<-, rounded corners] (source) -- ++(0,-3) -| (dest);
+    
+    %%% RelationMgmt -> ...
+    \draw [->] (relation) -- (proc);
+    \draw [->] (relation.south east) -- (aggregator.north west);
+    
+    %%% ProcObserver -> ...
+    \draw [->] (proc.south west) -- (nodeandtopic.north east);
+
+    %%% NodeAndTopicObserver -> ...
+    \path (tracer.east) ++(0,-.2) coordinate (source);
+    \path (nodeandtopic.west) ++(0,-.2) coordinate (dest);
+        \draw [<-] (source) -- (dest);
+    \path (nodeandtopic.south) ++(.75,0) coordinate (dest);
+    \path (io.south) ++(-.75,0) coordinate (source);
+        \draw [<-, rounded corners] (source) -- ++(0,-2.5) -| (dest);
+
+    %%% Aggregator -> ...
+    \path (aggregator.south) ++(-.5,0) coordinate (source);
+    \path (summarizer.north) ++(-.5,0) coordinate (dest);
+        \draw [->] (source) -- (dest);
+    % \path (aggregator.east) ++(0,.2) coordinate (source);
+    % \path (io.west) ++(0,.2) coordinate (dest);
+        % \draw [->] (source) -- (dest);
+    \draw [->] (aggregator) -- (nodeandtopic);
+
+    %%% IOModule -> ...
+    % \path (aggregator.east) ++(0,-.2) coordinate (source);
+    % \path (io.west) ++(0,-.2) coordinate (dest);
+    \draw [->] (io) -- (aggregator);
+    % \path (nodeandtopic.south) ++(.75,0) coordinate (dest);
+    % \path (io.south) ++(-.75,0) coordinate (source);
+    %     \draw [->, rounded corners] (source) -- ++(0,-2.5) -| (dest);
+    \path (io.south) coordinate (source);
+    \path (tracer.south) ++(.85,0) coordinate (dest);
+        \draw [->, rounded corners] (source) -- ++(0,-2.75) -| (dest);
+    \draw [->] (io.north west) -- (proc.south east);
+    \path (io.north) ++(-.75,0) coordinate (source);
+    \path (evaluator.south) ++(-.75,0) coordinate (dest);
+        \draw [->, rounded corners] (source) -- (dest);
+    \path (io.north) ++(.75,0) coordinate (source);
+    \path (evaluator.south) ++(.75,0) coordinate (dest);
+        \draw [<-, rounded corners] (source) -- (dest);
+    % \draw (io.155) edge [->] [bend left = 25] (evaluator.south west);
+    % \draw (evaluator.south east) edge [->] [bend left = 25] (io.25);
+
+    %%% Summarizer
+    \draw [->] (summarizer.north east) -- (io.south west);        
+\end{tikzpicture}

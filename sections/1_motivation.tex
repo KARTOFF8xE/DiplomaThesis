@@ -1,0 +1,46 @@
+\chapter{Motivation} \label{chap:motivation}
+
+Robots are exposed to a wide range of environmental influences and are taking on increasingly far-reaching and complex tasks \cite{riseofrobots}. At the same time, their integration into the human environment is expanding, which increases both system complexity and development costs. As a result, there is a growing demand for early-stage evaluation of new approaches through concepts such as rapid prototyping \cite[p.~5]{rapidPrototyping}\cite[p.~161]{initialThoughtsOnRapidProto}. Rapid prototyping is an iterative process that has been employed for the development of robotic systems throughout the past 25 years \cite{RP1}\cite{RP2}\cite{RP3}\cite{RP4}. It is characterised by continuous changes in system behaviour, which are accompanied by a continuous change in expert knowledge about the robotic system. Thus, managing this knowledge poses a significant challenge.
+
+This challenge is particularly evident in modern robotic development frameworks, where modularity, flexibility, and distributed architectures are key elements. A prominent example of such a framework is the \acf{ros}, which is considered the \glqq{}de facto standard for robot application development\grqq{} \cite[p.~2545]{runtimeVerfificationAndFieldBaseTesting} and is widely used, particularly within the open-source community. However, since ROS1 had drawbacks such as limited support for multi-robot systems, no built-in security features and reliance on a centralised master node, it was not well-suited for safety-critical or industrial applications. These limitations ultimately led to the development of ROS2, which became the new de facto standard \cite[p.~80]{ros2isstandard}.
+Nevertheless, the distributed nature of ROS2 introduces further, significant challenges in understanding and analysing system behaviour, especially in dynamic and complex environments. For instance, when multiple Nodes communicate asynchronously, they can cause timing-related issues, message loss, or unintended interactions between perception, planning, and control components that are difficult to trace or reproduce.
+
+Virtual representations in the form of models provide an essential means to address these challenges by offering an abstract and structured view of the system under development \cite{MBSEemergingApproach}. This modelling approach is a central aspect of Model-Based Systems Engineering (MBSE), which promotes the use of formal models to support system development and validation \cite[p.~105]{MBSEemergingApproach}, as developers are not required to directly interact with the physical system. In particular, such models facilitate the identification, localisation, and analysis of faults. When combined with automated mechanisms for \acl{fdd}, they enable faster feedback cycles and more efficient debugging, ultimately accelerating development, reducing costs, and increasing system reliability \cite[p.~1]{accelerateDevelopmentCycles}. However, creating and maintaining such models for ROS2-based systems remains a significant challenge. Manual modelling is time-consuming and therefore particularly unsuitable for the methodology of rapid prototyping, whose dynamic and iterative nature requires frequent re-modelling, inducing a substantial overhead. Automated generation of the model would reduce the generated overhead.
+
+Therefore, this thesis proposes an approach to model ROS2 systems at runtime to support \acl{fdd} by facilitating their analysis. To this end, a meta-model is introduced to represent fundamental ROS2 systems. This meta-model serves as a blueprint for a Digital Shadow --~a passive, data-driven digital representation of a system~-- that aims at reducing the required expert knowledge and facilitating system analysis, in the domain of \acl{fdd}, at runtime. It thus represents the first part of STREAM (\acl{stream}), a pipeline for model-based \acl{fdd} for ROS2 systems. \Textcite{jkohl2025} employs the generated ROS2 system model to perform an \acl{fdd} at runtime.
+
+In order to elaborate on the objective of generating system specific models while ensuring broad applicability across various ROS2 systems, multiple key objectives, which shape the key contributions and design principles of this thesis, are listed:
+
+\begin{description}[leftmargin=\descriptionIndent]
+    \item[Generic Meta-Model for ROS2 Systems] \hfill \\
+    The meta-model has to be enabled to represent the fundamental concepts of ROS2 systems to support a wide range of ROS2 platforms. It is also required to enable the integration of platform-specific information where needed.
+
+    \item[Holistic Perspectives onto ROS2 Systems] \hfill \\
+    A comprehensive representation of the running ROS2 system, including perspectives beyond ROS2 (e.g., operating system aspects), is necessitated to facilitate \acl{fdd}. This also involves the creation of various perspectives on ROS2 systems.
+
+    \item[Runtime Representation] \hfill \\
+    The generated ROS2 system specific model has to be dynamic, meaning that it represents the dynamic nature and the runtime behaviour of a ROS2 system. To this end, the meta-model must enable this characteristics.
+
+    \hspace{-\descriptionIndent}\parbox{\textwidth}{The introduced meta-model, creating a dynamic and holistic view onto a wide range of ROS2 systems while enabling the integration of platform-specific information, forms the main contribution of this thesis.}
+
+    \item[Lightweight Digital Shadow] \hfill \\
+    The Digital Shadow has to remain lightweight to minimise overhead and avoid influencing the behaviour of a ROS2 system in question. Therefore, it is built upon two key design decisions:
+        \begin{itemize}
+            \item Event-based data handling, where only requested and essential data is transmitted to the client.
+            \item Monitoring of continuous data (e.g. utilisation metrics) is performed only on demand.
+        \end{itemize}
+
+    \item[Non-Intrusiveness] \hfill \\
+    The Digital Shadow is required to operate without requiring changes to the existing codebase of ROS2 systems in order to keep the software stack clean.
+            
+    \item[Minimising Expert Knowledge] \hfill \\
+    The non-intrusive approach further aims at minimising the required expert knowledge, meaning that the Digital Shadow should be enabled to operate with a bare minimum of required expert knowledge about the monitored ROS2 system.
+\end{description}
+
+The structure of this thesis is organised as follows:\newline
+\Cref{chap:fundamentals} introduces the fundamental principles of \acl{mbse} and the characteristics of Digital Shadows. 
+Subsequently, \Cref{chap:sota} analyses previous work on Digital Shadows, especially in the domain of robotic systems with a focus on ROS2. Furthermore, runtime verification, analysis, and modelling of ROS2 systems are also considered as they mirror related topics. 
+\Cref{chap:ros2systemModel} then delves into the modelling of ROS2 systems, covering various concepts ROS2 encompasses, thus marking the commencement of the author's contribution.
+\Cref{chap:concept} introduces the main contribution of this thesis by presenting the meta-model that serves as a representation of ROS2 systems and explores how it supports \acl{fdd}. 
+Employing the introduced meta-model as a blueprint for fundamental ROS2 systems, \Cref{chap:dshadow} creates a Digital Shadow that contributes to the objectives of this thesis. 
+Finally, \Cref{chap:evaluation} evaluates the proposed approach, followed by \Cref{chap:futurework}, which concludes the thesis and outlines directions for future research.

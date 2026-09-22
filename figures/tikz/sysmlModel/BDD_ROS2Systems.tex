@@ -1,0 +1,24 @@
+\begin{tikzpicture}
+    \tikzset{
+        package/.style={
+            minimum width = 2cm
+        }
+    }
+
+    \umlemptypackage[package, fill=white, type=Block]{Node};                 \node at (Node) {\small\textit{\Cref{sec:model:node}}};
+    \umlemptypackage[package, fill=white, x=-5, y=2, type=Block]{Container}  \node at (Container) {\small\textit{\Cref{sec:model:containers}}};
+    \umlemptypackage[package, fill=white, x=-5, y=-2, type=Block]{Process}   \node at (Process) {\small\textit{\Cref{sec:model:processes}}};
+    \umlemptypackage[package, fill=white, x=5, y=2, type=Block]{Topic}       \node at (Topic) {\small\textit{\Cref{subsec:model:topics}}};
+    \umlemptypackage[package, fill=white, x=5, y=-2, type=Block]{Executor}   \node at (Executor) {\small\textit{\Cref{sec:model:executors}}};
+
+
+    \draw [<-diamond, barbarrow, rounded corners] (Node.west) ++(0,.25) -- node[at start, above left]{0..*} ++(-1.1,0) |- node[midway, above]{composes} node[at end, below right]{0..1} (Container.east);
+    \draw [<-diamond, barbarrow, rounded corners] (Node.west) ++(0,-.25) -- node[at start, below left]{0..*} ++(-1.1,0) |- node[midway, below]{executes} node[at end, above right]{1} (Process.east);
+    \draw [diamond->, barbarrow, rounded corners] (Process.north) ++(0,1.1) -- node[midway, right]{executes} node[at start, above left]{1} node[at end, below left]{0..1} (Container.south);
+    
+    \draw [->, barbarrow, rounded corners] (Node.east) ++(0,.25) -- node[at start, above right]{1..*} ++(1.1,0) |- node[midway, above]{\phantom{p}interacts\phantom{p}} node[at end, below left]{0..*} (Topic.west);
+    \draw [<-open diamond, barbarrow, rounded corners] (Node.east) ++(0,-.25) -- node[at start, below right]{0..*} ++(1.1,0) |- node[midway, below]{contains} node[at end, above left]{1} (Executor.west);
+
+    \draw [->, barbarrow, rounded corners] (Node.south) ++(-.5,0) -- node[at start, below left]{0..*} ++(0,-.5) -- node[midway, below]{interacts} ++(1,0) -- node[at end, below right]{0..*} ++(0,.5);
+
+\end{tikzpicture}

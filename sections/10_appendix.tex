@@ -1,0 +1,136 @@
+\chapter{Further Tree Structures} \label{app:furtherTreeStructures}
+
+\section*{Container-Driven Tree} \label{app:containerdrivenTree}
+The concept of Containers, as described in \Cref{sec:model:containers} and illustrated in \Cref{fig:tikz:PKG:Containers}, organises Nodes into groups and thus creates a set of trees, whereas the root relates to the Container and the leaves to the Nodes. The only inner Member\footnote{inner Member: Analogous to a classic \glqq{}inner node\grqq{} but called \glqq{}inner Member\grqq{} to avoid confusion.} of each tree refers to its root, representing the Container itself. As visualised in \Cref{fig:tikz:mathModel:containers}, the set of trees is joined by employing a passive Member as virtual organising entity and thus passive Member that connects to each root of the subtree to create a superior tree. It is imperativ to mention that not every Node has to be part of a Container and thus not every Node has to be part of this tree.
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/mathModel/treeContainer.tex}
+    \caption[Exemplary and Joined Container-Driven Tree]{Exemplary and Joined Container-Driven Tree \legend} \label{fig:tikz:mathModel:containers}
+\end{figure}
+
+\section*{Process-Driven Tree} \label{app:processdrivenTree}
+Based on the model that represents processes and their structure is described in \Cref{sec:model:processes} and illustrated in \Cref{fig:tikz:PKG:Processes}. The process-driven tree is formed by traversing the tree structure of the processes in the opposite direction to their creation up to the initial direct start or launch (via a launch script described in \Cref{sec:model:processes}). This creates a set of trees consisting of active Members only. To create a superior tree, the roots of all trees of the set are joined by a virtual organisational entity and thus passive Member. Each Node is assigned to a single process and thus part of this tree, but a process may encapsulate multiple Nodes (concept of Node Composition, see \Cref{sec:model:containers}). Furthermore, as each Node is enabled to start further processes, those processes are also representable within the created tree. \Cref{fig:tikz:mathModel:processes} illustrates an exemplary process tree. Within the example, all Nodes where started by a single launch script.
+Through the Utilisation of passive Members as organisational entities, the mathematical meta-model enables the creation of a superior tree that might even spread across multiple operating systems. E.g. a ROS2 system that is spread across multiple computers.
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/mathModel/treeProcess.tex}
+    \caption[Exemplary Process-Driven Tree]{Exemplary Process-Driven Tree (of the ROS2 System) \legend} \label{fig:tikz:mathModel:processes}
+\end{figure}
+
+
+\chapter{Further Setup Information}
+\begin{table}[h]
+    \centering
+    \caption[Tracepoints Employed for the Proof-of-Concept]{Tracepoints Employed for the Proof-of-Concept \cite{github:ros2_tracing}} \label{tab:tracepoints}
+    \begin{tblr}{lX}
+        \toprule
+        Tracepoint & Purpose \\
+        \midrule
+        ros2:rcl\_node\_init                        & Indicates the instantiation of a ROS2 Node.                                                   \\
+        ros2:rcl\_publisher\_init                   & Indicates the instantiation of a ROS2 publisher.                                              \\
+        ros2:rcl\_subscription\_init                & Indicates the instantiation of a ROS2 subscriber.                                             \\
+        ros2:rcl\_service\_init                     & Indicates the instantiation of a ROS2 Service server.                                         \\
+        ros2:rcl\_client\_init                      & Indicates the instantiation of a ROS2 Service client.                                         \\
+        ros2:rcl\_timer\_init                       & Indicates the instantiation of a ROS2 Timer.                                                  \\
+        ros2:rclcpp\_timer\_link\_node              & Links an initialised Timer to its respective Node.                                            \\
+        ros2:rcl\_lifecycle\_state\_machine\_init   & Indicates the instantiation of a ROS2 state machine that is necessitated by managed Nodes.    \\
+        ros2:rcl\_lifecycle\_transition             & Indicates a lifecycle transition of managed Nodes.                                          \\
+        ros2:rcl\_publish                           & Indicates the publishing of a message.                                                        \\
+        \bottomrule
+    \end{tblr}
+\end{table}
+
+
+
+\chapter{Performance Test: Detailed Results}
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/mwtest.tex}
+    \caption[Mann-Whitney U Test: Significance Results for Measured Latencies]{Mann-Whitney U Test Significance Results for Measured Latencies (Results below 0.05 are Considered Statistically Significant)} \label{app:mwtest}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/cpu_usage_stream_reformatted.tex}
+    \caption{CPU Utilisation of Shadow Caster and Shadow Instance} \label{app:cpuUsageStreamDetailed}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/ram_usage_reformatted_detailled.tex}
+    \caption{Detailed RAM Utilisation of Shadow Caster, Shadow Instance, and ROS2 system} \label{app:ramUsageDetailed}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/cpu_usage_diagram_relative.tex}
+    \caption[Relative CPU Utilisation of Shadow Implementation]{Relative CPU Utilisation of Shadow Implementation} \label{app:cpuUsageStreamRelative}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/ram_usage_diagram_relative.tex}
+    \caption{Relative RAM Utilisation of Shadow Caster and Shadow Instance} \label{app:ramUsageStreamRelative}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/forwardingLat_cpu.tex}
+    \caption{CPU Utilisation for Differing Tracer Implementations} \label{app:eventProbLatencyCPU}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \input{figures/tikz/perfTests/aggregationOverhead_ram.tex}
+    \caption{Influence of Requests on the RAM Utilisation of the Shadow Implementation} \label{app:aggregationOverheadRAM}
+\end{figure}
+
+
+\chapter{Real World Scenario}
+    \begin{table}[h]
+        \centering
+        \caption{List of Active Nodes in Stage 3 of the Real-World Scenario}
+        \begin{tblr}{ll}
+            \toprule
+            /emergency\_stop    &   /lynx/system\_monitor       \\
+            /fixposition\_driver\_ros2  &   /twist\_mux \\
+            /foxglove\_bridge   &   /velocity\_smoother \\
+            /foxglove\_bridge\_component\_manager   &   /wrapper/fixposition\_wrapper\_node \\
+            /joy\_teleop/joy\_node  &   /wrapper/livox\_front\_wrapper\_node \\
+            /joy\_teleop/teleop\_twist\_joy\_node   &   /wrapper/sick\_front\_wrapper\_node \\
+            /launch\_ros\_1 &   /wrapper/sick\_rear\_wrapper\_node \\
+            /launch\_ros\_143238    &   /zed2i\_front/transform\_listener\_impl\_... \\
+            /launch\_ros\_82636 &   /zed2i\_front/zed2i\_front\_state\_publisher \\
+            /lifecycle\_manager\_rosee  &   /zed2i\_front/zed\_container \\
+            /lynx/battery\_driver   &   /zed2i\_front/zed\_node\_front \\
+            /lynx/controller\_manager   &   /zed2i\_left/transform\_listener\_impl\_... \\
+            /lynx/drive\_controller &   /zed2i\_left/zed2i\_left\_state\_publisher \\
+            /lynx/hardware\_controller  &   /zed2i\_left/zed\_container \\
+            /lynx/imu\_broadcaster  &   /zed2i\_left/zed\_node\_left \\
+            /lynx/joint\_state\_broadcaster &   /zed2i\_rear/transform\_listener\_impl\_... \\
+            /lynx/joy2twist\_node   &   /zed2i\_rear/zed2i\_rear\_state\_publisher \\
+            /lynx/joy\_node &   /zed2i\_rear/zed\_container \\
+            /lynx/lights\_container &   /zed2i\_rear/zed\_node\_rear \\
+            /lynx/lights\_controller    &   /zed2i\_right/transform\_listener\_impl\_... \\
+            /lynx/lights\_driver    &   /zed2i\_right/zed2i\_right\_state\_publisher \\
+            /lynx/lights\_manager   &   /zed2i\_right/zed\_container \\
+            /lynx/robot\_state\_publisher   &   /zed2i\_right/zed\_node\_right \\
+            /lynx/safety\_manager   &   \\
+            \bottomrule
+        \end{tblr}
+    \end{table}
+
+It is imperativ to note, that only those entities are represented within the Graph, that are executed by the monitored host. Extending the Shadow Implementation to multi-host is addressed in Future Work.
+
+\newpage
+\section*{remove me}
+\section*{remove me}
+\section*{remove me}
+\begin{figure}
+    \caption{Real-World Scenario: Generated ROS2 Graph (Stage 3)} \label{app:graph2}.
+\end{figure}
+\cleardoublepage

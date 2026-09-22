@@ -1,0 +1,94 @@
+\begin{tikzpicture}
+    \begin{axis}[
+        name=second,
+        xlabel={Relative Time [min]},
+        ylabel=\empty,
+        tick align=center,
+        legend style={
+            at={(.99,.05)},
+            anchor=south east,
+            legend columns=3,
+            draw=black,
+            font=\footnotesize
+        },
+        xtick distance=1,
+        % minor ytick={0.5,1.5,...,5},
+        % ytick distance=1,
+        xmin=0, xmax=5.9,
+        ymin=17, ymax=20,
+        ytick={17, 18, 19},
+        grid=both,
+        height=4cm,
+        width=14cm,
+        xtick pos=bottom,
+        ytick pos=left,
+    ]
+
+        \addplot+ [mark=none, color=tubaf-geo, thick] table [
+            x expr=(\thisrow{timeRelative}/60)-6.5,
+            y expr=(\thisrow{datamgmt/proportionalResident}+\thisrow{continuous/proportionalResident}+\thisrow{structural/proportionalResident})*1e-6,
+            col sep=comma,
+            mark=none
+        ] {measurements/totaling_overhead_ram.csv};
+
+        \legend{
+            {Shadow Caster},
+        }
+
+        \path (2.74,17) coordinate (bottom);
+
+    \end{axis}
+    \begin{axis}[
+        at={($(second.north west) + (0,2)$)},
+        anchor=south west,
+        xlabel=\empty,
+        ylabel=\empty,
+        tick align=center,
+        legend style={
+            at={(.99,.5)},
+            anchor=south east,
+            draw=black,
+            font=\footnotesize
+        },
+        xtick distance=1,
+        % minor ytick={0.5,1.5,...,5},
+        % ytick distance=1,
+        xticklabels=\empty,
+        xmin=0, xmax=5.9,
+        ymin=0, ymax=1050,
+        grid=both,
+        height=7cm,
+        width=14cm,
+        xtick pos=bottom,
+        ytick pos=left,
+    ]
+
+        \addplot+ [mark=none, color=tubaf-material, thick] table [
+            x expr=(\thisrow{timeRelative}/60)-6.5,
+            y expr=\thisrow{neo4j/memrss}*1e-6,
+            col sep=comma,
+            mark=none,
+        ] {measurements/totaling_overhead_ram.csv};
+        \addplot+ [mark=none, color=tubaf-environment, thick] table [
+            x expr=(\thisrow{timeRelative}/60)-6.5,
+            y expr=\thisrow{influxdb/memrss}*1e-6,
+            col sep=comma,
+            mark=none,
+        ] {measurements/totaling_overhead_ram.csv};
+
+
+        \legend{
+            {neo4j},
+            {influxDB},
+        }
+
+
+        \path (2.74,1050) coordinate (top);
+    \end{axis}
+
+
+    \draw [tubaf-primary-dark, semithick, dashed] (bottom) -- (top) node [midway, above left] {started request};
+
+    \node [above, rotate=90, yshift=1.5cm] at (second.north west) {RAM Utilisation [MB]};
+
+\end{tikzpicture}

@@ -1,0 +1,35 @@
+\chapter{Conclusion and Future Work} \label{chap:futurework}
+
+This thesis introduced an abstract, mathematical meta-model alongside the logical model for a Digital Shadow in order to enable the automated generation of ROS2 system models at runtime. Thereby, the approach addresses key challenges in the domain of rapid prototyping by providing a holistic, extensible, and non-intrusive system representation that supports \acl{fdd} by facilitating the analysis of a ROS2 system in question.
+
+The evaluation demonstrated, that the meta-model is capable of representing a wide range of ROS2 systems, including their communication structure, organisational hierarchies, and runtime attributes. Nevertheless, it also revealed constraints due to the means of implementation. Although these constraints limit the applicability to ROS2 systems, they are necessitated in order to ensure the correctness of the generated model. To encounter these constraints, further research needs to explore additional means of implementation in order to enhance the feasibility of the introduced meta-model. 
+
+The Digital Shadow implemented as a proof-of-concept has proven to generate system specific runtime models without necessitating expert knowledge or changes in the existing software stack. The relative overhead induced (CPU and RAM) decreases with the increasing size of the ROS2 system and increasing message frequencies. Therefore, the Digital Shadow proves to be a scalable solution.
+Despite the already low resource consumption of the implementation, it still has potential for improvement, especially regarding the overhead incurred by the Shadow Instance that is represented by the databases employed. In future work, embedded database solutions will be explored to further enhance performance, as they are expected to significantly reduce the overhead and thus gain efficieny by negating the need for resource-intensive services.
+Additionally, the implementation is to be refactored to employ event-driven mechanisms. Paving the way to a more lightweight Digital Shadow that is capable of operating on resource-constrained systems.
+
+As the proof-of-concept only encompasses basic functionality, future work is required to extend the Digital Shadow's capabilities.:
+\begin{description}[leftmargin=.5cm]
+    \item[Consider the Development of a Domain-Specific Language]   \hfill \\
+        Custom queries are difficult to handle, as the entire response, that still has to be parsed, is returned to the client.
+        The development of a Domain-Specific Language (DSL) for custom queries would facilitate advanced analyses by facilitating requests.
+    \item[Integration of Further Metrics]    \hfill \\
+        To explore further capabilities of the concept, the integration of further metrics is to be considered. For instance, the utilisations of Executors or callback durations would gain deep insights into the scheduling of the system. This may further include the exploration of additional data sources.
+    \item[Extend the Implementation to represent Multi-Host ROS2 systems]   \hfill \\
+        The implementation is only capable of representing single-host ROS2 systems. Nevertheless, the model is capable of representing multi-host ROS2 systems. To evaluate the feasibility, the implementation is to be extended to support the generation of ROS2 system models that extend across multiple hosts.
+    \item[Enable the Integration of Expert Knowledge]   \hfill \\
+        As only basic functionality is implemented, the integration of expert knowledge is not yet supported. The implementation of configuration mechanisms would enable the incorporation of expert knowledge in form of textual Requirement-Diagrams. To employ these configurations, the \fboxemph{Evaluator} module is to be implemented to enable more sophisticated \acl{fdd}.
+\end{description}
+
+
+In addition to development itself, three key areas require further research:
+\begin{description}[leftmargin=.5cm]
+    \item[Evaluate in Development Process] \hfill \\
+        Although the proof-of-concept was tested in a real-world scenario, additional validation is necessitated to explore the added value of the approach in various contexts. This also involves the inclusion of the generated model directly into the development process to assess its impact on the development and debugging of respective systems.
+    \item[Evaluate further Situations and Metrics] \hfill \\
+        While multiple analyses where conducted within the evaluation, there are further investigations that are to be made. For instance, as the databases are queried via the network, a network utilisation is generated and thus its overhead is to be evaluated. Similarly, as the databases are writing and reading data from the disk, these interactions are to be monitored alongside the general disk-storage that is used.
+    \item[Applicability to Further Robotic Systems] \hfill \\
+        Even though the meta-model is strongly influenced by ROS2, it is designed to be abstract and thus not limited to ROS2 systems. In order to evaluate the general applicability of the approach, further distributed robotic system, such as YARP \cite{website:yarp} or PX4 \cite{website:px4} are to be explored with regard to their suitability to the introduced meta-model. Depending on the suitability, the approach is to be updated and evaluated by an implementation.
+\end{description}
+
+Especially within the described constraints, the implementation of the proposed approach proved to be sufficient and is convincingly demonstrated regarding both feasibility and scalability. Despite the challenges and the need for future work, this thesis presents a promising solution and establishes a generic, extensible foundation for automated runtime modelling that enables comprehensive analysis of ROS2 systems during operation. The methods and tools developed pave the way for more resilient, reliable, and maintainable robotic applications and offer a starting point for future research in model-based system analysis employing the concept of Digital Shadows.

@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+
+    \begin{umlseqdiag}
+        \umlobject[class=Client, fill=tubaf-accent-26]{client}
+        \umlobject[class=Server, fill=tubaf-accent-26]{server}
+      
+        \begin{umlcall}[op=request]{client}{server}
+            \begin{umlcallself}[op=callback()]{server}
+            \end{umlcallself}
+
+            \begin{umlcall}[type=return, op=response, padding=-2]{server}{client}
+            \end{umlcall}
+            \begin{umlfragment}
+                \begin{umlcall}[op=callback()]{client}{client}
+                \end{umlcall}
+            \end{umlfragment}
+        \end{umlcall}
+      
+      \end{umlseqdiag}
+      
+\end{tikzpicture}

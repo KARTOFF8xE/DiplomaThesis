@@ -1,0 +1,30 @@
+\begin{tikzpicture}
+
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (-6,2.7) -- ++(0,1.7) node[midway,xshift=-3.6em]{subtrees} coordinate (tmp);
+    \draw [decorate,decoration={brace,amplitude=5pt,raise=2ex}]
+        (tmp) -- ++(0,1) node[midway,xshift=-4.7em]{virtual to join};
+
+    \node [MP] (root)               at (0,5) {virtual root};
+
+    \node [MA] (executor1)          at (-3,4.1) {executor1};
+    \node [MA, G0] (controller1)    at (-4.75,3) {controller};
+    \node [MA, G0] (turtlesim1)     at (-1.3,3) {turtlesim};
+
+    \node [MA] (executor2)          at (1.55,4.1) {executor2};
+    \node [MA, G0] (controller2)    at (1.55,3) {controller};
+    
+    \node [MA] (executor3)          at (4.5,4.1) {executor3};
+    \node [MA, G0] (turtlesim2)     at (4.5,3) {turtlesim};
+
+    \draw [TreeExecutor, ->] (root) -| (executor1);
+    \draw [TreeExecutor, ->] (root) -| (executor2);
+    \draw [TreeExecutor, ->] (root) -| (executor3);
+
+    \draw [TreeExecutor, ->] (executor1) -| (controller1);
+    \draw [TreeExecutor, ->] (executor1) -| (turtlesim1);
+
+    \draw [TreeExecutor, ->] (executor2) -- (controller2);
+    \draw [TreeExecutor, ->] (executor3) -- (turtlesim2);
+
+\end{tikzpicture}

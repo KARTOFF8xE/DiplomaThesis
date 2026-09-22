@@ -1,0 +1,137 @@
+\usepackage[sans]{tubaf-fonts}
+
+\usepackage{graphicx}
+\graphicspath{{./figures}{./figures/tikz/neo4j}}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{rotating}
+\usepackage{tabularray}
+\usepackage{placeins}
+
+\usepackage{blindtext}
+\usepackage[english]{babel}
+\usepackage{soul}
+\UseTblrLibrary{booktabs}
+\usepackage[utf8x]{inputenc}
+
+\usepackage[style=numeric, backend=biber, sorting=none, citecounter=true]{biblatex}
+\addbibresource{lib.bib}
+
+% \renewcommand{\finentrypunct}{%
+%   \addperiod\space
+%   (Cited \arabic{citecounter}~time\ifnumequal{\value{citecounter}}{1}{}{s})%
+% }
+
+\usepackage{csquotes}
+\usepackage[cmex10]{amsmath}
+\usepackage[clock, misc]{ifsym}
+\usepackage{amsthm}
+\usepackage[english]{nomencl}
+\makenomenclature
+\renewcommand{\nompreamble}{\begin{flushleft} \setstretch{0.9}}
+\renewcommand{\nompostamble}{\end{flushleft}} 
+\renewcommand{\nomlabelwidth}{4em}
+\renewcommand{\nomlabel}[1]{\hspace{0pt}#1\dotfill}
+\renewcommand{\nomname}{List of Symbols}
+
+
+\usepackage{stmaryrd}
+% \usepackage{mathabx}
+\usepackage{fontawesome5}
+\usepackage{upgreek}
+
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{listings, breakable, skins}
+\newtcbtheorem[auto counter, number within=section, list inside={def}]{definitionbox}{Definition}
+{
+  enhanced,
+  breakable,
+  colback=white,
+  colframe=tubaf-primary!75,
+  coltitle=black,
+  fonttitle=\bfseries,
+  % colbacktitle=white,
+  attach boxed title to top left={xshift=0.5cm,yshift=0mm},
+  boxed title style={empty},
+  title style={bottom=1mm},
+  borderline west={1.5pt}{0pt}{tubaf-primary},
+  % sharp corners,
+  before skip=10pt, after skip=10pt,
+  top=6pt, bottom=6pt,
+  boxrule=0pt,
+  opacityback=0.95
+}{def}
+\makeatletter
+\newcommand{\settcblistofwidth}[1]{
+  \renewcommand{\l@tcolorbox}{\@dottedtocline{1}{1.5em}{#1}}%
+  }
+\makeatother
+
+
+% \usepackage[nocompress]{cite}
+\usepackage{multirow, color, listings}
+\usepackage{url}
+\usepackage{breakurl}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\Crefname{tcb@cnt@definitionbox}{Definition}{Definitions} 
+\usepackage{todonotes}
+\usepackage{ifthen}
+\usepackage[inline]{enumitem}
+\usepackage{amssymb}
+\usepackage[withpage, nohyperlinks]{acronym}
+\usepackage{lipsum}
+\usepackage{textcomp}
+\usepackage{appendix}
+\Crefname{appsec}{appendix}{appendices}
+
+\usepackage{pdfpages}
+\usepackage{xcolor}
+\usepackage{tubaf-color}
+
+\usepackage[inner=2cm, outer=2cm, bindingoffset=1cm, top=26mm, bottom=35mm]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\clubpenalty=10000
+\widowpenalty=10000
+\makeatletter
+\@twosidetrue
+\@mparswitchtrue
+\makeatother
+% \usepackage{scrlayer-scrpage}
+% \newpairofpagestyles{specialstyle}{
+%   \ihead{List of abbreviations}
+% }
+% \newcommand{\resetstandardheader}{\ihead{\leftmark}}
+
+\usepackage{tikz}
+\usepackage{xstring}
+\usepackage{calc}
+\usepackage{pgfopts, pgfplotstable}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz-uml}
+\usepackage{xifthen}
+\input{figures/tikz/tikzConfig.tex}
+
+\newboolean{showcontent}
+\setboolean{showcontent}{false} % true = show, false = hide
+
+\title{Aggregation and Pre-Processing of Network and Process Data for Monitoring Purposes in ROS2 Applications}
+\author{Georg Muck}
+% \matriculationnumber{63652}
+\faculty{Faculty of Mathematics and Computer Science}
+\course{Institut für Informatik}
+\logo{figures/ifi.png}
+\date{07.07.2025}
+\subject{Diploma Thesis}
+\attaineddegree{Diplom-Ingenieur}
+\birthdate{14.06.2000}
+\birthplace{Plauen}
+\publishers{TU Bergakademie Freiberg}
+\supervisors{Prof. Dr. Sebastian Zug \and Dr Georg Jäger}
+\examiners{Prof. Dr. Sebastian Zug \and Dr Georg Jäger}
+
+\logo{\includegraphics{innovative-hochschule}}
+\refoot[\hspace{1cm}Aggregation and Pre-Processing of Network and Process Data for Monitoring Purposes\\in ROS2 Applications]{\hspace{1cm}Aggregation and Pre-Processing of Network and Process Data for Monitoring Purposes\\in ROS2 Applications}
+\lofoot[Aggregation and Pre-Processing of Network and Process Data for Monitoring Purposes in ROS2 Applications]{Aggregation and Pre-Processing of Network and Process Data for Monitoring Purposes in ROS2 Applications}

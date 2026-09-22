@@ -1,0 +1,70 @@
+\begin{tikzpicture}
+\begin{axis}[
+    name=second,
+    xlabel={Relative Time [s]},
+    ylabel={Publishing Rate [Hz]},
+    tick align=center,
+    legend style={
+        at={(.5,1.05)},
+        anchor=south,
+        legend columns=3,
+        font=\small,
+        draw=black,
+        font=\footnotesize
+    },
+    xtick distance=1,
+    % minor ytick={0.5,1.5,...,5},
+    % ytick distance=1,
+    xmin=0, xmax=11,
+    ymin=0, ymax=7,
+    grid=both,
+    height=4cm,
+    width=14cm,
+    xtick pos=bottom,
+    ytick pos=left,
+    ytick={0,1,6}
+]
+
+    \addplot+ [
+        only marks,
+        mark=*,mark options={solid},
+        mark size=4.5,
+        fill=tubaf-black,
+        draw=tubaf-black,
+        thick
+    ] table [
+        x=relTime,
+        y=status,
+        col sep=comma
+    ] {measurements/publisherFrequency.csv};
+    \addlegendentry{fib\_act\_src $\trianglearrow$ status}
+
+    \addplot+ [
+        only marks,
+        mark=*,mark options={solid},
+        mark size=2.5,
+        fill=tubaf-environment,
+        draw=tubaf-environment,
+        thick,
+    ] table [
+        x=relTime,
+        y=paramEvents,
+        col sep=comma
+    ] {measurements/publisherFrequency.csv};
+    \addlegendentry{fib\_act\_cli $\trianglearrow$ paramEv}
+    \addplot+ [
+        only marks,
+        mark=*,mark options={solid},
+        mark size=2.5,
+        draw=tubaf-material,
+        fill=tubaf-material,
+        thick
+    ] table [
+        x=relTime,
+        y=feedback,
+        col sep=comma
+    ] {measurements/publisherFrequency.csv};
+    \addlegendentry{fib\_act\_src $\trianglearrow$ feedback}
+
+\end{axis}
+\end{tikzpicture}

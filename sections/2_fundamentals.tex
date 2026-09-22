@@ -1,0 +1,83 @@
+\cleardoublepage
+\chapter{\acl{mbse} and the Characteristics of Digital Shadows} \label{chap:fundamentals}
+
+For deriving the meta-model, the fundamentals of ROS2 systems are to be modelled first. Therefore, the author utilises \acl{mbse} and the \acf{sysml} described in \Cref{sec:systemmodelling}. In order to provide a deeper understanding of Digital Shadows, \Cref{sec:DMDSDT} introduces its concept accompanied by the related concepts of Digital Models and Digital Twins, as the three terms are often used synonymously and share overlapping characteristics.
+
+\section{Modelling Complex Systems through Systems Engineering} \label{sec:systemmodelling}
+Systems Engineering provides a structured approach to the development and representation of complex systems, aiming to ensure that all technical and non-technical aspects are considered. As time has passed, various methodologies have emerged within this field.
+This chapter presents two fundamental approaches, the Document-Centric approach in \Cref{subsec:DBSE} and the Model Based approach in \Cref{subsec:MBSE}. The subsequent \Cref{subsec:SysML} focuses on the \acf{sysml} as an emerging approach for modelling systems.
+
+
+    \subsection{Document-Centric Systems Engineering} \label{subsec:DBSE}
+    The Document-Centric approach is characterised by the creation of textual specifications and design documents. These documents often include written descriptions, graphics created with drawing tools, and other communication materials such as emails. Thus, maintaining consistency and traceability becomes increasingly complex and time-consuming, as the model rapidly attains a size that is impractical for humans to manage \cite[p.~234]{IIOTinsightsByDS}. Furthermore, this approach becomes challenging when dealing with complex systems, as it is often decentralised, resulting in an increased risk of overlooking key interfaces or critical information \cite[p.~173]{MBSEmotivation_state_opportunities}. Furthermore, the validation of information contained within these documents may be challenging, which can compromise the overall reliability and coherence of the system design. \cite[p.~15]{book:practicalGuideToSysML}
+
+    Therefore, the Document-Centric approach to Systems Engineering is not conducive to the creation of a Digital Shadow, as the information in it is static, difficult to automate, and may be redundant. In contrast, \acl{mbse} facilitates the establishment of a consistent, digital representation of a system, which is essential for a precise Digital Shadow.
+
+
+    \subsection{\acl{mbse}} \label{subsec:MBSE}
+    \acf{mbse} utilises system models to represent the design and functionality of complex systems. Despite its long-term cost-effectiveness, the adoption of \ac{mbse} is often limited by high initial costs and significant effort required to implement it, as well as a lack of knowledge about its potential benefits \cite[p.~2341]{AugmentingMBSEwithDigitalTwinTechnology}\cite[p.~7ff]{MBSEandDTcosts}. However, this approach allows for comprehensive management of a product from initial design through to its final stages \cite[p.~17]{book:practicalGuideToSysML}. One of the key advantages of \ac{mbse} is the establishment of a single source of truth, enabling a clear and unified understanding of the system. Furthermore, \ac{mbse} aids in capturing and articulating requirements and domain knowledge, ensuring that all stakeholders can grasp the essential, latest details \cite[p.~102ff]{MBSEemergingApproach}. By providing different levels of abstraction, \ac{mbse} facilitates the identification of optimal solutions while enhancing the detection of potential risks or faults throughout the system's lifecycle and thus supports the prevention of failures \cite[p.~103]{MBSEreview}. The identification and therefore the possibility for elimination of faults is further facilitated by the ability to analyse the system from multiple perspectives.
+    
+    In summary, \ac{mbse} fosters effective system design by facilitating the organisation, examination, and modification of information related to large systems, while providing a single source of truth that additionally supports the creation of a reliable and consistent Digital Shadow.
+
+    The following section describes the widely used \acl{sysml} that will be utilised to model different aspects of ROS2 systems.
+
+    \subsection{\acl{sysml}} \label{subsec:SysML}
+    The \ac{omg} and the \ac{incose} developed the \acf{sysml}, which is based on the \ac{uml} \cite[p.~4]{sysml} and is \glqq{}considered as the next de facto modelling language for SE\grqq{} \cite[p.~104]{MBSEemergingApproach}. It facilitates \ac{mbse} by providing multiple diagrams that reflect several aspects of the system in question \cite[p.~104]{MBSEemergingApproach}. These aspects correspond to particular perspectives and thus enable a holistic view of a system.
+
+    The diagrams are categorised into three groups, namely 
+    \begin{enumerate*}[label=\Alph*)]
+        \item Behavior Diagrams: containing Activity Diagrams, Sequence Diagrams, State Machine Diagrams, and Use Case Diagrams;
+        \item Requirement Diagrams; and 
+        \item Structure Diagrams: containing Block Definition Diagrams, Internal Block Diagrams, Parameter Diagrams, and Package Diagrams
+    \end{enumerate*} \cite[p.~96]{MBSEshopFloorDT}.
+    \Cref{tab:sysmlDiagrams} briefly describes the five diagrams that are employed throughout this thesis.
+    \begin{table}[h]
+        \centering
+        \caption[Several \acs{sysml} Diagrams and their Purpose]{Several \acs{sysml} Diagrams and their Purpose} \label{tab:sysmlDiagrams}
+        \begin{tblr}{lX}
+            \toprule
+            Diagram & Purpose \\
+            \midrule
+            Block Definition (BDD)  & Represents system elements, such as blocks and value types, along with their relationships and connections. \cite[p.~97]{MBSEshopFloorDT} \\
+            Package (PKG)           & Reveals the organisation of the system. \cite[p.~4]{sysml} \\
+            Parameter (PAR)         & Defines a mathematical rule and its parameters, ensuring consistent propagation of value property changes. \cite[p.~4]{sysml} \\
+            Requirement (REQ)       & Links system requirements with text-based requirements. \cite[p.~5]{sysml} \\
+            Sequence (SD)           & Provides a dynamic representation of a system's behavior by illustrating the order of interactions and events that take place over time. \cite[p.~105]{MBSEshopFloorDT}\\
+            \bottomrule
+        \end{tblr}
+    \end{table}
+
+    \acs{sysml} will be utilised to gain a holistic view of fundamental ROS2 systems. Based on this clear understanding, the meta-model will be derived and serve as a blueprint for the Digital Shadow described in the subsequent.
+
+
+    \section[Virtual Representation of Systems]{Digital Model, Digital Shadow, and Digital Twin as Virtual Representations of Systems} \label{sec:DMDSDT}
+    The concept of a Digital Twin was introduced first in 2002 during a presentation by Michael Grieves. The fundamental concept posits that every system comprises two interconnected components: 
+    \begin{enumerate*}[label=\Alph*)]
+        \item the physical system that has always existed and
+        \item a newly introduced virtual system containing all relevant information about the physical system
+    \end{enumerate*}. To elaborate, the virtual system is meant for mirroring the physical system. This twin-like property, wherein physical elements are reflected in the virtual space and vice versa, is designated as a Digital Twin. \cite[p.~93]{book:grieves2017}\cite[p.~1016f]{DMDSDTcategoricalLitReview}
+    
+    Even though the fundamental concept of Digital Twins remained stable since its introduction \cite[p.~92]{book:grieves2017}, multiple definitions exist throughout several industries \cite[p.~1017]{DMDSDTcategoricalLitReview}. This results in a synonymously yet misleading use of the terms Digital Model, Digital Shadow, and Digital Twin as types of a Digital Twin, which vary in their degree of data integration.
+    
+    \Textcite[p.~1017ff]{DMDSDTcategoricalLitReview} categorises the related concepts of a Digital Model, Digital Shadow, and Digital Twin like illustrated in \Cref{fig:tikz:dmdsdt}. Solid lines represent an automated data flow while dashed lines refer to a manual data flow. The digital object of a \emph{Digital Model} (\Cref{fig:tikz:dm}) does not automatically receive information about the physical system and vice versa, it needs to be transmitted manually. As an evolution, the digital object of a \emph{Digital Shadow} (\Cref{fig:tikz:ds}) receives an automated data flow from the physical system, but not vice versa. Only the \emph{Digital Twin} (\Cref{fig:tikz:dt}) integrates an automated data flow into both directions, reaching from the physical system to the digital object and vice versa.
+    \begin{figure}[h]
+        \centering
+        \begin{subfigure}[h]{.3\textwidth}
+            \centering
+            \input{figures/tikz/dmdsdt/dm.tex}
+            \caption{Digital Model} \label{fig:tikz:dm}
+        \end{subfigure}
+        \begin{subfigure}[h]{.3\textwidth}
+            \centering
+            \input{figures/tikz/dmdsdt/ds.tex}
+            \caption{Digital Shadow} \label{fig:tikz:ds}
+        \end{subfigure}
+        \begin{subfigure}[h]{.3\textwidth}
+            \centering
+            \input{figures/tikz/dmdsdt/dt.tex}
+            \caption{Digital Twin} \label{fig:tikz:dt}
+        \end{subfigure}
+        \caption[Data Flow of Digital Model, Digital Shadow, and Digital Twin]{Data Flow of Digital Model, Digital Shadow, and Digital Twin \cite[p.~1017]{DMDSDTcategoricalLitReview}} \label{fig:tikz:dmdsdt}
+    \end{figure}
+
+The objectives defined in \Cref{chap:motivation} necessitate an automated data flow from the physical system to the digital object, but not vice versa. Based on these objectives and the present insights, the concept of a Digital Shadow will be employed utilising \acl{mbse} and the \acf{sysml}. However, given the similarity among the three approaches and the frequent use as synonymous terms \cite[p.~1020]{DMDSDTcategoricalLitReview}, all three approaches are considered during the analysis of the literature. For clearance, in this thesis the term \glqq{}Digital Shadow\grqq{} from now on refers to the concept of Digital Shadows, while a \glqq{}Shadow Instance\grqq{} refers to a specific Digital Shadow, reflecting a specific physical system. \newline

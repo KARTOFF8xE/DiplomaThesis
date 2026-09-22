@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+
+    \begin{umlseqdiag}
+        \umlobject[class=Publisher, fill=tubaf-accent-26]{publisher}
+        \umlobject[class=Topic, fill=tubaf-accent-26]{topic}
+        \umlobject[class=Subscriber, fill=tubaf-accent-26]{subscriber}
+      
+        \begin{umlcall}[padding=0]{publisher}{topic}
+        \begin{umlcall}[padding=-1]{topic}{subscriber}
+            \begin{umlcallself}[op=callback()]{subscriber}
+            \end{umlcallself}
+        \end{umlcall}
+        \end{umlcall}
+      
+      \end{umlseqdiag}
+      
+\end{tikzpicture}
